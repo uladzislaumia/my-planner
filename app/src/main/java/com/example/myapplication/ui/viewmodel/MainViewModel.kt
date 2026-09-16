@@ -1,8 +1,10 @@
 package com.example.myapplication.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.data.repository.PlannerRepositoryImpl
+import com.example.myapplication.data.local.database.AppDatabase
+import com.example.myapplication.data.repository.RoomPlannerRepositoryImpl
 import com.example.myapplication.domain.model.PlannerItem
 import com.example.myapplication.domain.usecase.GetPlannerItemsUseCase
 import kotlinx.coroutines.Job
@@ -17,10 +19,11 @@ sealed class MainUiState {
     data class Error(val message: String) : MainUiState()
 }
 
-class MainViewModel(
-    // Временный Manual DI: создаем зависимости вручную
-    private val getPlannerItemsUseCase: GetPlannerItemsUseCase = GetPlannerItemsUseCase(PlannerRepositoryImpl())
-) : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val database = AppDatabase.getDatabase(application)
+    private val repository = RoomPlannerRepositoryImpl(database.plannerItemDao())
+    private val getPlannerItemsUseCase: GetPlannerItemsUseCase = GetPlannerItemsUseCase(repository)
 
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
