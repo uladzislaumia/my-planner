@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.uladzislaumia.myplanner"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.uladzislaumia.myplanner"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
