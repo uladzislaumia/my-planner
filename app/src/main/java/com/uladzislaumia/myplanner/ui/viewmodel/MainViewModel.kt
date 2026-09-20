@@ -20,7 +20,7 @@ sealed class MainUiState {
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getPlannerItemsUseCase: GetPlannerItemsUseCase
+    private val getPlannerItemsUseCase: GetPlannerItemsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
