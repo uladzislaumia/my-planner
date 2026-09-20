@@ -2,14 +2,15 @@ package com.uladzislaumia.myplanner.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.uladzislaumia.myplanner.data.repository.FirebaseAuthRepositoryImpl
 import com.uladzislaumia.myplanner.domain.model.AuthResult
 import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.domain.usecase.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class AuthUiState {
     object Idle : AuthUiState()
@@ -18,12 +19,13 @@ sealed class AuthUiState {
     data class Error(val message: String) : AuthUiState()
 }
 
-class AuthViewModel(
-    private val loginUseCase: LoginUseCase = LoginUseCase(FirebaseAuthRepositoryImpl()),
-    private val signUpUseCase: SignUpUseCase = SignUpUseCase(FirebaseAuthRepositoryImpl()),
-    private val logoutUseCase: LogoutUseCase = LogoutUseCase(FirebaseAuthRepositoryImpl()),
-    private val getCurrentUserUseCase: GetCurrentUserUseCase = GetCurrentUserUseCase(FirebaseAuthRepositoryImpl()),
-    private val observeAuthStateUseCase: ObserveAuthStateUseCase = ObserveAuthStateUseCase(FirebaseAuthRepositoryImpl())
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val loginUseCase: LoginUseCase,
+    private val signUpUseCase: SignUpUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val observeAuthStateUseCase: ObserveAuthStateUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)

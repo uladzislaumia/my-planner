@@ -12,8 +12,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import java.util.Date
 import java.util.UUID
+import javax.inject.Inject
 
-class RoomPlannerRepositoryImpl(private val plannerItemDao: PlannerItemDao) : PlannerRepository {
+class RoomPlannerRepositoryImpl @Inject constructor(
+    private val plannerItemDao: PlannerItemDao
+) : PlannerRepository {
 
     override fun getItems(): Flow<List<PlannerItem>> {
         return plannerItemDao.getAllItems()

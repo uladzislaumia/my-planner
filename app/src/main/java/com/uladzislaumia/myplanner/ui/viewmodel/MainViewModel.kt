@@ -1,17 +1,16 @@
 package com.uladzislaumia.myplanner.ui.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.uladzislaumia.myplanner.data.local.database.AppDatabase
-import com.uladzislaumia.myplanner.data.repository.RoomPlannerRepositoryImpl
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.usecase.GetPlannerItemsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class MainUiState {
     object Loading : MainUiState()
@@ -19,11 +18,10 @@ sealed class MainUiState {
     data class Error(val message: String) : MainUiState()
 }
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val database = AppDatabase.getDatabase(application)
-    private val repository = RoomPlannerRepositoryImpl(database.plannerItemDao())
-    private val getPlannerItemsUseCase: GetPlannerItemsUseCase = GetPlannerItemsUseCase(repository)
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val getPlannerItemsUseCase: GetPlannerItemsUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()

@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.ui.screens.LoginScreen
@@ -25,7 +25,9 @@ import com.uladzislaumia.myplanner.ui.theme.MyPlannerTheme
 import com.uladzislaumia.myplanner.ui.viewmodel.AuthViewModel
 import com.uladzislaumia.myplanner.ui.viewmodel.MainUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,8 +35,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyPlannerTheme {
-                val mainViewModel: MainViewModel = viewModel()
-                val authViewModel: AuthViewModel = viewModel()
+                val mainViewModel: MainViewModel = hiltViewModel()
+                val authViewModel: AuthViewModel = hiltViewModel()
 
                 val uiState by mainViewModel.uiState.collectAsState()
                 val currentUser by authViewModel.authState.collectAsState(initial = authViewModel.currentUser)

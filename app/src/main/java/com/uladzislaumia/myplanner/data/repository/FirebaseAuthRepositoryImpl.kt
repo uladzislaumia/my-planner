@@ -11,10 +11,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
+import javax.inject.Inject
 
-class FirebaseAuthRepositoryImpl : AuthRepository {
-
-    private val firebaseAuth = FirebaseAuth.getInstance()
+class FirebaseAuthRepositoryImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth
+) : AuthRepository {
 
     private fun mapFirebaseUser(firebaseUser: FirebaseUser?): User? {
         if (firebaseUser == null) return null
