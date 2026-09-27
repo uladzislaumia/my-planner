@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.ui.screens.LoginScreen
@@ -26,12 +28,14 @@ import com.uladzislaumia.myplanner.ui.viewmodel.AuthViewModel
 import com.uladzislaumia.myplanner.ui.viewmodel.MainUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkGooglePlayServices()
         enableEdgeToEdge()
         setContent {
             MyPlannerTheme {
@@ -97,6 +101,23 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun checkGooglePlayServices() {
+        val googleApiAvailability = GoogleApiAvailability.getInstance()
+        val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
+        if (resultCode != ConnectionResult.SUCCESS) {
+            Timber.w("Google Play Services result code: $resultCode")
+            if (googleApiAvailability.isUserResolvableError(resultCode)) {
+                googleApiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)?.show()
+            } else {
+                Timber.e("This device does not support Google Play Services.")
+            }
+        }
+    }
+
+    companion object {
+        private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
     }
 }
 

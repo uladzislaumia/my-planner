@@ -2,6 +2,14 @@ package com.uladzislaumia.myplanner
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
 @HiltAndroidApp
-class MyPlannerApplication : Application()
+class MyPlannerApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+}

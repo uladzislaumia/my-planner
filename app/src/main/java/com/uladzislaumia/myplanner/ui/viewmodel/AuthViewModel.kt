@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 sealed class AuthUiState {
@@ -37,6 +38,7 @@ class AuthViewModel @Inject constructor(
         get() = getCurrentUserUseCase()
 
     fun login(email: String, password: String) {
+        Timber.d("Login attempt for email: $email")
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = AuthUiState.Error("Email and password cannot be empty")
             return
@@ -45,13 +47,20 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             when (val result = loginUseCase(email, password)) {
-                is AuthResult.Success -> _uiState.value = AuthUiState.Success(result.data)
-                is AuthResult.Error -> _uiState.value = AuthUiState.Error(result.exception.localizedMessage ?: "Login failed")
+                is AuthResult.Success -> {
+                    Timber.d("Login successful for user: ${result.data.id}")
+                    _uiState.value = AuthUiState.Success(result.data)
+                }
+                is AuthResult.Error -> {
+                    Timber.e(result.exception, "Login failed")
+                    _uiState.value = AuthUiState.Error(result.exception.localizedMessage ?: "Login failed")
+                }
             }
         }
     }
 
     fun signUp(name: String, email: String, password: String) {
+        Timber.d("SignUp attempt for email: $email")
         if (name.isBlank() || email.isBlank() || password.isBlank()) {
             _uiState.value = AuthUiState.Error("All fields are required")
             return
@@ -60,13 +69,20 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
             when (val result = signUpUseCase(name, email, password)) {
-                is AuthResult.Success -> _uiState.value = AuthUiState.Success(result.data)
-                is AuthResult.Error -> _uiState.value = AuthUiState.Error(result.exception.localizedMessage ?: "Registration failed")
+                is AuthResult.Success -> {
+                    Timber.d("SignUp successful for user: ${result.data.id}")
+                    _uiState.value = AuthUiState.Success(result.data)
+                }
+                is AuthResult.Error -> {
+                    Timber.e(result.exception, "SignUp failed")
+                    _uiState.value = AuthUiState.Error(result.exception.localizedMessage ?: "Registration failed")
+                }
             }
         }
     }
 
     fun logout() {
+        Timber.d("Logging out user: ${currentUser?.id}")
         viewModelScope.launch {
             logoutUseCase()
             _uiState.value = AuthUiState.Idle
