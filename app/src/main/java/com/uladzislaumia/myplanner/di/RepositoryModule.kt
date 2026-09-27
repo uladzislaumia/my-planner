@@ -1,7 +1,7 @@
 package com.uladzislaumia.myplanner.di
 
 import com.uladzislaumia.myplanner.data.repository.FirebaseAuthRepositoryImpl
-import com.uladzislaumia.myplanner.data.repository.RoomPlannerRepositoryImpl
+import com.uladzislaumia.myplanner.data.repository.OfflineFirstPlannerRepositoryImpl
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
 import com.uladzislaumia.myplanner.domain.repository.PlannerRepository
 import dagger.Binds
@@ -23,6 +23,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindPlannerRepository(
-        plannerRepositoryImpl: RoomPlannerRepositoryImpl
+        plannerRepositoryImpl: OfflineFirstPlannerRepositoryImpl
     ): PlannerRepository
 }

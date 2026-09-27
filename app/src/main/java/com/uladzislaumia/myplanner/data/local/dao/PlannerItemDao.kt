@@ -24,4 +24,7 @@ interface PlannerItemDao {
 
     @Query("DELETE FROM planner_items WHERE id = :id")
     suspend fun deleteItemById(id: String)
+
+    @Query("SELECT COUNT(*) FROM planner_items")
+    suspend fun getItemCount(): Int
 }
