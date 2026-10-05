@@ -27,11 +27,11 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 *   **Data Layer:** [Repository pattern](class://com.uladzislaumia.myplanner.domain.repository.AuthRepository) implementation with [OfflineFirstPlannerRepositoryImpl](class://com.uladzislaumia.myplanner.data.repository.OfflineFirstPlannerRepositoryImpl) (Room as Single Source of Truth + Firestore background sync & 5-item demo seeding for new accounts).
 *   **UI Layer:** [MVI/MVVM](class://com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel) with reactive StateFlow handling and state-driven navigation via [AppNavGraph](class://com.uladzislaumia.myplanner.ui.navigation.AppNavGraph).
 
-## 📸 Screenshots [TBD]
+## 📸 Screenshots
 
-| Login | Registration | Planner Grid |
+| Login Screen | Registration Screen | Planner Grid |
 |:---:|:---:|:---:|
-| _Coming Soon_ | _Coming Soon_ | _Coming Soon_ |
+| ![Login Screen](/docs/images/login_screen.png) | ![Registration Screen](/docs/images/signup_screen.png) | ![Planner Grid](/docs/images/home_screen.png) |
 
 ## 🚀 Progress & Roadmap
 
