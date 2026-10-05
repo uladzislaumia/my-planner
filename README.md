@@ -10,8 +10,10 @@ Modern Android task management application built with industry-standard technolo
 *   **Local Database:** [Room](class://androidx.room.Database) with KSP and reactive Flow support.
 *   **Remote Database:** [Firebase Firestore](class://com.google.firebase.firestore.FirebaseFirestore) (Offline-First cloud synchronization).
 *   **Authentication:** Firebase Auth.
+*   **Analytics & Crash Reporting:** Firebase Analytics & Firebase Crashlytics (integrated with Timber logging).
+*   **Dynamic Configuration:** Firebase Remote Config **[TBD]**.
 *   **Push Notifications:** Firebase Cloud Messaging (FCM) **[TBD]**.
-*   **Monitoring & Analytics:** [Sentry](symbol://sentry) & Google Analytics **[TBD]**.
+*   **Monitoring:** Sentry **[TBD]**.
 *   **Networking:** GraphQL via [Apollo Kotlin](symbol://apollo) **[TBD]**.
 *   **Asynchrony:** Kotlin Coroutines & Flow.
 *   **Build System:** Gradle Kotlin DSL + Version Catalog (`libs.versions.toml`).
@@ -39,14 +41,15 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [x] **Cloud Sync & Offline-First Strategy** (Room + Firebase Firestore).
 - [x] **Type-Safe Jetpack Navigation Compose** (`@Serializable` routes).
 - [x] **Automatic Demo Data Seeding** (5 initial tasks for new users).
+- [x] **Firebase Analytics & Crashlytics Integration** (with custom Timber `CrashlyticsTree`).
 - [x] **Google Play Services Availability Checks & Package Visibility**.
 - [x] Dagger Hilt automation.
 - [x] **Static Analysis** (KtLint & Detekt).
+- [ ] **Firebase Remote Config** (Dynamic feature flags & configuration) — **[TBD]**.
 - [ ] **CI/CD Pipeline** (GitHub Actions for build & lint) — **[TBD]**.
 - [ ] **Testing Suite** (Unit tests with MockK & Turbine, UI Tests) — **[TBD]**.
 - [ ] **GraphQL Integration** (Apollo Client) — **[TBD]**.
 - [ ] **Messaging** (Push via FCM) — **[TBD]**.
-- [ ] **Observability** (Sentry & Analytics) — **[TBD]**.
 - [ ] **Multimodularity** (Refactoring into `:core` and `:feature` modules) — **[TBD]**.
 
 ## ⚙️ Development Requirements

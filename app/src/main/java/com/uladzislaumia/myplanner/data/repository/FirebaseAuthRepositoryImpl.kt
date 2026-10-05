@@ -1,5 +1,7 @@
 package com.uladzislaumia.myplanner.data.repository
 
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
@@ -14,7 +16,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class FirebaseAuthRepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseAnalytics: FirebaseAnalytics,
 ) : AuthRepository {
 
     private fun mapFirebaseUser(firebaseUser: FirebaseUser?): User? {
@@ -65,6 +68,10 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             val user = mapFirebaseUser(result.user)
             if (user != null) {
+                firebaseAnalytics.setUserId(user.id)
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+                    param(FirebaseAnalytics.Param.METHOD, "email")
+                }
                 AuthResult.Success(user)
             } else {
                 AuthResult.Error(Exception("Firebase user is null"))
@@ -85,9 +92,13 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
                     displayName = name
                 }
                 firebaseUser.updateProfile(profileUpdates).await()
-                
+
                 val user = mapFirebaseUser(firebaseUser)
                 if (user != null) {
+                    firebaseAnalytics.setUserId(user.id)
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
+                        param(FirebaseAnalytics.Param.METHOD, "email")
+                    }
                     AuthResult.Success(user)
                 } else {
                     AuthResult.Error(Exception("Firebase user is null after profile update"))
@@ -103,6 +114,8 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
 
     override suspend fun logout() {
         try {
+            firebaseAnalytics.logEvent("logout", null)
+            firebaseAnalytics.setUserId(null)
             firebaseAuth.signOut()
         } catch (e: Exception) {
             Timber.e(e, "Error signing out from FirebaseAuth")
