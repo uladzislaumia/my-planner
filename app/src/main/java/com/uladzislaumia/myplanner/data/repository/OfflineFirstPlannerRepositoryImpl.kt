@@ -85,8 +85,8 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
         val demoItems = listOf(
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Добро пожаловать в My Planner! 👋",
-                description = "Это ваша первая персональная задача. Вы можете менять статус задачи или удалять её.",
+                title = "Welcome to My Planner! 👋",
+                description = "This is your first personal task. You can edit, delete, or complete it.",
                 categoryId = null,
                 groupId = null,
                 assigneeId = null,
@@ -96,8 +96,8 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
             ),
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Изучить возможности приложения 🚀",
-                description = "Ознакомьтесь с сеткой планера, приоритетами задач и облачной синхронизацией.",
+                title = "Explore App Features 🚀",
+                description = "Get familiar with the planner grid, task priorities, and automatic cloud synchronization.",
                 categoryId = null,
                 groupId = null,
                 assigneeId = null,
@@ -107,8 +107,8 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
             ),
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Спланировать задачи на неделю 📅",
-                description = "Добавьте свои важные встречи, дедлайны и повседневные списки дел.",
+                title = "Plan Your Week 📅",
+                description = "Add important meetings, upcoming deadlines, and daily to-do lists.",
                 categoryId = null,
                 groupId = null,
                 assigneeId = null,
@@ -118,8 +118,8 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
             ),
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Настроить профиль пользователя 👤",
-                description = "Заполните персональные данные в настройках учетной записи.",
+                title = "Set Up User Profile 👤",
+                description = "Fill in your personal profile information in account settings.",
                 categoryId = null,
                 groupId = null,
                 assigneeId = null,
@@ -129,8 +129,8 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
             ),
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Зарегистрироваться в My Planner ✅",
-                description = "Вы успешно создали аккаунт и вошли в систему.",
+                title = "Sign Up for My Planner ✅",
+                description = "You have successfully created an account and signed in.",
                 categoryId = null,
                 groupId = null,
                 assigneeId = null,
