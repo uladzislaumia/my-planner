@@ -1,5 +1,6 @@
 package com.uladzislaumia.myplanner.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,16 +19,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,6 +43,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
+import com.uladzislaumia.myplanner.ui.dialogs.AddTaskDialog
+import com.uladzislaumia.myplanner.ui.dialogs.EditTaskDialog
 import com.uladzislaumia.myplanner.ui.theme.MyPlannerTheme
 import com.uladzislaumia.myplanner.ui.viewmodel.MainUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel
@@ -59,6 +58,7 @@ fun HomeScreen(
 ) {
     val uiState by mainViewModel.uiState.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
+    var selectedItemForEdit by remember { mutableStateOf<PlannerItem?>(null) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -84,7 +84,10 @@ fun HomeScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
                 is MainUiState.Success -> {
-                    PlannerGrid(items = state.items)
+                    PlannerGrid(
+                        items = state.items,
+                        onItemClick = { selectedItemForEdit = it }
+                    )
                 }
                 is MainUiState.Error -> {
                     Text(
@@ -104,79 +107,29 @@ fun HomeScreen(
                 showAddDialog = false
             }
         }
+
+        selectedItemForEdit?.let { item ->
+            EditTaskDialog(
+                item = item,
+                onDismiss = { selectedItemForEdit = null },
+                onSave = { updatedItem ->
+                    mainViewModel.updateItem(updatedItem)
+                    selectedItemForEdit = null
+                }
+            ) { itemId ->
+                mainViewModel.deleteItem(itemId)
+                selectedItemForEdit = null
+            }
+        }
     }
 }
 
 @Composable
-fun AddTaskDialog(
-    onDismiss: () -> Unit,
-    onConfirm: (title: String, description: String, priority: Priority) -> Unit,
+fun PlannerGrid(
+    items: List<PlannerItem>,
+    onItemClick: (PlannerItem) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var selectedPriority by remember { mutableStateOf(Priority.MEDIUM) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Add New Task") },
-        text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Description") },
-                    maxLines = 3,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Text("Priority:", style = MaterialTheme.typography.labelMedium)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Priority.entries.forEach { priority ->
-                        FilterChip(
-                            selected = selectedPriority == priority,
-                            onClick = { selectedPriority = priority },
-                            label = { Text(priority.name) }
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    if (title.isNotBlank()) {
-                        onConfirm(title, description, selectedPriority)
-                    }
-                },
-                enabled = title.isNotBlank()
-            ) {
-                Text("Add")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
-}
-
-@Composable
-fun PlannerGrid(items: List<PlannerItem>, modifier: Modifier = Modifier) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier.fillMaxSize(),
@@ -185,13 +138,19 @@ fun PlannerGrid(items: List<PlannerItem>, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items) { item ->
-            PlannerCard(data = item)
+            PlannerCard(
+                data = item,
+                onClick = { onItemClick(item) }
+            )
         }
     }
 }
 
 @Composable
-fun PlannerCard(data: PlannerItem) {
+fun PlannerCard(
+    data: PlannerItem,
+    onClick: () -> Unit = {},
+) {
     val priorityColor = when (data.priority) {
         Priority.HIGH -> Color.Red
         Priority.MEDIUM -> Color.Yellow
@@ -199,7 +158,9 @@ fun PlannerCard(data: PlannerItem) {
     }
 
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -224,7 +185,7 @@ fun PlannerCard(data: PlannerItem) {
             )
             if (data.isCompleted) {
                 Text(
-                    text = "Завершено",
+                    text = "Completed",
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray
                 )

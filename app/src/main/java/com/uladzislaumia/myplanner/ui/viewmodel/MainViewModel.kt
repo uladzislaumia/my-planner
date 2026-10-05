@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.domain.usecase.AddPlannerItemUseCase
+import com.uladzislaumia.myplanner.domain.usecase.DeletePlannerItemUseCase
 import com.uladzislaumia.myplanner.domain.usecase.GetPlannerItemsUseCase
+import com.uladzislaumia.myplanner.domain.usecase.UpdatePlannerItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +27,8 @@ sealed class MainUiState {
 class MainViewModel @Inject constructor(
     private val getPlannerItemsUseCase: GetPlannerItemsUseCase,
     private val addPlannerItemUseCase: AddPlannerItemUseCase,
+    private val updatePlannerItemUseCase: UpdatePlannerItemUseCase,
+    private val deletePlannerItemUseCase: DeletePlannerItemUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
@@ -65,6 +69,18 @@ class MainViewModel @Inject constructor(
                 isCompleted = false
             )
             addPlannerItemUseCase(newItem)
+        }
+    }
+
+    fun updateItem(item: PlannerItem) {
+        viewModelScope.launch {
+            updatePlannerItemUseCase(item)
+        }
+    }
+
+    fun deleteItem(id: String) {
+        viewModelScope.launch {
+            deletePlannerItemUseCase(id)
         }
     }
 }

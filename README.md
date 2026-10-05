@@ -33,6 +33,10 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 |:---:|:---:|:---:|
 | ![Login Screen](/docs/images/login_screen.png) | ![Registration Screen](/docs/images/signup_screen.png) | ![Planner Grid](/docs/images/home_screen.png) |
 
+| Add Task Dialog | Edit Task Dialog |
+|:---:|:---:|
+| ![Add Task Dialog](/docs/images/add_task_dialog.png) | ![Edit Task Dialog](/docs/images/edit_task_dialog.png) |
+
 ## 🚀 Progress & Roadmap
 
 - [x] Basic Clean Architecture & Single Activity structure.
@@ -40,6 +44,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [x] Firebase Authentication Integration.
 - [x] **Cloud Sync & Offline-First Strategy** (Room + Firebase Firestore).
 - [x] **Type-Safe Jetpack Navigation Compose** (`@Serializable` routes).
+- [x] **Full Task CRUD Operations** (Create, Read, Update, Delete with Priority & Status).
 - [x] **Automatic Demo Data Seeding** (5 initial tasks for new users).
 - [x] **Firebase Analytics & Crashlytics Integration** (with custom Timber `CrashlyticsTree`).
 - [x] **Google Play Services Availability Checks & Package Visibility**.
