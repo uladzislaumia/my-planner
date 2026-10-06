@@ -45,11 +45,14 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [x] **Cloud Sync & Offline-First Strategy** (Room + Firebase Firestore).
 - [x] **Type-Safe Jetpack Navigation Compose** (`@Serializable` routes).
 - [x] **Full Task CRUD Operations** (Create, Read, Update, Delete with Priority & Status).
+- [x] **Dynamic Categories & Carousel Filtering** (Large category cards, task counts per category, and custom category creation).
 - [x] **Automatic Demo Data Seeding** (5 initial tasks for new users).
 - [x] **Firebase Analytics & Crashlytics Integration** (with custom Timber `CrashlyticsTree`).
 - [x] **Google Play Services Availability Checks & Package Visibility**.
 - [x] Dagger Hilt automation.
 - [x] **Static Analysis** (KtLint & Detekt).
+- [ ] **All Categories Search & BottomSheet** ("View All" sheet with instant search) — **[TBD]**.
+- [ ] **Advanced Emoji & Color Picker** (Android Emoji Picker API & Interactive HSV Color Wheel) — **[TBD]**.
 - [ ] **Firebase Remote Config** (Dynamic feature flags & configuration) — **[TBD]**.
 - [ ] **CI/CD Pipeline** (GitHub Actions for build & lint) — **[TBD]**.
 - [ ] **Testing Suite** (Unit tests with MockK & Turbine, UI Tests) — **[TBD]**.

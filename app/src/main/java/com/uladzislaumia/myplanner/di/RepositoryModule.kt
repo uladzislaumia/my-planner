@@ -1,8 +1,10 @@
 package com.uladzislaumia.myplanner.di
 
+import com.uladzislaumia.myplanner.data.repository.CategoryRepositoryImpl
 import com.uladzislaumia.myplanner.data.repository.FirebaseAuthRepositoryImpl
 import com.uladzislaumia.myplanner.data.repository.OfflineFirstPlannerRepositoryImpl
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
+import com.uladzislaumia.myplanner.domain.repository.CategoryRepository
 import com.uladzislaumia.myplanner.domain.repository.PlannerRepository
 import dagger.Binds
 import dagger.Module
@@ -17,12 +19,18 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(
-        authRepositoryImpl: FirebaseAuthRepositoryImpl
+        authRepositoryImpl: FirebaseAuthRepositoryImpl,
     ): AuthRepository
 
     @Binds
     @Singleton
     abstract fun bindPlannerRepository(
-        plannerRepositoryImpl: OfflineFirstPlannerRepositoryImpl
+        plannerRepositoryImpl: OfflineFirstPlannerRepositoryImpl,
     ): PlannerRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(
+        categoryRepositoryImpl: CategoryRepositoryImpl,
+    ): CategoryRepository
 }

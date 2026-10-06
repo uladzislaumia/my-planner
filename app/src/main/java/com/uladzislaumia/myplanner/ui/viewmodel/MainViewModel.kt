@@ -2,17 +2,22 @@ package com.uladzislaumia.myplanner.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
+import com.uladzislaumia.myplanner.domain.usecase.AddCategoryUseCase
 import com.uladzislaumia.myplanner.domain.usecase.AddPlannerItemUseCase
 import com.uladzislaumia.myplanner.domain.usecase.DeletePlannerItemUseCase
+import com.uladzislaumia.myplanner.domain.usecase.GetCategoriesUseCase
 import com.uladzislaumia.myplanner.domain.usecase.GetPlannerItemsUseCase
 import com.uladzislaumia.myplanner.domain.usecase.UpdatePlannerItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -29,28 +34,45 @@ class MainViewModel @Inject constructor(
     private val addPlannerItemUseCase: AddPlannerItemUseCase,
     private val updatePlannerItemUseCase: UpdatePlannerItemUseCase,
     private val deletePlannerItemUseCase: DeletePlannerItemUseCase,
+    private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val addCategoryUseCase: AddCategoryUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
-    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    val categories: StateFlow<List<Category>> = getCategoriesUseCase()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private var fetchJob: Job? = null
+    val selectedCategoryId = MutableStateFlow<String?>(null)
 
-    init {
-        loadPlannerItems()
+    val uiState: StateFlow<MainUiState> = combine(
+        getPlannerItemsUseCase(),
+        selectedCategoryId
+    ) { items, selectedCatId ->
+        val filtered = if (selectedCatId == null) {
+            items
+        } else {
+            items.filter { it.categoryId == selectedCatId }
+        }
+        MainUiState.Success(filtered) as MainUiState
+    }
+        .catch { e ->
+            emit(MainUiState.Error(e.message ?: "Unknown Error"))
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState.Loading)
+
+    fun selectCategory(categoryId: String?) {
+        selectedCategoryId.value = categoryId
     }
 
-    fun loadPlannerItems() {
-        fetchJob?.cancel()
-        fetchJob = viewModelScope.launch {
-            _uiState.value = MainUiState.Loading
-            try {
-                getPlannerItemsUseCase().collect { items ->
-                    _uiState.value = MainUiState.Success(items)
-                }
-            } catch (e: Exception) {
-                _uiState.value = MainUiState.Error(e.message ?: "Unknown Error")
-            }
+    fun addCategory(name: String, icon: String, colorHex: String) {
+        if (name.isBlank()) return
+        viewModelScope.launch {
+            val category = Category(
+                id = UUID.randomUUID().toString(),
+                name = name,
+                icon = icon,
+                colorHex = colorHex
+            )
+            addCategoryUseCase(category)
         }
     }
 
