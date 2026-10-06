@@ -54,14 +54,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun addItem(title: String, description: String, priority: Priority) {
+    fun addItem(
+        title: String,
+        description: String,
+        priority: Priority,
+        categoryId: String? = null,
+    ) {
         if (title.isBlank()) return
         viewModelScope.launch {
             val newItem = PlannerItem(
                 id = UUID.randomUUID().toString(),
                 title = title,
                 description = description,
-                categoryId = null,
+                categoryId = categoryId,
                 groupId = null,
                 assigneeId = null,
                 dueDate = null,

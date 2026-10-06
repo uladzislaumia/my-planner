@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.ui.dialogs.AddTaskDialog
@@ -102,8 +103,8 @@ fun HomeScreen(
         if (showAddDialog) {
             AddTaskDialog(
                 onDismiss = { showAddDialog = false }
-            ) { title, description, priority ->
-                mainViewModel.addItem(title, description, priority)
+            ) { title, description, priority, categoryId ->
+                mainViewModel.addItem(title, description, priority, categoryId)
                 showAddDialog = false
             }
         }
@@ -156,6 +157,7 @@ fun PlannerCard(
         Priority.MEDIUM -> Color.Yellow
         Priority.LOW -> Color.Green
     }
+    val category = Category.findById(data.categoryId)
 
     ElevatedCard(
         modifier = Modifier
@@ -177,6 +179,21 @@ fun PlannerCard(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+
+            if (category != null) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Surface(
+                    shape = MaterialTheme.shapes.extraSmall,
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = "${category.icon} ${category.name}",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = data.description,
@@ -204,7 +221,7 @@ fun PlannerGridPreview() {
                 id = i.toString(),
                 title = "Item $i",
                 description = "Description $i",
-                categoryId = null,
+                categoryId = Category.GROCERIES.id,
                 groupId = null,
                 assigneeId = null,
                 dueDate = null,

@@ -3,6 +3,7 @@ package com.uladzislaumia.myplanner.data.repository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uladzislaumia.myplanner.data.local.dao.PlannerItemDao
 import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
+import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class OfflineFirstPlannerRepositoryImpl @Inject constructor(
     private val plannerItemDao: PlannerItemDao,
     private val firestore: FirebaseFirestore,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : PlannerRepository {
 
     private val userId: String?
@@ -85,20 +86,9 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
         val demoItems = listOf(
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Welcome to My Planner! 👋",
-                description = "This is your first personal task. You can edit, delete, or complete it.",
-                categoryId = null,
-                groupId = null,
-                assigneeId = null,
-                dueDate = null,
-                priority = Priority.HIGH,
-                isCompleted = false
-            ),
-            PlannerItem(
-                id = UUID.randomUUID().toString(),
-                title = "Explore App Features 🚀",
-                description = "Get familiar with the planner grid, task priorities, and automatic cloud synchronization.",
-                categoryId = null,
+                title = "Buy ingredients for dinner 🛒",
+                description = "Get fresh vegetables, pasta, and spices for tonight's meal.",
+                categoryId = Category.GROCERIES.id,
                 groupId = null,
                 assigneeId = null,
                 dueDate = null,
@@ -107,9 +97,9 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
             ),
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Plan Your Week 📅",
-                description = "Add important meetings, upcoming deadlines, and daily to-do lists.",
-                categoryId = null,
+                title = "Book tickets and hotel for vacation ✈️",
+                description = "Reserve flight tickets and hotel accommodation for the upcoming trip.",
+                categoryId = Category.TRAVEL.id,
                 groupId = null,
                 assigneeId = null,
                 dueDate = null,
@@ -118,9 +108,9 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
             ),
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Set Up User Profile 👤",
-                description = "Fill in your personal profile information in account settings.",
-                categoryId = null,
+                title = "Go to the cinema this weekend 🎬",
+                description = "Watch the new movie premiere with friends on Saturday night.",
+                categoryId = Category.ENTERTAINMENT.id,
                 groupId = null,
                 assigneeId = null,
                 dueDate = null,
@@ -129,13 +119,24 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
             ),
             PlannerItem(
                 id = UUID.randomUUID().toString(),
-                title = "Sign Up for My Planner ✅",
-                description = "You have successfully created an account and signed in.",
-                categoryId = null,
+                title = "Do a morning yoga session 🏋️‍♂️",
+                description = "Complete a 30-minute stretching and yoga workout.",
+                categoryId = Category.SPORTS.id,
                 groupId = null,
                 assigneeId = null,
                 dueDate = null,
-                priority = Priority.LOW,
+                priority = Priority.MEDIUM,
+                isCompleted = false
+            ),
+            PlannerItem(
+                id = UUID.randomUUID().toString(),
+                title = "Visit the doctor for a check-up 🩺",
+                description = "Schedule and attend annual medical health check-up.",
+                categoryId = Category.HEALTH.id,
+                groupId = null,
+                assigneeId = null,
+                dueDate = null,
+                priority = Priority.HIGH,
                 isCompleted = true
             )
         )

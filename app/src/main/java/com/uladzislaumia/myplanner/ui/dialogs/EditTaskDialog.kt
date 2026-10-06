@@ -2,9 +2,12 @@ package com.uladzislaumia.myplanner.ui.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -26,9 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EditTaskDialog(
     item: PlannerItem,
@@ -39,10 +45,13 @@ fun EditTaskDialog(
     var title by remember { mutableStateOf(item.title) }
     var description by remember { mutableStateOf(item.description) }
     var selectedPriority by remember { mutableStateOf(item.priority) }
+    var selectedCategoryId by remember { mutableStateOf(item.categoryId) }
     var isCompleted by remember { mutableStateOf(item.isCompleted) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier.padding(32.dp),
         title = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -54,7 +63,7 @@ fun EditTaskDialog(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete Task",
-                        tint = MaterialTheme.colorScheme.error
+                        tint = MaterialTheme.colorScheme.error,
                     )
                 }
             }
@@ -62,14 +71,14 @@ fun EditTaskDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
                     label = { Text("Title") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 OutlinedTextField(
@@ -77,30 +86,47 @@ fun EditTaskDialog(
                     onValueChange = { description = it },
                     label = { Text("Description") },
                     maxLines = 3,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 Text("Priority:", style = MaterialTheme.typography.labelMedium)
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Priority.entries.forEach { priority ->
                         FilterChip(
                             selected = selectedPriority == priority,
                             onClick = { selectedPriority = priority },
-                            label = { Text(priority.name) }
+                            label = { Text(priority.name) },
+                        )
+                    }
+                }
+
+                Text("Category:", style = MaterialTheme.typography.labelMedium)
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Category.DEFAULT_CATEGORIES.forEach { category ->
+                        FilterChip(
+                            selected = selectedCategoryId == category.id,
+                            onClick = {
+                                selectedCategoryId = if (selectedCategoryId == category.id) null else category.id
+                            },
+                            label = { Text("${category.icon} ${category.name}") },
                         )
                     }
                 }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Checkbox(
                         checked = isCompleted,
-                        onCheckedChange = { isCompleted = it }
+                        onCheckedChange = { isCompleted = it },
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Completed")
@@ -116,12 +142,13 @@ fun EditTaskDialog(
                                 title = title,
                                 description = description,
                                 priority = selectedPriority,
-                                isCompleted = isCompleted
-                            )
+                                categoryId = selectedCategoryId,
+                                isCompleted = isCompleted,
+                            ),
                         )
                     }
                 },
-                enabled = title.isNotBlank()
+                enabled = title.isNotBlank(),
             ) {
                 Text("Save")
             }
@@ -130,6 +157,6 @@ fun EditTaskDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }
