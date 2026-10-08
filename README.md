@@ -2,6 +2,16 @@
 
 Modern Android task management application built with industry-standard technologies, Clean Architecture, and an **Offline-First** data strategy.
 
+## 💡 App Use Cases & Real-Life Ideas
+
+Here are practical ways **My Planner** helps users organize their daily routine:
+
+* 💳 **Subscription & Bill Reminders:** Track upcoming recurring payments (e.g., Spotify, Netflix, cloud storage, utility bills) before the renewal date.
+* 🎟️ **Event & Ticket Bookings:** Reminders to buy football match tickets, register for free concerts or webinars, or claim early-bird passes.
+* ✈️ **Travel Planning:** Packing checklists, flight ticket bookings, hotel reservations, and trip itineraries.
+* 🏠 **Home & Household Chores:** Routine errands, grocery shopping lists, and home maintenance schedules.
+* 🩺 **Health & Medical Appointments:** Scheduling doctor check-ups, routine medical visits, and wellness goals.
+
 ## 🛠 Tech Stack
 
 *   **UI:** [Jetpack Compose](class://androidx.compose.ui.Modifier) with Material 3.
@@ -11,6 +21,7 @@ Modern Android task management application built with industry-standard technolo
 *   **Remote Database:** [Firebase Firestore](class://com.google.firebase.firestore.FirebaseFirestore) (Offline-First cloud synchronization).
 *   **Authentication:** Firebase Auth.
 *   **Analytics & Crash Reporting:** Firebase Analytics & Firebase Crashlytics (integrated with Timber logging).
+*   **Testing:** JUnit 4, [MockK](symbol://mockk), [Turbine](symbol://turbine), kotlinx-coroutines-test.
 *   **Dynamic Configuration:** Firebase Remote Config **[TBD]**.
 *   **Push Notifications:** Firebase Cloud Messaging (FCM) **[TBD]**.
 *   **Monitoring:** Sentry **[TBD]**.
@@ -46,6 +57,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [x] **Type-Safe Jetpack Navigation Compose** (`@Serializable` routes).
 - [x] **Full Task CRUD Operations** (Create, Read, Update, Delete with Priority & Status).
 - [x] **Dynamic Categories & Carousel Filtering** (Large category cards, task counts per category, and custom category creation).
+- [x] **Unit Testing Suite** (MockK, Turbine Flow Testing, MainDispatcherRule).
 - [x] **Automatic Demo Data Seeding** (5 initial tasks for new users).
 - [x] **Firebase Analytics & Crashlytics Integration** (with custom Timber `CrashlyticsTree`).
 - [x] **Google Play Services Availability Checks & Package Visibility**.
@@ -55,7 +67,6 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **Advanced Emoji & Color Picker** (Android Emoji Picker API & Interactive HSV Color Wheel) — **[TBD]**.
 - [ ] **Firebase Remote Config** (Dynamic feature flags & configuration) — **[TBD]**.
 - [ ] **CI/CD Pipeline** (GitHub Actions for build & lint) — **[TBD]**.
-- [ ] **Testing Suite** (Unit tests with MockK & Turbine, UI Tests) — **[TBD]**.
 - [ ] **GraphQL Integration** (Apollo Client) — **[TBD]**.
 - [ ] **Messaging** (Push via FCM) — **[TBD]**.
 - [ ] **Multimodularity** (Refactoring into `:core` and `:feature` modules) — **[TBD]**.
@@ -64,6 +75,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 
 *   Kotlin 2.4.20.
 *   **Secrets:** Real Firebase `google-services.json` is required in the `app/` directory (excluded from VCS for security).
+*   **Testing:** Run `./gradlew test` to execute unit tests.
 *   **Linting:** 
     *   Run `./gradlew ktlintCheck` to check style.
     *   Run `./gradlew ktlintFormat` to fix style issues automatically.
