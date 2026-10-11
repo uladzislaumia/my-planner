@@ -1,0 +1,180 @@
+package com.uladzislaumia.myplanner.ui.sheets
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.domain.model.Category
+import com.uladzislaumia.myplanner.domain.model.PlannerItem
+import com.uladzislaumia.myplanner.domain.model.Priority
+import com.uladzislaumia.myplanner.ui.components.CategoryDropdown
+import com.uladzislaumia.myplanner.ui.components.DateTimePickerField
+import java.util.Date
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditTaskBottomSheet(
+    item: PlannerItem,
+    onDismiss: () -> Unit,
+    categories: List<Category> = Category.DEFAULT_CATEGORIES,
+    onSave: (PlannerItem) -> Unit,
+    onDelete: (String) -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    var title by remember { mutableStateOf(item.title) }
+    var description by remember { mutableStateOf(item.description) }
+    var selectedPriority by remember { mutableStateOf(item.priority) }
+    var selectedCategoryId by remember { mutableStateOf(item.categoryId) }
+    var selectedDueDate by remember { mutableStateOf<Date?>(item.dueDate) }
+    var isCompleted by remember { mutableStateOf(item.isCompleted) }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp),
+        ) {
+            Text(
+                text = "Edit Task ✏️",
+                style = MaterialTheme.typography.titleLarge,
+            )
+
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Task Title") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("Description") },
+                maxLines = 3,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Text("Priority:", style = MaterialTheme.typography.labelMedium)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Priority.entries.forEach { priority ->
+                    FilterChip(
+                        selected = selectedPriority == priority,
+                        onClick = { selectedPriority = priority },
+                        label = { Text(priority.name) },
+                    )
+                }
+            }
+
+            CategoryDropdown(
+                selectedCategoryId = selectedCategoryId,
+                onCategorySelected = {
+                    selectedCategoryId = it
+                },
+                categories = categories,
+            )
+
+            Text("Deadline & Reminder:", style = MaterialTheme.typography.labelMedium)
+            DateTimePickerField(
+                selectedDateTime = selectedDueDate,
+                onDateTimeSelected = {
+                    selectedDueDate = it
+                },
+            )
+
+            Text("Status:", style = MaterialTheme.typography.labelMedium)
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                SegmentedButton(
+                    selected = !isCompleted,
+                    onClick = { isCompleted = false },
+                    shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                ) {
+                    Text("⏳ Active")
+                }
+                SegmentedButton(
+                    selected = isCompleted,
+                    onClick = { isCompleted = true },
+                    shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                ) {
+                    Text("✅ Completed")
+                }
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                OutlinedButton(
+                    onClick = { onDelete(item.id) },
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Task",
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Delete Task")
+                }
+
+                Button(
+                    onClick = {
+                        onSave(
+                            item.copy(
+                                title = title,
+                                description = description,
+                                priority = selectedPriority,
+                                categoryId = selectedCategoryId,
+                                dueDate = selectedDueDate,
+                                isCompleted = isCompleted,
+                            ),
+                        )
+                    },
+                    enabled = title.isNotBlank(),
+                ) {
+                    Text("Save Changes")
+                }
+            }
+        }
+    }
+}

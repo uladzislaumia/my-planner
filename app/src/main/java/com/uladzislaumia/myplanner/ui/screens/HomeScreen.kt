@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.ui.components.CategoryCarousel
 import com.uladzislaumia.myplanner.ui.components.PlannerGrid
-import com.uladzislaumia.myplanner.ui.dialogs.AddTaskDialog
 import com.uladzislaumia.myplanner.ui.dialogs.CreateCategoryDialog
-import com.uladzislaumia.myplanner.ui.dialogs.EditTaskDialog
+import com.uladzislaumia.myplanner.ui.sheets.AddTaskBottomSheet
+import com.uladzislaumia.myplanner.ui.sheets.EditTaskBottomSheet
 import com.uladzislaumia.myplanner.ui.viewmodel.MainUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel
 
@@ -47,7 +47,7 @@ fun HomeScreen(
     val categories by mainViewModel.categories.collectAsState()
     val selectedCategoryId by mainViewModel.selectedCategoryId.collectAsState()
 
-    var showAddDialog by remember { mutableStateOf(false) }
+    var showAddSheet by remember { mutableStateOf(false) }
     var showCreateCategoryDialog by remember { mutableStateOf(false) }
     var selectedItemForEdit by remember { mutableStateOf<PlannerItem?>(null) }
 
@@ -60,19 +60,19 @@ fun HomeScreen(
                     TextButton(onClick = onLogout) {
                         Text("Logout", color = MaterialTheme.colorScheme.error)
                     }
-                }
+                },
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showAddDialog = true }) {
+            FloatingActionButton(onClick = { showAddSheet = true }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
             }
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             val allItems = (uiState as? MainUiState.Success)?.items ?: emptyList()
 
@@ -82,7 +82,7 @@ fun HomeScreen(
                 selectedCategoryId = selectedCategoryId,
                 allItems = allItems,
                 onSelectCategory = { mainViewModel.selectCategory(it) },
-                onAddCategoryClick = { showCreateCategoryDialog = true }
+                onAddCategoryClick = { showCreateCategoryDialog = true },
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -95,26 +95,27 @@ fun HomeScreen(
                     is MainUiState.Success -> {
                         PlannerGrid(
                             items = state.items,
-                            onItemClick = { selectedItemForEdit = it }
+                            onItemClick = { selectedItemForEdit = it },
                         )
                     }
                     is MainUiState.Error -> {
                         Text(
                             text = "Error: ${state.message}",
                             color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
                         )
                     }
                 }
             }
         }
 
-        if (showAddDialog) {
-            AddTaskDialog(
-                onDismiss = { showAddDialog = false }
+        if (showAddSheet) {
+            AddTaskBottomSheet(
+                onDismiss = { showAddSheet = false },
+                categories = categories,
             ) { title, description, priority, categoryId, dueDate ->
                 mainViewModel.addItem(title, description, priority, categoryId, dueDate)
-                showAddDialog = false
+                showAddSheet = false
             }
         }
 
@@ -124,18 +125,19 @@ fun HomeScreen(
                 onConfirm = { name, icon, colorHex ->
                     mainViewModel.addCategory(name, icon, colorHex)
                     showCreateCategoryDialog = false
-                }
+                },
             )
         }
 
         selectedItemForEdit?.let { item ->
-            EditTaskDialog(
+            EditTaskBottomSheet(
                 item = item,
                 onDismiss = { selectedItemForEdit = null },
+                categories = categories,
                 onSave = { updatedItem ->
                     mainViewModel.updateItem(updatedItem)
                     selectedItemForEdit = null
-                }
+                },
             ) { itemId ->
                 mainViewModel.deleteItem(itemId)
                 selectedItemForEdit = null
