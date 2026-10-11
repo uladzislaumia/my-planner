@@ -8,6 +8,7 @@ import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
 import com.uladzislaumia.myplanner.domain.repository.PlannerRepository
+import com.uladzislaumia.myplanner.notification.NotificationScheduler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,6 +23,7 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
     private val plannerItemDao: PlannerItemDao,
     private val firestore: FirebaseFirestore,
     private val authRepository: AuthRepository,
+    private val notificationScheduler: NotificationScheduler,
 ) : PlannerRepository {
 
     private val userId: String?
@@ -70,7 +72,10 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
                 seedDemoItems()
             } else {
                 // Update local database with fresh cloud data
-                remoteItems.forEach { plannerItemDao.insertItem(it) }
+                remoteItems.forEach { itemEntity ->
+                    plannerItemDao.insertItem(itemEntity)
+                    notificationScheduler.scheduleTaskReminder(itemEntity.toDomain())
+                }
                 Timber.d("Synced ${remoteItems.size} items from cloud")
             }
         } catch (e: Exception) {
@@ -149,11 +154,14 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
 
     override suspend fun addItem(item: PlannerItem): Unit = withContext(Dispatchers.IO) {
         Timber.d("Adding item: ${item.id}")
-        // 1. Save to Local immediately (Instant UI feedback)
+        // 1. Save to Local immediately
         val entity = PlannerItemEntity.fromDomain(item)
         plannerItemDao.insertItem(entity)
 
-        // 2. Sync to Cloud
+        // 2. Schedule Local Notification if dueDate is present
+        notificationScheduler.scheduleTaskReminder(item)
+
+        // 3. Sync to Cloud
         try {
             itemsCollection?.document(item.id)?.set(
                 mapOf(
@@ -175,13 +183,14 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateItem(item: PlannerItem) {
-        addItem(item) // In Firestore/Room set/insert with same ID works as update
+        addItem(item)
     }
 
     override suspend fun deleteItem(id: String): Unit = withContext(Dispatchers.IO) {
         Timber.d("Deleting item: $id")
-        // 1. Delete from Local immediately
+        // 1. Delete from Local immediately & cancel scheduled notification
         plannerItemDao.deleteItemById(id)
+        notificationScheduler.cancelTaskReminder(id)
 
         // 2. Sync to Cloud
         try {

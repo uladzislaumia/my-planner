@@ -33,6 +33,8 @@ import androidx.compose.ui.window.DialogProperties
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
+import com.uladzislaumia.myplanner.ui.components.DateTimePickerField
+import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -46,6 +48,7 @@ fun EditTaskDialog(
     var description by remember { mutableStateOf(item.description) }
     var selectedPriority by remember { mutableStateOf(item.priority) }
     var selectedCategoryId by remember { mutableStateOf(item.categoryId) }
+    var selectedDueDate by remember { mutableStateOf<Date?>(item.dueDate) }
     var isCompleted by remember { mutableStateOf(item.isCompleted) }
 
     AlertDialog(
@@ -120,6 +123,12 @@ fun EditTaskDialog(
                     }
                 }
 
+                Text("Deadline & Reminder:", style = MaterialTheme.typography.labelMedium)
+                DateTimePickerField(
+                    selectedDateTime = selectedDueDate,
+                    onDateTimeSelected = { selectedDueDate = it }
+                )
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth(),
@@ -143,6 +152,7 @@ fun EditTaskDialog(
                                 description = description,
                                 priority = selectedPriority,
                                 categoryId = selectedCategoryId,
+                                dueDate = selectedDueDate,
                                 isCompleted = isCompleted,
                             ),
                         )

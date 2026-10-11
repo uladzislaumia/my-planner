@@ -24,17 +24,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.Priority
+import com.uladzislaumia.myplanner.ui.components.DateTimePickerField
+import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AddTaskDialog(
     onDismiss: () -> Unit,
-    onConfirm: (title: String, description: String, priority: Priority, categoryId: String?) -> Unit,
+    onConfirm: (
+        title: String,
+        description: String,
+        priority: Priority,
+        categoryId: String?,
+        dueDate: Date?,
+    ) -> Unit,
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var selectedPriority by remember { mutableStateOf(Priority.MEDIUM) }
     var selectedCategoryId by remember { mutableStateOf<String?>(null) }
+    var selectedDueDate by remember { mutableStateOf<Date?>(null) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -92,13 +101,19 @@ fun AddTaskDialog(
                         )
                     }
                 }
+
+                Text("Deadline & Reminder:", style = MaterialTheme.typography.labelMedium)
+                DateTimePickerField(
+                    selectedDateTime = selectedDueDate,
+                    onDateTimeSelected = { selectedDueDate = it }
+                )
             }
         },
         confirmButton = {
             Button(
                 onClick = {
                     if (title.isNotBlank()) {
-                        onConfirm(title, description, selectedPriority, selectedCategoryId)
+                        onConfirm(title, description, selectedPriority, selectedCategoryId, selectedDueDate)
                     }
                 },
                 enabled = title.isNotBlank()

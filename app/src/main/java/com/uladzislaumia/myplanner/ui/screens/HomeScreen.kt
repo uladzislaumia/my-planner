@@ -112,8 +112,8 @@ fun HomeScreen(
         if (showAddDialog) {
             AddTaskDialog(
                 onDismiss = { showAddDialog = false }
-            ) { title, description, priority, categoryId ->
-                mainViewModel.addItem(title, description, priority, categoryId)
+            ) { title, description, priority, categoryId, dueDate ->
+                mainViewModel.addItem(title, description, priority, categoryId, dueDate)
                 showAddDialog = false
             }
         }

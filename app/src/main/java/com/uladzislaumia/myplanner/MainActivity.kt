@@ -1,5 +1,8 @@
 package com.uladzislaumia.myplanner
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,6 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkGooglePlayServices()
+        requestNotificationPermission()
         enableEdgeToEdge()
         setContent {
             MyPlannerTheme {
@@ -31,7 +35,18 @@ class MainActivity : ComponentActivity() {
                 AppNavGraph(
                     navController = navController,
                     currentUser = currentUser,
-                    authViewModel = authViewModel
+                    authViewModel = authViewModel,
+                )
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_REQUEST_CODE,
                 )
             }
         }
@@ -52,5 +67,6 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
+        private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
     }
 }

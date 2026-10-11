@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 
@@ -81,6 +82,7 @@ class MainViewModel @Inject constructor(
         description: String,
         priority: Priority,
         categoryId: String? = null,
+        dueDate: Date? = null,
     ) {
         if (title.isBlank()) return
         viewModelScope.launch {
@@ -91,7 +93,7 @@ class MainViewModel @Inject constructor(
                 categoryId = categoryId,
                 groupId = null,
                 assigneeId = null,
-                dueDate = null,
+                dueDate = dueDate,
                 priority = priority,
                 isCompleted = false
             )

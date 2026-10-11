@@ -20,6 +20,7 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 *   **Local Database:** [Room](class://androidx.room.Database) with KSP and reactive Flow support.
 *   **Remote Database:** [Firebase Firestore](class://com.google.firebase.firestore.FirebaseFirestore) (Offline-First cloud synchronization).
 *   **Authentication:** Firebase Auth.
+*   **Notifications:** Local Scheduled Notifications (`AlarmManager` & `NotificationManager`).
 *   **Analytics & Crash Reporting:** Firebase Analytics & Firebase Crashlytics (integrated with Timber logging).
 *   **Testing:** JUnit 4, [MockK](symbol://mockk), [Turbine](symbol://turbine), kotlinx-coroutines-test.
 *   **Dynamic Configuration:** Firebase Remote Config **[TBD]**.
@@ -56,6 +57,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [x] **Cloud Sync & Offline-First Strategy** (Room + Firebase Firestore).
 - [x] **Type-Safe Jetpack Navigation Compose** (`@Serializable` routes).
 - [x] **Full Task CRUD Operations** (Create, Read, Update, Delete with Priority & Status).
+- [x] **Scheduled Local Deadline Notifications** (Exact AlarmManager reminders for task deadlines).
 - [x] **Dynamic Categories & Carousel Filtering** (Large category cards, task counts per category, and custom category creation).
 - [x] **Unit Testing Suite** (MockK, Turbine Flow Testing, MainDispatcherRule).
 - [x] **Automatic Demo Data Seeding** (5 initial tasks for new users).

@@ -1,7 +1,11 @@
 package com.uladzislaumia.myplanner
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.util.Log
+import androidx.core.content.getSystemService
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -15,6 +19,24 @@ class MyPlannerApplication : Application() {
         } else {
             Timber.plant(CrashlyticsTree())
         }
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Task Reminders"
+            val descriptionText = "Notifications for upcoming task deadlines"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager = getSystemService<NotificationManager>()
+            notificationManager?.createNotificationChannel(channel)
+        }
+    }
+
+    companion object {
+        const val NOTIFICATION_CHANNEL_ID = "task_reminders_channel"
     }
 }
 
