@@ -23,6 +23,14 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 *   **Notifications:** Local Scheduled Notifications (`AlarmManager` & `NotificationManager`).
 *   **Analytics & Crash Reporting:** Firebase Analytics & Firebase Crashlytics (integrated with Timber logging).
 *   **Testing:** JUnit 4, [MockK](symbol://mockk), [Turbine](symbol://turbine), kotlinx-coroutines-test.
+*   **UI Testing:** Compose UI Testing **[TBD]**.
+*   **Security:**
+    *   Android Keystore (hardware-backed keys, biometric app lock via `BiometricPrompt` + `CryptoObject`) **[TBD]**.
+    *   Window Security (`FLAG_SECURE` for sensitive screens) **[TBD]**.
+    *   Root & Tamper Detection (Firebase App Check + Play Integrity API) **[TBD]**.
+    *   Anti-fraud SDKs (SEON, Clarity) **[TBD]**.
+    *   ProGuard/R8 (code shrinking & obfuscation for release builds) **[TBD]**.
+    *   Network Security Config (cleartext traffic disabled, debug-only user CAs) **[TBD]**.
 *   **Dynamic Configuration:** Firebase Remote Config **[TBD]**.
 *   **Push Notifications:** Firebase Cloud Messaging (FCM) **[TBD]**.
 *   **Monitoring:** Sentry **[TBD]**.
@@ -45,9 +53,9 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 |:---:|:---:|:---:|
 | ![Login Screen](/docs/images/login_screen.png) | ![Registration Screen](/docs/images/signup_screen.png) | ![Planner Grid](/docs/images/home_screen.png) |
 
-| Add Task Dialog | Edit Task Dialog |
+| Add Task Sheet | Edit Task Sheet (Autosave) |
 |:---:|:---:|
-| ![Add Task Dialog](/docs/images/add_task_dialog.png) | ![Edit Task Dialog](/docs/images/edit_task_dialog.png) |
+| ![Add Task Sheet](/docs/images/add_task_sheet.png) | ![Edit Task Sheet](/docs/images/edit_task_sheet.png) |
 
 ## 🚀 Progress & Roadmap
 
@@ -71,6 +79,12 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **CI/CD Pipeline** (GitHub Actions for build & lint) — **[TBD]**.
 - [ ] **GraphQL Integration** (Apollo Client) — **[TBD]**.
 - [ ] **Messaging** (Push via FCM) — **[TBD]**.
+- [ ] **Optimistic UI for Task Edits** (Fix stale data when reopening the edit sheet right after closing it: overlay recent edits in `MainViewModel` until Room emits them, open the sheet by task id) — **[TBD]**.
+- [ ] **Real-time Cloud Sync** (Replace one-shot Firestore `get()` with `addSnapshotListener` wrapped in `callbackFlow`: live updates from other devices, remote deletions via `DocumentChange.REMOVED`, fewer billed reads) — **[TBD]**.
+- [ ] **Secure Logout Data Wipe** (Cancel pending sync work, clear Room tables and cancel scheduled reminders on logout to prevent data leaking between accounts) — **[TBD]**.
+- [ ] **Reminder Restoration** (Reschedule AlarmManager reminders from Room after device reboot, app update and exact alarm permission change via `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED` receiver) — **[TBD]**.
+- [ ] **Compose UI Testing** (UI tests for screens and bottom sheets) — **[TBD]**.
+- [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config) — **[TBD]**.
 - [ ] **Multimodularity** (Refactoring into `:core` and `:feature` modules) — **[TBD]**.
 
 ## ⚙️ Development Requirements

@@ -16,7 +16,10 @@ data class PlannerItemEntity(
     val assigneeId: String?,
     val dueDate: Date?,
     val isCompleted: Boolean,
-    val priority: Priority
+    val priority: Priority,
+    val syncState: SyncState = SyncState.SYNCED,
+    // Local version stamp so SyncWorker doesn't mark as synced an item edited during upload
+    val localUpdatedAt: Long = 0,
 ) {
     fun toDomain(): PlannerItem = PlannerItem(
         id = id,
@@ -31,7 +34,11 @@ data class PlannerItemEntity(
     )
 
     companion object {
-        fun fromDomain(item: PlannerItem): PlannerItemEntity = PlannerItemEntity(
+        fun fromDomain(
+            item: PlannerItem,
+            syncState: SyncState = SyncState.SYNCED,
+            localUpdatedAt: Long = 0,
+        ): PlannerItemEntity = PlannerItemEntity(
             id = item.id,
             title = item.title,
             description = item.description,
@@ -40,7 +47,9 @@ data class PlannerItemEntity(
             assigneeId = item.assigneeId,
             dueDate = item.dueDate,
             isCompleted = item.isCompleted,
-            priority = item.priority
+            priority = item.priority,
+            syncState = syncState,
+            localUpdatedAt = localUpdatedAt,
         )
     }
 }

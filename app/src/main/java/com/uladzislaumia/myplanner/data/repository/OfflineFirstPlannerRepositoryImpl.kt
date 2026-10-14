@@ -1,38 +1,34 @@
 package com.uladzislaumia.myplanner.data.repository
 
-import com.google.firebase.firestore.FirebaseFirestore
 import com.uladzislaumia.myplanner.data.local.dao.PlannerItemDao
 import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
+import com.uladzislaumia.myplanner.data.local.entity.SyncState
+import com.uladzislaumia.myplanner.data.remote.PlannerRemoteDataSource
+import com.uladzislaumia.myplanner.data.sync.SyncScheduler
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
-import com.uladzislaumia.myplanner.domain.repository.AuthRepository
 import com.uladzislaumia.myplanner.domain.repository.PlannerRepository
 import com.uladzislaumia.myplanner.notification.NotificationScheduler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * Room is the single source of truth: every change is written locally right away and marked
+ * as pending ([SyncState]), then [SyncScheduler] uploads pending changes to Firestore in the background.
+ */
 class OfflineFirstPlannerRepositoryImpl @Inject constructor(
     private val plannerItemDao: PlannerItemDao,
-    private val firestore: FirebaseFirestore,
-    private val authRepository: AuthRepository,
+    private val remoteDataSource: PlannerRemoteDataSource,
+    private val syncScheduler: SyncScheduler,
     private val notificationScheduler: NotificationScheduler,
 ) : PlannerRepository {
-
-    private val userId: String?
-        get() = authRepository.getCurrentUser()?.id
-
-    private val itemsCollection
-        get() = userId?.let {
-            firestore.collection("users").document(it).collection("items")
-        }
 
     override fun getItems(): Flow<List<PlannerItem>> {
         return plannerItemDao.getAllItems()
@@ -44,47 +40,29 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
     }
 
     private suspend fun syncFromCloud() = withContext(Dispatchers.IO) {
-        val collection = itemsCollection ?: return@withContext
-        Timber.d("Starting background sync from cloud for user: $userId")
+        val uid = remoteDataSource.currentUserId ?: return@withContext
+        Timber.d("Starting background sync from cloud")
         try {
-            val snapshot = collection.get().await()
-            val remoteItems = snapshot.documents.mapNotNull { doc ->
-                try {
-                    PlannerItemEntity(
-                        id = doc.id,
-                        title = doc.getString("title") ?: "",
-                        description = doc.getString("description") ?: "",
-                        categoryId = doc.getString("categoryId"),
-                        groupId = doc.getString("groupId"),
-                        assigneeId = doc.getString("assigneeId"),
-                        dueDate = doc.getDate("dueDate"),
-                        isCompleted = doc.getBoolean("isCompleted") ?: false,
-                        priority = Priority.valueOf(doc.getString("priority") ?: "MEDIUM")
-                    )
-                } catch (e: Exception) {
-                    Timber.e(e, "Error parsing firestore document: ${doc.id}")
-                    null
-                }
-            }
+            val remoteItems = remoteDataSource.fetchItems(uid)
             val localCount = plannerItemDao.getItemCount()
             if (remoteItems.isEmpty() && localCount == 0) {
-                Timber.d("No items found in cloud or local DB. Seeding 5 demo items for user: $userId")
+                Timber.d("No items found in cloud or local DB. Seeding 5 demo items")
                 seedDemoItems()
             } else {
-                // Update local database with fresh cloud data
-                remoteItems.forEach { itemEntity ->
-                    plannerItemDao.insertItem(itemEntity)
-                    notificationScheduler.scheduleTaskReminder(itemEntity.toDomain())
-                }
-                Timber.d("Synced ${remoteItems.size} items from cloud")
+                // Update local database with fresh cloud data, keeping not yet uploaded local edits
+                val applied = plannerItemDao.upsertFromRemote(remoteItems)
+                applied.forEach { notificationScheduler.scheduleTaskReminder(it.toDomain()) }
+                Timber.d("Synced ${applied.size} items from cloud")
             }
         } catch (e: Exception) {
             Timber.e(e, "Failed to sync from cloud")
             if (plannerItemDao.getItemCount() == 0) {
-                Timber.d("Offline or cloud error and local DB is empty. Seeding 5 demo items for user: $userId")
+                Timber.d("Offline or cloud error and local DB is empty. Seeding 5 demo items")
                 seedDemoItems()
             }
         }
+        // Push anything left over from previous sessions (e.g. edits made offline)
+        syncScheduler.requestSync(delaySeconds = 0)
     }
 
     private suspend fun seedDemoItems() {
@@ -153,33 +131,15 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addItem(item: PlannerItem): Unit = withContext(Dispatchers.IO) {
-        Timber.d("Adding item: ${item.id}")
-        // 1. Save to Local immediately
-        val entity = PlannerItemEntity.fromDomain(item)
+        Timber.d("Saving item locally: ${item.id}")
+        val entity = PlannerItemEntity.fromDomain(
+            item = item,
+            syncState = SyncState.PENDING_UPSERT,
+            localUpdatedAt = System.currentTimeMillis(),
+        )
         plannerItemDao.insertItem(entity)
-
-        // 2. Schedule Local Notification if dueDate is present
         notificationScheduler.scheduleTaskReminder(item)
-
-        // 3. Sync to Cloud
-        try {
-            itemsCollection?.document(item.id)?.set(
-                mapOf(
-                    "title" to item.title,
-                    "description" to item.description,
-                    "categoryId" to item.categoryId,
-                    "groupId" to item.groupId,
-                    "assigneeId" to item.assigneeId,
-                    "dueDate" to item.dueDate,
-                    "isCompleted" to item.isCompleted,
-                    "priority" to item.priority.name
-                )
-            )?.await()
-            Timber.d("Successfully synced item ${item.id} to cloud")
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to sync item ${item.id} to cloud")
-        }
-        Unit
+        syncScheduler.requestSync()
     }
 
     override suspend fun updateItem(item: PlannerItem) {
@@ -187,18 +147,10 @@ class OfflineFirstPlannerRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteItem(id: String): Unit = withContext(Dispatchers.IO) {
-        Timber.d("Deleting item: $id")
-        // 1. Delete from Local immediately & cancel scheduled notification
-        plannerItemDao.deleteItemById(id)
+        Timber.d("Deleting item locally: $id")
+        // Keep a tombstone until the deletion reaches Firestore
+        plannerItemDao.markDeleted(id, localUpdatedAt = System.currentTimeMillis())
         notificationScheduler.cancelTaskReminder(id)
-
-        // 2. Sync to Cloud
-        try {
-            itemsCollection?.document(id)?.delete()?.await()
-            Timber.d("Successfully deleted item $id from cloud")
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to delete item $id from cloud")
-        }
-        Unit
+        syncScheduler.requestSync()
     }
 }

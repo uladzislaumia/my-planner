@@ -113,10 +113,11 @@ fun HomeScreen(
             AddTaskBottomSheet(
                 onDismiss = { showAddSheet = false },
                 categories = categories,
-            ) { title, description, priority, categoryId, dueDate ->
-                mainViewModel.addItem(title, description, priority, categoryId, dueDate)
-                showAddSheet = false
-            }
+                onConfirm = { title, description, priority, categoryId, dueDate ->
+                    mainViewModel.addItem(title, description, priority, categoryId, dueDate)
+                    showAddSheet = false
+                },
+            )
         }
 
         if (showCreateCategoryDialog) {
@@ -134,14 +135,12 @@ fun HomeScreen(
                 item = item,
                 onDismiss = { selectedItemForEdit = null },
                 categories = categories,
-                onSave = { updatedItem ->
-                    mainViewModel.updateItem(updatedItem)
+                onSave = mainViewModel::updateItem,
+                onDelete = { itemId ->
+                    mainViewModel.deleteItem(itemId)
                     selectedItemForEdit = null
                 },
-            ) { itemId ->
-                mainViewModel.deleteItem(itemId)
-                selectedItemForEdit = null
-            }
+            )
         }
     }
 }

@@ -13,7 +13,7 @@ import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
 
 @Database(
     entities = [PlannerItemEntity::class, CategoryEntity::class],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(AppConverters::class)
