@@ -51,11 +51,11 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 
 | Login Screen | Registration Screen | Planner Grid |
 |:---:|:---:|:---:|
-| ![Login Screen](/docs/images/login_screen.png) | ![Registration Screen](/docs/images/signup_screen.png) | ![Planner Grid](/docs/images/home_screen.png) |
+| <img src="/docs/screenshots/login_screen.png" alt="Login Screen" width="250"> | <img src="/docs/screenshots/signup_screen.png" alt="Registration Screen" width="250"> | <img src="/docs/screenshots/home_screen.png" alt="Planner Grid" width="250"> |
 
 | Add Task Sheet | Edit Task Sheet (Autosave) |
 |:---:|:---:|
-| ![Add Task Sheet](/docs/images/add_task_sheet.png) | ![Edit Task Sheet](/docs/images/edit_task_sheet.png) |
+| <img src="/docs/screenshots/add_task_sheet.png" alt="Add Task Sheet" width="250"> | <img src="/docs/screenshots/edit_task_sheet.png" alt="Edit Task Sheet" width="250"> |
 
 ## 🚀 Progress & Roadmap
 
