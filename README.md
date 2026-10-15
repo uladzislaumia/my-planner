@@ -6,6 +6,16 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <h1 align="center">My Planner</h1>
 
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Kotlin-2.4.20-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin 2.4.20">
+  <img src="https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose, Material 3">
+  <img src="https://img.shields.io/badge/minSdk-24-3DDC84?logo=android&logoColor=white" alt="minSdk 24">
+  <img src="https://img.shields.io/badge/targetSdk-37-3DDC84?logo=android&logoColor=white" alt="targetSdk 37">
+  <img src="https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-FFCA28?logo=firebase&logoColor=black" alt="Firebase Auth and Firestore">
+  <img src="https://img.shields.io/badge/Architecture-Clean%20%2B%20Offline--First-6750A4" alt="Clean Architecture, Offline-First">
+</p>
+
 Modern Android task management application built with industry-standard technologies, Clean Architecture, and an **Offline-First** data strategy.
 
 ## 💡 App Use Cases & Real-Life Ideas
@@ -18,40 +28,52 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 * 🏠 **Home & Household Chores:** Routine errands, grocery shopping lists, and home maintenance schedules.
 * 🩺 **Health & Medical Appointments:** Scheduling doctor check-ups, routine medical visits, and wellness goals.
 
+## ✨ Features
+
+*   **Task Management:** Create, edit and delete tasks with priority, category, status and deadline. Editing happens in a bottom sheet with **debounced autosave** — no Save button, unchanged drafts are never written.
+*   **Categories:** Category carousel with per-category task counts and filtering, plus custom categories with your own emoji and color.
+*   **Deadline Reminders:** Material 3 date & time picker and scheduled local notifications via `AlarmManager` (exact alarms when allowed, graceful fallback otherwise).
+*   **Offline-First Cloud Sync:** Room is the single source of truth; changes are pushed to Firestore in the background by **WorkManager** — batched writes, network constraints, retries with backoff. Works offline, survives app restarts, and tracks deletions with tombstones so nothing comes back.
+*   **Accounts:** Email & password sign-up and login with Firebase Auth; each user's data is stored in their own Firestore collection.
+*   **Demo Data:** New accounts start with 5 sample tasks.
+*   **Polished App Icon:** Adaptive launcher icon with a monochrome layer for Android 13+ themed icons and a dedicated status bar notification icon.
+*   **Stability & Insights:** Firebase Crashlytics & Analytics with a custom Timber `CrashlyticsTree`, Google Play Services availability check.
+*   **Tested:** Unit tests for use cases and ViewModels (MockK, Turbine, coroutines-test).
+
 ## 🛠 Tech Stack
 
-*   **UI:** [Jetpack Compose](class://androidx.compose.ui.Modifier) with Material 3.
-*   **Navigation:** [Jetpack Navigation Compose](class://androidx.navigation.compose.NavHost) with Type-Safe Routes ([kotlinx.serialization](class://com.uladzislaumia.myplanner.ui.navigation.Route)).
-*   **Dependency Injection:** [Hilt](class://dagger.hilt.android.HiltAndroidApp) (Dagger-based, compile-time safety).
-*   **Local Database:** [Room](class://androidx.room.Database) with KSP and reactive Flow support.
-*   **Remote Database:** [Firebase Firestore](class://com.google.firebase.firestore.FirebaseFirestore) (Offline-First cloud synchronization).
-*   **Authentication:** Firebase Auth.
-*   **Notifications:** Local Scheduled Notifications (`AlarmManager` & `NotificationManager`).
-*   **Analytics & Crash Reporting:** Firebase Analytics & Firebase Crashlytics (integrated with Timber logging).
-*   **Testing:** JUnit 4, [MockK](symbol://mockk), [Turbine](symbol://turbine), kotlinx-coroutines-test.
-*   **UI Testing:** Compose UI Testing **[TBD]**.
+*   **UI:** Jetpack Compose with Material 3
+*   **Navigation:** Jetpack Navigation Compose with Type-Safe Routes (kotlinx.serialization)
+*   **Dependency Injection:** Hilt
+*   **Local Database:** Room with KSP and reactive Flow support
+*   **Remote Database:** Firebase Firestore (Offline-First cloud synchronization)
+*   **Authentication:** Firebase Auth
+*   **Background Work:** WorkManager
+*   **Notifications:** Local Scheduled Notifications (`AlarmManager` & `NotificationManager`)
+*   **Analytics & Crash Reporting:** Firebase Analytics & Firebase Crashlytics (integrated with Timber logging)
+*   **Testing:** JUnit 4, MockK, Turbine, kotlinx-coroutines-test
+*   **UI Testing:** Compose UI Testing **[TBD]**
 *   **Security:**
-    *   Android Keystore (hardware-backed keys, biometric app lock via `BiometricPrompt` + `CryptoObject`) **[TBD]**.
-    *   Window Security (`FLAG_SECURE` for sensitive screens) **[TBD]**.
-    *   Root & Tamper Detection (Firebase App Check + Play Integrity API) **[TBD]**.
-    *   Anti-fraud SDKs (SEON, Clarity) **[TBD]**.
-    *   ProGuard/R8 (code shrinking & obfuscation for release builds) **[TBD]**.
-    *   Network Security Config (cleartext traffic disabled, debug-only user CAs) **[TBD]**.
-*   **Dynamic Configuration:** Firebase Remote Config **[TBD]**.
-*   **Push Notifications:** Firebase Cloud Messaging (FCM) **[TBD]**.
-*   **Monitoring:** Sentry **[TBD]**.
-*   **Networking:** GraphQL via [Apollo Kotlin](symbol://apollo) **[TBD]**.
-*   **Asynchrony:** Kotlin Coroutines & Flow.
-*   **Build System:** Gradle Kotlin DSL + Version Catalog (`libs.versions.toml`).
-*   **Quality Assurance:** [KtLint](symbol://ktlint) (style formatting) & [Detekt](symbol://detekt) (static analysis).
-*   **CI/CD:** GitHub Actions **[TBD]**.
+    *   Android Keystore (hardware-backed keys, biometric app lock via `BiometricPrompt` + `CryptoObject`) **[TBD]**
+    *   Window Security (`FLAG_SECURE` for sensitive screens) **[TBD]**
+    *   Root & Tamper Detection (Firebase App Check + Play Integrity API) **[TBD]**
+    *   ProGuard/R8 (code shrinking & obfuscation for release builds) **[TBD]**
+    *   Network Security Config (cleartext traffic disabled, debug-only user CAs) **[TBD]**
+*   **Dynamic Configuration:** Firebase Remote Config **[TBD]**
+*   **Push Notifications:** Firebase Cloud Messaging (FCM) **[TBD]**
+*   **Monitoring:** Sentry **[TBD]**
+*   **Networking:** GraphQL via Apollo Kotlin **[TBD]**
+*   **Asynchrony:** Kotlin Coroutines & Flow
+*   **Build System:** Gradle Kotlin DSL + Version Catalog (`libs.versions.toml`)
+*   **Quality Assurance:** KtLint (style formatting) & Detekt (static analysis)
+*   **CI/CD:** GitHub Actions **[TBD]**
 
 ## 🏗 Architecture
 
 The project follows **Clean Architecture** and **Single Activity** principles with an **Offline-First** strategy:
-*   **Domain Layer:** Pure Kotlin business logic, [Use Cases](class://com.uladzislaumia.myplanner.domain.usecase.LoginUseCase) (utilizing `operator invoke`), and domain models.
-*   **Data Layer:** [Repository pattern](class://com.uladzislaumia.myplanner.domain.repository.AuthRepository) implementation with [OfflineFirstPlannerRepositoryImpl](class://com.uladzislaumia.myplanner.data.repository.OfflineFirstPlannerRepositoryImpl) (Room as Single Source of Truth + Firestore background sync & 5-item demo seeding for new accounts).
-*   **UI Layer:** [MVI/MVVM](class://com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel) with reactive StateFlow handling and state-driven navigation via [AppNavGraph](class://com.uladzislaumia.myplanner.ui.navigation.AppNavGraph).
+*   **Domain Layer:** Pure Kotlin business logic, [Use Cases](/app/src/main/java/com/uladzislaumia/myplanner/domain/usecase) (utilizing `operator invoke`), and domain models.
+*   **Data Layer:** [Repository pattern](/app/src/main/java/com/uladzislaumia/myplanner/domain/repository) implementation with [OfflineFirstPlannerRepositoryImpl](/app/src/main/java/com/uladzislaumia/myplanner/data/repository/OfflineFirstPlannerRepositoryImpl.kt) (Room as Single Source of Truth + Firestore background sync via WorkManager & 5-item demo seeding for new accounts).
+*   **UI Layer:** [MVI/MVVM](/app/src/main/java/com/uladzislaumia/myplanner/ui/viewmodel/MainViewModel.kt) with reactive StateFlow handling and state-driven navigation via [AppNavGraph](/app/src/main/java/com/uladzislaumia/myplanner/ui/navigation/AppNavGraph.kt).
 
 ## 📸 Screenshots
 
@@ -63,36 +85,23 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 |:---:|:---:|
 | <img src="/docs/screenshots/add_task_sheet.png" alt="Add Task Sheet" width="250"> | <img src="/docs/screenshots/edit_task_sheet.png" alt="Edit Task Sheet" width="250"> |
 
-## 🚀 Progress & Roadmap
+## 🚀 Roadmap
 
-- [x] Basic Clean Architecture & Single Activity structure.
-- [x] Room Persistence with reactive updates.
-- [x] Firebase Authentication Integration.
-- [x] **Cloud Sync & Offline-First Strategy** (Room + Firebase Firestore).
-- [x] **Type-Safe Jetpack Navigation Compose** (`@Serializable` routes).
-- [x] **Full Task CRUD Operations** (Create, Read, Update, Delete with Priority & Status).
-- [x] **Scheduled Local Deadline Notifications** (Exact AlarmManager reminders for task deadlines).
-- [x] **Dynamic Categories & Carousel Filtering** (Large category cards, task counts per category, and custom category creation).
-- [x] **Unit Testing Suite** (MockK, Turbine Flow Testing, MainDispatcherRule).
-- [x] **Automatic Demo Data Seeding** (5 initial tasks for new users).
-- [x] **Firebase Analytics & Crashlytics Integration** (with custom Timber `CrashlyticsTree`).
-- [x] **Google Play Services Availability Checks & Package Visibility**.
-- [x] Dagger Hilt automation.
-- [x] **Static Analysis** (KtLint & Detekt).
-- [ ] **All Categories Search & BottomSheet** ("View All" sheet with instant search) — **[TBD]**.
-- [ ] **Advanced Emoji & Color Picker** (Android Emoji Picker API & Interactive HSV Color Wheel) — **[TBD]**.
-- [ ] **Firebase Remote Config** (Dynamic feature flags & configuration) — **[TBD]**.
-- [ ] **CI/CD Pipeline** (GitHub Actions for build & lint) — **[TBD]**.
-- [ ] **GraphQL Integration** (Apollo Client) — **[TBD]**.
-- [ ] **Messaging** (Push via FCM) — **[TBD]**.
-- [ ] **Reopen Completed Tasks** (One-tap "Do it again" for tasks you finished before, e.g. "Clean the coffee machine" or "Pay for a subscription": reopen on demand, optionally set a new deadline and reminder, keep the last completion date) — **[TBD]**.
-- [ ] **Optimistic UI for Task Edits** (Fix stale data when reopening the edit sheet right after closing it: overlay recent edits in `MainViewModel` until Room emits them, open the sheet by task id) — **[TBD]**.
-- [ ] **Real-time Cloud Sync** (Replace one-shot Firestore `get()` with `addSnapshotListener` wrapped in `callbackFlow`: live updates from other devices, remote deletions via `DocumentChange.REMOVED`, fewer billed reads) — **[TBD]**.
-- [ ] **Secure Logout Data Wipe** (Cancel pending sync work, clear Room tables and cancel scheduled reminders on logout to prevent data leaking between accounts) — **[TBD]**.
-- [ ] **Reminder Restoration** (Reschedule AlarmManager reminders from Room after device reboot, app update and exact alarm permission change via `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED` receiver) — **[TBD]**.
-- [ ] **Compose UI Testing** (UI tests for screens and bottom sheets) — **[TBD]**.
-- [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config) — **[TBD]**.
-- [ ] **Multimodularity** (Refactoring into `:core` and `:feature` modules) — **[TBD]**.
+- [ ] **All Categories Search & BottomSheet** ("View All" sheet with instant search).
+- [ ] **Advanced Emoji & Color Picker** (Android Emoji Picker API & Interactive HSV Color Wheel).
+- [ ] **Firebase Remote Config** (Dynamic feature flags & configuration).
+- [ ] **CI/CD Pipeline** (GitHub Actions for build & lint).
+- [ ] **GraphQL Integration** (Apollo Client).
+- [ ] **Messaging** (Push via FCM).
+- [ ] **Reopen Completed Tasks** (One-tap "Do it again" for tasks you finished before, e.g. "Clean the coffee machine" or "Pay for a subscription": reopen on demand, optionally set a new deadline and reminder, keep the last completion date).
+- [ ] **Optimistic UI for Task Edits** (Fix stale data when reopening the edit sheet right after closing it: overlay recent edits in `MainViewModel` until Room emits them, open the sheet by task id).
+- [ ] **Real-time Cloud Sync** (Replace one-shot Firestore `get()` with `addSnapshotListener` wrapped in `callbackFlow`: live updates from other devices, remote deletions via `DocumentChange.REMOVED`, fewer billed reads).
+- [ ] **Secure Logout Data Wipe** (Cancel pending sync work, clear Room tables and cancel scheduled reminders on logout to prevent data leaking between accounts).
+- [ ] **Reminder Restoration** (Reschedule AlarmManager reminders from Room after device reboot, app update and exact alarm permission change via `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED` receiver).
+- [ ] **Localization** (Move hardcoded UI strings into `strings.xml` with `stringResource()`, plurals for task counts, translations, per-app language picker via `localeConfig`).
+- [ ] **Compose UI Testing** (UI tests for screens and bottom sheets).
+- [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config).
+- [ ] **Multimodularity** (Refactoring into `:core` and `:feature` modules).
 
 ## ⚙️ Development Requirements
 
