@@ -1,4 +1,10 @@
-# My Planner
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+  <img src="/docs/app_icon.png" alt="My Planner app icon" width="128">
+</p>
+
+<!--suppress HtmlDeprecatedAttribute -->
+<h1 align="center">My Planner</h1>
 
 Modern Android task management application built with industry-standard technologies, Clean Architecture, and an **Offline-First** data strategy.
 
@@ -79,6 +85,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **CI/CD Pipeline** (GitHub Actions for build & lint) — **[TBD]**.
 - [ ] **GraphQL Integration** (Apollo Client) — **[TBD]**.
 - [ ] **Messaging** (Push via FCM) — **[TBD]**.
+- [ ] **Reopen Completed Tasks** (One-tap "Do it again" for tasks you finished before, e.g. "Clean the coffee machine" or "Pay for a subscription": reopen on demand, optionally set a new deadline and reminder, keep the last completion date) — **[TBD]**.
 - [ ] **Optimistic UI for Task Edits** (Fix stale data when reopening the edit sheet right after closing it: overlay recent edits in `MainViewModel` until Room emits them, open the sheet by task id) — **[TBD]**.
 - [ ] **Real-time Cloud Sync** (Replace one-shot Firestore `get()` with `addSnapshotListener` wrapped in `callbackFlow`: live updates from other devices, remote deletions via `DocumentChange.REMOVED`, fewer billed reads) — **[TBD]**.
 - [ ] **Secure Logout Data Wipe** (Cancel pending sync work, clear Room tables and cancel scheduled reminders on logout to prevent data leaking between accounts) — **[TBD]**.

@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import com.uladzislaumia.myplanner.MainActivity
 import com.uladzislaumia.myplanner.MyPlannerApplication
@@ -32,7 +33,8 @@ class NotificationReceiver : BroadcastReceiver() {
         )
 
         val notification = NotificationCompat.Builder(context, MyPlannerApplication.NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(ContextCompat.getColor(context, R.color.notification_accent))
             .setContentTitle("⏰ Reminder: $taskTitle")
             .setContentText(taskDescription)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
