@@ -95,6 +95,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **GraphQL Integration** (Apollo Client).
 - [ ] **Messaging** (Push via FCM).
 - [ ] **Reopen Completed Tasks** (One-tap "Do it again" for tasks you finished before, e.g. "Clean the coffee machine" or "Pay for a subscription": reopen on demand, optionally set a new deadline and reminder, keep the last completion date).
+- [ ] **Specific Exception Handling** (Replace generic `catch (e: Exception)` in repositories, `SyncWorker`, `NotificationScheduler` and `PlannerRemoteDataSource` with specific Firebase / Firestore / network exceptions, rethrow `CancellationException`; fixes detekt `TooGenericExceptionCaught`).
 - [ ] **Localized Auth Errors** (Map Firebase Auth exceptions — network, weak password, email in use, invalid credentials — to own localized strings instead of showing the raw English `localizedMessage`; use one message for wrong password / unknown user to avoid account enumeration).
 - [ ] **Custom Category Chip on Task Cards** (Fix: `PlannerCard` resolves categories via `Category.findById`, which only knows built-in ones, so tasks with a custom category show no chip; look them up in the categories list from `MainViewModel` instead).
 - [ ] **Optimistic UI for Task Edits** (Fix stale data when reopening the edit sheet right after closing it: overlay recent edits in `MainViewModel` until Room emits them, open the sheet by task id).

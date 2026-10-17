@@ -1,4 +1,3 @@
-import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
     alias(libs.plugins.android.application)
@@ -53,9 +52,9 @@ ktlint {
     version.set(libs.versions.ktlintEngine.get())
 }
 
-tasks.withType<Detekt>().configureEach {
-    jvmTarget = "17"
+detekt {
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
 }
 
 dependencies {
