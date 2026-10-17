@@ -94,6 +94,5 @@ class CategoryRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Timber.e(e, "Failed to sync category ${category.id} to cloud")
         }
-        Unit
     }
 }
