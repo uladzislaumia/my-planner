@@ -1,0 +1,5 @@
+# Commits listed here are skipped by `git blame` (GitHub picks this file up automatically).
+# Locally: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Upgrade ktlint to 1.8.0 and reformat code to ktlint_official style
+15a421856b856f21a09a8f89e2dcbc1b52ccf15b
