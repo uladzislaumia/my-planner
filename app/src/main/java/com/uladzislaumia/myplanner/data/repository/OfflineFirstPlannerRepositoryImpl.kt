@@ -1,6 +1,7 @@
 package com.uladzislaumia.myplanner.data.repository
 
 import com.uladzislaumia.myplanner.data.local.dao.PlannerItemDao
+import com.uladzislaumia.myplanner.data.local.dao.PlannerSyncDao
 import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
 import com.uladzislaumia.myplanner.data.local.entity.SyncState
 import com.uladzislaumia.myplanner.data.remote.PlannerRemoteDataSource
@@ -27,6 +28,7 @@ class OfflineFirstPlannerRepositoryImpl
     @Inject
     constructor(
         private val plannerItemDao: PlannerItemDao,
+        private val plannerSyncDao: PlannerSyncDao,
         private val remoteDataSource: PlannerRemoteDataSource,
         private val syncScheduler: SyncScheduler,
         private val notificationScheduler: NotificationScheduler,
@@ -52,7 +54,7 @@ class OfflineFirstPlannerRepositoryImpl
                         seedDemoItems()
                     } else {
                         // Update local database with fresh cloud data, keeping not yet uploaded local edits
-                        val applied = plannerItemDao.upsertFromRemote(remoteItems)
+                        val applied = plannerSyncDao.upsertFromRemote(remoteItems)
                         applied.forEach { notificationScheduler.scheduleTaskReminder(it.toDomain()) }
                         Timber.d("Synced ${applied.size} items from cloud")
                     }
@@ -68,65 +70,8 @@ class OfflineFirstPlannerRepositoryImpl
             }
 
         private suspend fun seedDemoItems() {
-            val demoItems =
-                listOf(
-                    PlannerItem(
-                        id = UUID.randomUUID().toString(),
-                        title = "Buy ingredients for dinner 🛒",
-                        description = "Get fresh vegetables, pasta, and spices for tonight's meal.",
-                        categoryId = Category.GROCERIES.id,
-                        groupId = null,
-                        assigneeId = null,
-                        dueDate = null,
-                        priority = Priority.MEDIUM,
-                        isCompleted = false,
-                    ),
-                    PlannerItem(
-                        id = UUID.randomUUID().toString(),
-                        title = "Book tickets and hotel for vacation ✈️",
-                        description = "Reserve flight tickets and hotel accommodation for the upcoming trip.",
-                        categoryId = Category.TRAVEL.id,
-                        groupId = null,
-                        assigneeId = null,
-                        dueDate = null,
-                        priority = Priority.HIGH,
-                        isCompleted = false,
-                    ),
-                    PlannerItem(
-                        id = UUID.randomUUID().toString(),
-                        title = "Go to the cinema this weekend 🎬",
-                        description = "Watch the new movie premiere with friends on Saturday night.",
-                        categoryId = Category.ENTERTAINMENT.id,
-                        groupId = null,
-                        assigneeId = null,
-                        dueDate = null,
-                        priority = Priority.LOW,
-                        isCompleted = false,
-                    ),
-                    PlannerItem(
-                        id = UUID.randomUUID().toString(),
-                        title = "Do a morning yoga session 🏋️‍♂️",
-                        description = "Complete a 30-minute stretching and yoga workout.",
-                        categoryId = Category.SPORTS.id,
-                        groupId = null,
-                        assigneeId = null,
-                        dueDate = null,
-                        priority = Priority.MEDIUM,
-                        isCompleted = false,
-                    ),
-                    PlannerItem(
-                        id = UUID.randomUUID().toString(),
-                        title = "Visit the doctor for a check-up 🩺",
-                        description = "Schedule and attend annual medical health check-up.",
-                        categoryId = Category.HEALTH.id,
-                        groupId = null,
-                        assigneeId = null,
-                        dueDate = null,
-                        priority = Priority.HIGH,
-                        isCompleted = true,
-                    ),
-                )
-            demoItems.forEach { addItem(it) }
+            // Each account gets its own ids, so the templates are copied with fresh UUIDs
+            DEMO_ITEMS.forEach { addItem(it.copy(id = UUID.randomUUID().toString())) }
         }
 
         override suspend fun getItemById(id: String): PlannerItem? =
@@ -161,3 +106,63 @@ class OfflineFirstPlannerRepositoryImpl
                 syncScheduler.requestSync()
             }
     }
+
+/** Sample tasks for new accounts; ids are assigned when seeding. */
+private val DEMO_ITEMS =
+    listOf(
+        PlannerItem(
+            id = "",
+            title = "Buy ingredients for dinner 🛒",
+            description = "Get fresh vegetables, pasta, and spices for tonight's meal.",
+            categoryId = Category.GROCERIES.id,
+            groupId = null,
+            assigneeId = null,
+            dueDate = null,
+            priority = Priority.MEDIUM,
+            isCompleted = false,
+        ),
+        PlannerItem(
+            id = "",
+            title = "Book tickets and hotel for vacation ✈️",
+            description = "Reserve flight tickets and hotel accommodation for the upcoming trip.",
+            categoryId = Category.TRAVEL.id,
+            groupId = null,
+            assigneeId = null,
+            dueDate = null,
+            priority = Priority.HIGH,
+            isCompleted = false,
+        ),
+        PlannerItem(
+            id = "",
+            title = "Go to the cinema this weekend 🎬",
+            description = "Watch the new movie premiere with friends on Saturday night.",
+            categoryId = Category.ENTERTAINMENT.id,
+            groupId = null,
+            assigneeId = null,
+            dueDate = null,
+            priority = Priority.LOW,
+            isCompleted = false,
+        ),
+        PlannerItem(
+            id = "",
+            title = "Do a morning yoga session 🏋️‍♂️",
+            description = "Complete a 30-minute stretching and yoga workout.",
+            categoryId = Category.SPORTS.id,
+            groupId = null,
+            assigneeId = null,
+            dueDate = null,
+            priority = Priority.MEDIUM,
+            isCompleted = false,
+        ),
+        PlannerItem(
+            id = "",
+            title = "Visit the doctor for a check-up 🩺",
+            description = "Schedule and attend annual medical health check-up.",
+            categoryId = Category.HEALTH.id,
+            groupId = null,
+            assigneeId = null,
+            dueDate = null,
+            priority = Priority.HIGH,
+            isCompleted = true,
+        ),
+    )

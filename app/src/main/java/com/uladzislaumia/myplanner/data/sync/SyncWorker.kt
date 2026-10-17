@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.uladzislaumia.myplanner.data.local.dao.PlannerItemDao
+import com.uladzislaumia.myplanner.data.local.dao.PlannerSyncDao
 import com.uladzislaumia.myplanner.data.local.entity.SyncState
 import com.uladzislaumia.myplanner.data.remote.PlannerRemoteDataSource
 import dagger.assisted.Assisted
@@ -21,7 +21,7 @@ class SyncWorker
     constructor(
         @Assisted context: Context,
         @Assisted params: WorkerParameters,
-        private val plannerItemDao: PlannerItemDao,
+        private val plannerSyncDao: PlannerSyncDao,
         private val remoteDataSource: PlannerRemoteDataSource,
     ) : CoroutineWorker(context, params) {
         override suspend fun doWork(): Result {
@@ -32,7 +32,7 @@ class SyncWorker
                     return Result.success()
                 }
 
-            val pending = plannerItemDao.getPendingSyncItems()
+            val pending = plannerSyncDao.getPendingSyncItems()
             if (pending.isEmpty()) return Result.success()
 
             return try {
@@ -46,8 +46,8 @@ class SyncWorker
                 }
                 pending.forEach { item ->
                     when (item.syncState) {
-                        SyncState.PENDING_DELETE -> plannerItemDao.deleteSyncedTombstone(item.id, item.localUpdatedAt)
-                        SyncState.PENDING_UPSERT -> plannerItemDao.markSynced(item.id, item.localUpdatedAt)
+                        SyncState.PENDING_DELETE -> plannerSyncDao.deleteSyncedTombstone(item.id, item.localUpdatedAt)
+                        SyncState.PENDING_UPSERT -> plannerSyncDao.markSynced(item.id, item.localUpdatedAt)
                         SyncState.SYNCED -> Unit
                     }
                 }

@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import com.uladzislaumia.myplanner.data.local.converter.AppConverters
 import com.uladzislaumia.myplanner.data.local.dao.CategoryDao
 import com.uladzislaumia.myplanner.data.local.dao.PlannerItemDao
+import com.uladzislaumia.myplanner.data.local.dao.PlannerSyncDao
 import com.uladzislaumia.myplanner.data.local.entity.CategoryEntity
 import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
 
@@ -19,6 +20,8 @@ import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
 @TypeConverters(AppConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun plannerItemDao(): PlannerItemDao
+
+    abstract fun plannerSyncDao(): PlannerSyncDao
 
     abstract fun categoryDao(): CategoryDao
 

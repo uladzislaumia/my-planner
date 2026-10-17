@@ -3,6 +3,7 @@ package com.uladzislaumia.myplanner.di
 import android.content.Context
 import com.uladzislaumia.myplanner.data.local.dao.CategoryDao
 import com.uladzislaumia.myplanner.data.local.dao.PlannerItemDao
+import com.uladzislaumia.myplanner.data.local.dao.PlannerSyncDao
 import com.uladzislaumia.myplanner.data.local.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,9 @@ object DatabaseModule {
 
     @Provides
     fun providePlannerItemDao(database: AppDatabase): PlannerItemDao = database.plannerItemDao()
+
+    @Provides
+    fun providePlannerSyncDao(database: AppDatabase): PlannerSyncDao = database.plannerSyncDao()
 
     @Provides
     fun provideCategoryDao(database: AppDatabase): CategoryDao = database.categoryDao()
