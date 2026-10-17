@@ -14,15 +14,18 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MyPlannerApplication : Application(), Configuration.Provider {
-
+class MyPlannerApplication :
+    Application(),
+    Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+        get() =
+            Configuration
+                .Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
 
     override fun onCreate() {
         super.onCreate()
@@ -39,9 +42,10 @@ class MyPlannerApplication : Application(), Configuration.Provider {
             val name = getString(R.string.notifications_channel_name)
             val descriptionText = getString(R.string.notifications_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
+            val channel =
+                NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
+                    description = descriptionText
+                }
             val notificationManager = getSystemService<NotificationManager>()
             notificationManager?.createNotificationChannel(channel)
         }
@@ -53,7 +57,12 @@ class MyPlannerApplication : Application(), Configuration.Provider {
 }
 
 class CrashlyticsTree : Timber.Tree() {
-    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+    override fun log(
+        priority: Int,
+        tag: String?,
+        message: String,
+        t: Throwable?,
+    ) {
         if (priority == Log.VERBOSE || priority == Log.DEBUG) {
             return
         }

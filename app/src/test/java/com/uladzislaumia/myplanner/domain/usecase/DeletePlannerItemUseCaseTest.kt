@@ -7,16 +7,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class DeletePlannerItemUseCaseTest {
-
     private val plannerRepository: PlannerRepository = mockk(relaxed = true)
     private val deletePlannerItemUseCase = DeletePlannerItemUseCase(plannerRepository)
 
     @Test
-    fun `invoke calls deleteItem on repository`() = runTest {
-        val taskId = "task-123"
+    fun `invoke calls deleteItem on repository`() =
+        runTest {
+            val taskId = "task-123"
 
-        deletePlannerItemUseCase(taskId)
+            deletePlannerItemUseCase(taskId)
 
-        coVerify { plannerRepository.deleteItem(taskId) }
-    }
+            coVerify { plannerRepository.deleteItem(taskId) }
+        }
 }

@@ -25,14 +25,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.pluralStringResource
-import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.ui.text.displayName
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,40 +56,45 @@ fun CategoryCarousel(
             OutlinedCard(
                 onClick = { onSelectCategory(null) },
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.outlinedCardColors(
-                    containerColor = if (isSelected) {
-                        MaterialTheme.colorScheme.primaryContainer
+                colors =
+                    CardDefaults.outlinedCardColors(
+                        containerColor =
+                            if (isSelected) {
+                                MaterialTheme.colorScheme.primaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                            },
+                    ),
+                border =
+                    if (isSelected) {
+                        BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
                     } else {
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-                    }
-                ),
-                border = if (isSelected) {
-                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-                } else {
-                    BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                },
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = if (isSelected) 4.dp else 0.dp
-                ),
-                modifier = Modifier.size(width = 130.dp, height = 85.dp)
+                        BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    },
+                elevation =
+                    CardDefaults.cardElevation(
+                        defaultElevation = if (isSelected) 4.dp else 0.dp,
+                    ),
+                modifier = Modifier.size(width = 130.dp, height = 85.dp),
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                    modifier =
+                        Modifier
+                            .padding(12.dp)
+                            .fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text("✨", style = MaterialTheme.typography.titleMedium)
                     Column {
                         Text(
                             text = stringResource(R.string.categories_all_tasks),
                             style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                         Text(
                             text = pluralStringResource(R.plurals.categories_tasks_count, allItems.size, allItems.size),
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -100,43 +105,49 @@ fun CategoryCarousel(
         items(categories) { category ->
             val isSelected = selectedCategoryId == category.id
             val categoryTaskCount = allItems.count { it.categoryId == category.id }
-            val categoryColor = try {
-                Color(android.graphics.Color.parseColor(category.colorHex))
-            } catch (_: Exception) {
-                MaterialTheme.colorScheme.primary
-            }
+            val categoryColor =
+                try {
+                    Color(android.graphics.Color.parseColor(category.colorHex))
+                } catch (_: Exception) {
+                    MaterialTheme.colorScheme.primary
+                }
 
-            val cardBgColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                categoryColor.copy(alpha = 0.08f)
-            }
+            val cardBgColor =
+                if (isSelected) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    categoryColor.copy(alpha = 0.08f)
+                }
 
-            val cardBorder = if (isSelected) {
-                BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-            } else {
-                BorderStroke(1.dp, categoryColor.copy(alpha = 0.3f))
-            }
+            val cardBorder =
+                if (isSelected) {
+                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+                } else {
+                    BorderStroke(1.dp, categoryColor.copy(alpha = 0.3f))
+                }
 
             OutlinedCard(
                 onClick = {
                     onSelectCategory(if (isSelected) null else category.id)
                 },
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.outlinedCardColors(
-                    containerColor = cardBgColor
-                ),
+                colors =
+                    CardDefaults.outlinedCardColors(
+                        containerColor = cardBgColor,
+                    ),
                 border = cardBorder,
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = if (isSelected) 4.dp else 0.dp
-                ),
-                modifier = Modifier.size(width = 130.dp, height = 85.dp)
+                elevation =
+                    CardDefaults.cardElevation(
+                        defaultElevation = if (isSelected) 4.dp else 0.dp,
+                    ),
+                modifier = Modifier.size(width = 130.dp, height = 85.dp),
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                    modifier =
+                        Modifier
+                            .padding(12.dp)
+                            .fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(category.icon, style = MaterialTheme.typography.titleMedium)
                     Column {
@@ -145,12 +156,17 @@ fun CategoryCarousel(
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
                         )
                         Text(
-                            text = pluralStringResource(R.plurals.categories_tasks_count, categoryTaskCount, categoryTaskCount),
+                            text =
+                                pluralStringResource(
+                                    R.plurals.categories_tasks_count,
+                                    categoryTaskCount,
+                                    categoryTaskCount,
+                                ),
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -163,30 +179,32 @@ fun CategoryCarousel(
                 onClick = onAddCategoryClick,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
-                colors = CardDefaults.outlinedCardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
+                colors =
+                    CardDefaults.outlinedCardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                modifier = Modifier.size(width = 130.dp, height = 85.dp)
+                modifier = Modifier.size(width = 130.dp, height = 85.dp),
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .padding(12.dp)
+                            .fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(R.string.categories_add),
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.categories_add),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
             }

@@ -10,19 +10,19 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SignUpUseCaseTest {
-
     private val authRepository: AuthRepository = mockk()
     private val signUpUseCase = SignUpUseCase(authRepository)
 
     @Test
-    fun `invoke calls signUp on repository and returns AuthResult`() = runTest {
-        val testUser = User(id = "user-1", name = "John", email = "john@example.com", avatarUrl = null)
-        val expectedResult = AuthResult.Success(testUser)
+    fun `invoke calls signUp on repository and returns AuthResult`() =
+        runTest {
+            val testUser = User(id = "user-1", name = "John", email = "john@example.com", avatarUrl = null)
+            val expectedResult = AuthResult.Success(testUser)
 
-        coEvery { authRepository.signUp("John", "john@example.com", "password123") } returns expectedResult
+            coEvery { authRepository.signUp("John", "john@example.com", "password123") } returns expectedResult
 
-        val result = signUpUseCase("John", "john@example.com", "password123")
+            val result = signUpUseCase("John", "john@example.com", "password123")
 
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
 }

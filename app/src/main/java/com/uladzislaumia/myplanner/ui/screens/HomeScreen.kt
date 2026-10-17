@@ -26,7 +26,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.ui.components.CategoryCarousel
 import com.uladzislaumia.myplanner.ui.components.PlannerGrid
@@ -35,8 +37,6 @@ import com.uladzislaumia.myplanner.ui.sheets.AddTaskBottomSheet
 import com.uladzislaumia.myplanner.ui.sheets.EditTaskBottomSheet
 import com.uladzislaumia.myplanner.ui.viewmodel.MainUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel
-import androidx.compose.ui.res.stringResource
-import com.uladzislaumia.myplanner.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,9 +72,10 @@ fun HomeScreen(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
         ) {
             val allItems = (uiState as? MainUiState.Success)?.items ?: emptyList()
 
@@ -94,12 +95,14 @@ fun HomeScreen(
                     is MainUiState.Loading -> {
                         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
+
                     is MainUiState.Success -> {
                         PlannerGrid(
                             items = state.items,
                             onItemClick = { selectedItemForEdit = it },
                         )
                     }
+
                     is MainUiState.Error -> {
                         Text(
                             text = stringResource(R.string.home_error_with_message, state.message),

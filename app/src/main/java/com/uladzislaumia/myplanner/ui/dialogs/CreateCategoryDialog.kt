@@ -28,26 +28,73 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.res.stringResource
 import com.uladzislaumia.myplanner.R
 
-private val PRESET_EMOJIS = listOf(
-    "🛒", "✈️", "🏠", "🏋️‍♂️", "🎬", "🛍️", "💼", "🩺", "💳",
-    "🎯", "📚", "💻", "🎓", "⚽", "🏃‍♂️", "🧘‍♀️", "🚴‍♂️", "🍏",
-    "🍲", "☕", "🍕", "🍔", "🏖️", "🚗", "🛠️", "🪴", "🎨",
-    "🎵", "🎮", "🐶", "🎁", "💡", "📝", "📊", "💰", "🥳",
-)
+private val PRESET_EMOJIS =
+    listOf(
+        "🛒",
+        "✈️",
+        "🏠",
+        "🏋️‍♂️",
+        "🎬",
+        "🛍️",
+        "💼",
+        "🩺",
+        "💳",
+        "🎯",
+        "📚",
+        "💻",
+        "🎓",
+        "⚽",
+        "🏃‍♂️",
+        "🧘‍♀️",
+        "🚴‍♂️",
+        "🍏",
+        "🍲",
+        "☕",
+        "🍕",
+        "🍔",
+        "🏖️",
+        "🚗",
+        "🛠️",
+        "🪴",
+        "🎨",
+        "🎵",
+        "🎮",
+        "🐶",
+        "🎁",
+        "💡",
+        "📝",
+        "📊",
+        "💰",
+        "🥳",
+    )
 
-private val PRESET_COLORS = listOf(
-    "#4CAF50", "#8BC34A", "#009688", "#2E7D32",
-    "#00BCD4", "#03A9F4", "#2196F3", "#1565C0",
-    "#9C27B0", "#673AB7", "#E91E63",
-    "#FF9800", "#FFC107", "#FF5722",
-    "#F44336", "#D32F2F",
-    "#607D8B", "#795548", "#37474F",
-)
+private val PRESET_COLORS =
+    listOf(
+        "#4CAF50",
+        "#8BC34A",
+        "#009688",
+        "#2E7D32",
+        "#00BCD4",
+        "#03A9F4",
+        "#2196F3",
+        "#1565C0",
+        "#9C27B0",
+        "#673AB7",
+        "#E91E63",
+        "#FF9800",
+        "#FFC107",
+        "#FF5722",
+        "#F44336",
+        "#D32F2F",
+        "#607D8B",
+        "#795548",
+        "#37474F",
+    )
 
 @Composable
 fun CreateCategoryDialog(
@@ -66,7 +113,7 @@ fun CreateCategoryDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 OutlinedTextField(
                     value = name,
@@ -79,13 +126,13 @@ fun CreateCategoryDialog(
                 Text(stringResource(R.string.categories_create_icon), style = MaterialTheme.typography.labelMedium)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     items(PRESET_EMOJIS) { emoji ->
                         FilterChip(
                             selected = selectedIcon == emoji,
                             onClick = { selectedIcon = emoji },
-                            label = { Text(emoji) }
+                            label = { Text(emoji) },
                         )
                     }
                 }
@@ -93,29 +140,31 @@ fun CreateCategoryDialog(
                 Text(stringResource(R.string.categories_create_color), style = MaterialTheme.typography.labelMedium)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     items(PRESET_COLORS) { colorHex ->
-                        val color = try {
-                            Color(android.graphics.Color.parseColor(colorHex))
-                        } catch (_: Exception) {
-                            Color.Gray
-                        }
+                        val color =
+                            try {
+                                Color(android.graphics.Color.parseColor(colorHex))
+                            } catch (_: Exception) {
+                                Color.Gray
+                            }
                         val isSelected = selectedColorHex == colorHex
                         Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(CircleShape)
-                                .background(color)
-                                .clickable { selectedColorHex = colorHex }
-                                .then(
-                                    if (isSelected) {
-                                        Modifier.border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                                    } else {
-                                        Modifier
-                                    }
-                                ),
-                            contentAlignment = Alignment.Center
+                            modifier =
+                                Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(color)
+                                    .clickable { selectedColorHex = colorHex }
+                                    .then(
+                                        if (isSelected) {
+                                            Modifier.border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                                        } else {
+                                            Modifier
+                                        },
+                                    ),
+                            contentAlignment = Alignment.Center,
                         ) {}
                     }
                 }
@@ -128,7 +177,7 @@ fun CreateCategoryDialog(
                         onConfirm(name, selectedIcon, selectedColorHex)
                     }
                 },
-                enabled = name.isNotBlank()
+                enabled = name.isNotBlank(),
             ) {
                 Text(stringResource(R.string.common_create))
             }
@@ -137,6 +186,6 @@ fun CreateCategoryDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.common_cancel))
             }
-        }
+        },
     )
 }

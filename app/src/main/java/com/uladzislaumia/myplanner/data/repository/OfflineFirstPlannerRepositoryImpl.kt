@@ -23,134 +23,141 @@ import javax.inject.Inject
  * Room is the single source of truth: every change is written locally right away and marked
  * as pending ([SyncState]), then [SyncScheduler] uploads pending changes to Firestore in the background.
  */
-class OfflineFirstPlannerRepositoryImpl @Inject constructor(
-    private val plannerItemDao: PlannerItemDao,
-    private val remoteDataSource: PlannerRemoteDataSource,
-    private val syncScheduler: SyncScheduler,
-    private val notificationScheduler: NotificationScheduler,
-) : PlannerRepository {
+class OfflineFirstPlannerRepositoryImpl
+    @Inject
+    constructor(
+        private val plannerItemDao: PlannerItemDao,
+        private val remoteDataSource: PlannerRemoteDataSource,
+        private val syncScheduler: SyncScheduler,
+        private val notificationScheduler: NotificationScheduler,
+    ) : PlannerRepository {
+        override fun getItems(): Flow<List<PlannerItem>> =
+            plannerItemDao
+                .getAllItems()
+                .map { entities -> entities.map { it.toDomain() } }
+                .onStart {
+                    // Background sync: Fetch from Firestore and update Room
+                    syncFromCloud()
+                }
 
-    override fun getItems(): Flow<List<PlannerItem>> {
-        return plannerItemDao.getAllItems()
-            .map { entities -> entities.map { it.toDomain() } }
-            .onStart {
-                // Background sync: Fetch from Firestore and update Room
-                syncFromCloud()
+        private suspend fun syncFromCloud() =
+            withContext(Dispatchers.IO) {
+                val uid = remoteDataSource.currentUserId ?: return@withContext
+                Timber.d("Starting background sync from cloud")
+                try {
+                    val remoteItems = remoteDataSource.fetchItems(uid)
+                    val localCount = plannerItemDao.getItemCount()
+                    if (remoteItems.isEmpty() && localCount == 0) {
+                        Timber.d("No items found in cloud or local DB. Seeding 5 demo items")
+                        seedDemoItems()
+                    } else {
+                        // Update local database with fresh cloud data, keeping not yet uploaded local edits
+                        val applied = plannerItemDao.upsertFromRemote(remoteItems)
+                        applied.forEach { notificationScheduler.scheduleTaskReminder(it.toDomain()) }
+                        Timber.d("Synced ${applied.size} items from cloud")
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to sync from cloud")
+                    if (plannerItemDao.getItemCount() == 0) {
+                        Timber.d("Offline or cloud error and local DB is empty. Seeding 5 demo items")
+                        seedDemoItems()
+                    }
+                }
+                // Push anything left over from previous sessions (e.g. edits made offline)
+                syncScheduler.requestSync(delaySeconds = 0)
             }
-    }
 
-    private suspend fun syncFromCloud() = withContext(Dispatchers.IO) {
-        val uid = remoteDataSource.currentUserId ?: return@withContext
-        Timber.d("Starting background sync from cloud")
-        try {
-            val remoteItems = remoteDataSource.fetchItems(uid)
-            val localCount = plannerItemDao.getItemCount()
-            if (remoteItems.isEmpty() && localCount == 0) {
-                Timber.d("No items found in cloud or local DB. Seeding 5 demo items")
-                seedDemoItems()
-            } else {
-                // Update local database with fresh cloud data, keeping not yet uploaded local edits
-                val applied = plannerItemDao.upsertFromRemote(remoteItems)
-                applied.forEach { notificationScheduler.scheduleTaskReminder(it.toDomain()) }
-                Timber.d("Synced ${applied.size} items from cloud")
-            }
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to sync from cloud")
-            if (plannerItemDao.getItemCount() == 0) {
-                Timber.d("Offline or cloud error and local DB is empty. Seeding 5 demo items")
-                seedDemoItems()
-            }
+        private suspend fun seedDemoItems() {
+            val demoItems =
+                listOf(
+                    PlannerItem(
+                        id = UUID.randomUUID().toString(),
+                        title = "Buy ingredients for dinner 🛒",
+                        description = "Get fresh vegetables, pasta, and spices for tonight's meal.",
+                        categoryId = Category.GROCERIES.id,
+                        groupId = null,
+                        assigneeId = null,
+                        dueDate = null,
+                        priority = Priority.MEDIUM,
+                        isCompleted = false,
+                    ),
+                    PlannerItem(
+                        id = UUID.randomUUID().toString(),
+                        title = "Book tickets and hotel for vacation ✈️",
+                        description = "Reserve flight tickets and hotel accommodation for the upcoming trip.",
+                        categoryId = Category.TRAVEL.id,
+                        groupId = null,
+                        assigneeId = null,
+                        dueDate = null,
+                        priority = Priority.HIGH,
+                        isCompleted = false,
+                    ),
+                    PlannerItem(
+                        id = UUID.randomUUID().toString(),
+                        title = "Go to the cinema this weekend 🎬",
+                        description = "Watch the new movie premiere with friends on Saturday night.",
+                        categoryId = Category.ENTERTAINMENT.id,
+                        groupId = null,
+                        assigneeId = null,
+                        dueDate = null,
+                        priority = Priority.LOW,
+                        isCompleted = false,
+                    ),
+                    PlannerItem(
+                        id = UUID.randomUUID().toString(),
+                        title = "Do a morning yoga session 🏋️‍♂️",
+                        description = "Complete a 30-minute stretching and yoga workout.",
+                        categoryId = Category.SPORTS.id,
+                        groupId = null,
+                        assigneeId = null,
+                        dueDate = null,
+                        priority = Priority.MEDIUM,
+                        isCompleted = false,
+                    ),
+                    PlannerItem(
+                        id = UUID.randomUUID().toString(),
+                        title = "Visit the doctor for a check-up 🩺",
+                        description = "Schedule and attend annual medical health check-up.",
+                        categoryId = Category.HEALTH.id,
+                        groupId = null,
+                        assigneeId = null,
+                        dueDate = null,
+                        priority = Priority.HIGH,
+                        isCompleted = true,
+                    ),
+                )
+            demoItems.forEach { addItem(it) }
         }
-        // Push anything left over from previous sessions (e.g. edits made offline)
-        syncScheduler.requestSync(delaySeconds = 0)
-    }
 
-    private suspend fun seedDemoItems() {
-        val demoItems = listOf(
-            PlannerItem(
-                id = UUID.randomUUID().toString(),
-                title = "Buy ingredients for dinner 🛒",
-                description = "Get fresh vegetables, pasta, and spices for tonight's meal.",
-                categoryId = Category.GROCERIES.id,
-                groupId = null,
-                assigneeId = null,
-                dueDate = null,
-                priority = Priority.MEDIUM,
-                isCompleted = false
-            ),
-            PlannerItem(
-                id = UUID.randomUUID().toString(),
-                title = "Book tickets and hotel for vacation ✈️",
-                description = "Reserve flight tickets and hotel accommodation for the upcoming trip.",
-                categoryId = Category.TRAVEL.id,
-                groupId = null,
-                assigneeId = null,
-                dueDate = null,
-                priority = Priority.HIGH,
-                isCompleted = false
-            ),
-            PlannerItem(
-                id = UUID.randomUUID().toString(),
-                title = "Go to the cinema this weekend 🎬",
-                description = "Watch the new movie premiere with friends on Saturday night.",
-                categoryId = Category.ENTERTAINMENT.id,
-                groupId = null,
-                assigneeId = null,
-                dueDate = null,
-                priority = Priority.LOW,
-                isCompleted = false
-            ),
-            PlannerItem(
-                id = UUID.randomUUID().toString(),
-                title = "Do a morning yoga session 🏋️‍♂️",
-                description = "Complete a 30-minute stretching and yoga workout.",
-                categoryId = Category.SPORTS.id,
-                groupId = null,
-                assigneeId = null,
-                dueDate = null,
-                priority = Priority.MEDIUM,
-                isCompleted = false
-            ),
-            PlannerItem(
-                id = UUID.randomUUID().toString(),
-                title = "Visit the doctor for a check-up 🩺",
-                description = "Schedule and attend annual medical health check-up.",
-                categoryId = Category.HEALTH.id,
-                groupId = null,
-                assigneeId = null,
-                dueDate = null,
-                priority = Priority.HIGH,
-                isCompleted = true
-            )
-        )
-        demoItems.forEach { addItem(it) }
-    }
+        override suspend fun getItemById(id: String): PlannerItem? =
+            withContext(Dispatchers.IO) {
+                plannerItemDao.getItemById(id)?.toDomain()
+            }
 
-    override suspend fun getItemById(id: String): PlannerItem? = withContext(Dispatchers.IO) {
-        plannerItemDao.getItemById(id)?.toDomain()
-    }
+        override suspend fun addItem(item: PlannerItem): Unit =
+            withContext(Dispatchers.IO) {
+                Timber.d("Saving item locally: ${item.id}")
+                val entity =
+                    PlannerItemEntity.fromDomain(
+                        item = item,
+                        syncState = SyncState.PENDING_UPSERT,
+                        localUpdatedAt = System.currentTimeMillis(),
+                    )
+                plannerItemDao.insertItem(entity)
+                notificationScheduler.scheduleTaskReminder(item)
+                syncScheduler.requestSync()
+            }
 
-    override suspend fun addItem(item: PlannerItem): Unit = withContext(Dispatchers.IO) {
-        Timber.d("Saving item locally: ${item.id}")
-        val entity = PlannerItemEntity.fromDomain(
-            item = item,
-            syncState = SyncState.PENDING_UPSERT,
-            localUpdatedAt = System.currentTimeMillis(),
-        )
-        plannerItemDao.insertItem(entity)
-        notificationScheduler.scheduleTaskReminder(item)
-        syncScheduler.requestSync()
-    }
+        override suspend fun updateItem(item: PlannerItem) {
+            addItem(item)
+        }
 
-    override suspend fun updateItem(item: PlannerItem) {
-        addItem(item)
+        override suspend fun deleteItem(id: String): Unit =
+            withContext(Dispatchers.IO) {
+                Timber.d("Deleting item locally: $id")
+                // Keep a tombstone until the deletion reaches Firestore
+                plannerItemDao.markDeleted(id, localUpdatedAt = System.currentTimeMillis())
+                notificationScheduler.cancelTaskReminder(id)
+                syncScheduler.requestSync()
+            }
     }
-
-    override suspend fun deleteItem(id: String): Unit = withContext(Dispatchers.IO) {
-        Timber.d("Deleting item locally: $id")
-        // Keep a tombstone until the deletion reaches Firestore
-        plannerItemDao.markDeleted(id, localUpdatedAt = System.currentTimeMillis())
-        notificationScheduler.cancelTaskReminder(id)
-        syncScheduler.requestSync()
-    }
-}

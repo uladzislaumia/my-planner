@@ -9,26 +9,27 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class UpdatePlannerItemUseCaseTest {
-
     private val plannerRepository: PlannerRepository = mockk(relaxed = true)
     private val updatePlannerItemUseCase = UpdatePlannerItemUseCase(plannerRepository)
 
     @Test
-    fun `invoke calls updateItem on repository`() = runTest {
-        val testItem = PlannerItem(
-            id = "1",
-            title = "Updated Task",
-            description = "Updated Desc",
-            categoryId = null,
-            groupId = null,
-            assigneeId = null,
-            dueDate = null,
-            priority = Priority.HIGH,
-            isCompleted = true,
-        )
+    fun `invoke calls updateItem on repository`() =
+        runTest {
+            val testItem =
+                PlannerItem(
+                    id = "1",
+                    title = "Updated Task",
+                    description = "Updated Desc",
+                    categoryId = null,
+                    groupId = null,
+                    assigneeId = null,
+                    dueDate = null,
+                    priority = Priority.HIGH,
+                    isCompleted = true,
+                )
 
-        updatePlannerItemUseCase(testItem)
+            updatePlannerItemUseCase(testItem)
 
-        coVerify { plannerRepository.updateItem(testItem) }
-    }
+            coVerify { plannerRepository.updateItem(testItem) }
+        }
 }

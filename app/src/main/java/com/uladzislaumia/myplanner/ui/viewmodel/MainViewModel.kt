@@ -25,91 +25,105 @@ import javax.inject.Inject
 
 sealed class MainUiState {
     object Loading : MainUiState()
-    data class Success(val items: List<PlannerItem>) : MainUiState()
-    data class Error(val message: String) : MainUiState()
+
+    data class Success(
+        val items: List<PlannerItem>,
+    ) : MainUiState()
+
+    data class Error(
+        val message: String,
+    ) : MainUiState()
 }
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val getPlannerItemsUseCase: GetPlannerItemsUseCase,
-    private val addPlannerItemUseCase: AddPlannerItemUseCase,
-    private val updatePlannerItemUseCase: UpdatePlannerItemUseCase,
-    private val deletePlannerItemUseCase: DeletePlannerItemUseCase,
-    private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val addCategoryUseCase: AddCategoryUseCase,
-) : ViewModel() {
+class MainViewModel
+    @Inject
+    constructor(
+        private val getPlannerItemsUseCase: GetPlannerItemsUseCase,
+        private val addPlannerItemUseCase: AddPlannerItemUseCase,
+        private val updatePlannerItemUseCase: UpdatePlannerItemUseCase,
+        private val deletePlannerItemUseCase: DeletePlannerItemUseCase,
+        private val getCategoriesUseCase: GetCategoriesUseCase,
+        private val addCategoryUseCase: AddCategoryUseCase,
+    ) : ViewModel() {
+        val categories: StateFlow<List<Category>> =
+            getCategoriesUseCase()
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val categories: StateFlow<List<Category>> = getCategoriesUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        val selectedCategoryId = MutableStateFlow<String?>(null)
 
-    val selectedCategoryId = MutableStateFlow<String?>(null)
+        val uiState: StateFlow<MainUiState> =
+            combine(
+                getPlannerItemsUseCase(),
+                selectedCategoryId,
+            ) { items, selectedCatId ->
+                val filtered =
+                    if (selectedCatId == null) {
+                        items
+                    } else {
+                        items.filter { it.categoryId == selectedCatId }
+                    }
+                MainUiState.Success(filtered) as MainUiState
+            }.catch { e ->
+                emit(MainUiState.Error(e.message ?: "Unknown Error"))
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState.Loading)
 
-    val uiState: StateFlow<MainUiState> = combine(
-        getPlannerItemsUseCase(),
-        selectedCategoryId
-    ) { items, selectedCatId ->
-        val filtered = if (selectedCatId == null) {
-            items
-        } else {
-            items.filter { it.categoryId == selectedCatId }
+        fun selectCategory(categoryId: String?) {
+            selectedCategoryId.value = categoryId
         }
-        MainUiState.Success(filtered) as MainUiState
-    }
-        .catch { e ->
-            emit(MainUiState.Error(e.message ?: "Unknown Error"))
+
+        fun addCategory(
+            name: String,
+            icon: String,
+            colorHex: String,
+        ) {
+            if (name.isBlank()) return
+            viewModelScope.launch {
+                val category =
+                    Category(
+                        id = UUID.randomUUID().toString(),
+                        name = name,
+                        icon = icon,
+                        colorHex = colorHex,
+                    )
+                addCategoryUseCase(category)
+            }
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState.Loading)
 
-    fun selectCategory(categoryId: String?) {
-        selectedCategoryId.value = categoryId
-    }
-
-    fun addCategory(name: String, icon: String, colorHex: String) {
-        if (name.isBlank()) return
-        viewModelScope.launch {
-            val category = Category(
-                id = UUID.randomUUID().toString(),
-                name = name,
-                icon = icon,
-                colorHex = colorHex
-            )
-            addCategoryUseCase(category)
+        fun addItem(
+            title: String,
+            description: String,
+            priority: Priority,
+            categoryId: String? = null,
+            dueDate: Date? = null,
+        ) {
+            if (title.isBlank()) return
+            viewModelScope.launch {
+                val newItem =
+                    PlannerItem(
+                        id = UUID.randomUUID().toString(),
+                        title = title,
+                        description = description,
+                        categoryId = categoryId,
+                        groupId = null,
+                        assigneeId = null,
+                        dueDate = dueDate,
+                        priority = priority,
+                        isCompleted = false,
+                    )
+                addPlannerItemUseCase(newItem)
+            }
         }
-    }
 
-    fun addItem(
-        title: String,
-        description: String,
-        priority: Priority,
-        categoryId: String? = null,
-        dueDate: Date? = null,
-    ) {
-        if (title.isBlank()) return
-        viewModelScope.launch {
-            val newItem = PlannerItem(
-                id = UUID.randomUUID().toString(),
-                title = title,
-                description = description,
-                categoryId = categoryId,
-                groupId = null,
-                assigneeId = null,
-                dueDate = dueDate,
-                priority = priority,
-                isCompleted = false
-            )
-            addPlannerItemUseCase(newItem)
+        fun updateItem(item: PlannerItem) {
+            viewModelScope.launch {
+                updatePlannerItemUseCase(item)
+            }
         }
-    }
 
-    fun updateItem(item: PlannerItem) {
-        viewModelScope.launch {
-            updatePlannerItemUseCase(item)
-        }
-    }
-
-    fun deleteItem(id: String) {
-        viewModelScope.launch {
-            deletePlannerItemUseCase(id)
+        fun deleteItem(id: String) {
+            viewModelScope.launch {
+                deletePlannerItemUseCase(id)
+            }
         }
     }
-}

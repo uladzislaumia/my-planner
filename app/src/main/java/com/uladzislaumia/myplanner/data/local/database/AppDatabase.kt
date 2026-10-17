@@ -14,29 +14,30 @@ import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
 @Database(
     entities = [PlannerItemEntity::class, CategoryEntity::class],
     version = 4,
-    exportSchema = false
+    exportSchema = false,
 )
 @TypeConverters(AppConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun plannerItemDao(): PlannerItemDao
+
     abstract fun categoryDao(): CategoryDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase? = null
+        private var instance: AppDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "planner_database"
-                )
-                    .fallbackToDestructiveMigration(dropAllTables = true)
-                    .build()
-                INSTANCE = instance
-                instance
+        fun getDatabase(context: Context): AppDatabase =
+            instance ?: synchronized(this) {
+                val newInstance =
+                    Room
+                        .databaseBuilder(
+                            context.applicationContext,
+                            AppDatabase::class.java,
+                            "planner_database",
+                        ).fallbackToDestructiveMigration(dropAllTables = true)
+                        .build()
+                instance = newInstance
+                newInstance
             }
-        }
     }
 }

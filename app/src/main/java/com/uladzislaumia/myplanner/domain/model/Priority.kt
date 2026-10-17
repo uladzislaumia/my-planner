@@ -1,5 +1,7 @@
 package com.uladzislaumia.myplanner.domain.model
 
 enum class Priority {
-    LOW, MEDIUM, HIGH
+    LOW,
+    MEDIUM,
+    HIGH,
 }

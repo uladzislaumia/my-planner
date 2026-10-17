@@ -34,19 +34,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.ui.components.CategoryDropdown
 import com.uladzislaumia.myplanner.ui.components.DateTimePickerField
+import com.uladzislaumia.myplanner.ui.text.label
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
-import androidx.compose.ui.res.stringResource
-import com.uladzislaumia.myplanner.R
-import com.uladzislaumia.myplanner.ui.text.label
 
 private val AUTOSAVE_DEBOUNCE = 300.milliseconds
 
@@ -72,14 +72,15 @@ fun EditTaskBottomSheet(
     var isDeleted by remember { mutableStateOf(false) }
     val currentOnSave by rememberUpdatedState(onSave)
 
-    fun buildDraft() = item.copy(
-        title = title,
-        description = description,
-        priority = selectedPriority,
-        categoryId = selectedCategoryId,
-        dueDate = selectedDueDate,
-        isCompleted = isCompleted,
-    )
+    fun buildDraft() =
+        item.copy(
+            title = title,
+            description = description,
+            priority = selectedPriority,
+            categoryId = selectedCategoryId,
+            dueDate = selectedDueDate,
+            isCompleted = isCompleted,
+        )
 
     // Skip writes when nothing actually changed
     fun saveIfChanged(draft: PlannerItem) {
@@ -109,10 +110,11 @@ fun EditTaskBottomSheet(
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 32.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 32.dp),
         ) {
             Text(
                 text = stringResource(R.string.tasks_edit_title),

@@ -12,23 +12,21 @@ data class CategoryEntity(
     val icon: String,
     val colorHex: String,
 ) {
-    fun toDomain(): Category {
-        return Category(
+    fun toDomain(): Category =
+        Category(
             id = id,
             name = name,
             icon = icon,
             colorHex = colorHex,
         )
-    }
 
     companion object {
-        fun fromDomain(category: Category): CategoryEntity {
-            return CategoryEntity(
+        fun fromDomain(category: Category): CategoryEntity =
+            CategoryEntity(
                 id = category.id,
                 name = category.name,
                 icon = category.icon,
                 colorHex = category.colorHex,
             )
-        }
     }
 }

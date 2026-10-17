@@ -8,16 +8,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class AddCategoryUseCaseTest {
-
     private val categoryRepository: CategoryRepository = mockk(relaxed = true)
     private val addCategoryUseCase = AddCategoryUseCase(categoryRepository)
 
     @Test
-    fun `invoke calls addCategory on repository`() = runTest {
-        val testCategory = Category.GROCERIES
+    fun `invoke calls addCategory on repository`() =
+        runTest {
+            val testCategory = Category.GROCERIES
 
-        addCategoryUseCase(testCategory)
+            addCategoryUseCase(testCategory)
 
-        coVerify { categoryRepository.addCategory(testCategory) }
-    }
+            coVerify { categoryRepository.addCategory(testCategory) }
+        }
 }

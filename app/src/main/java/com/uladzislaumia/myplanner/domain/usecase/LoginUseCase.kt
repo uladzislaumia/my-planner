@@ -5,8 +5,13 @@ import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
 import javax.inject.Inject
 
-class LoginUseCase @Inject constructor(private val repository: AuthRepository) {
-    suspend operator fun invoke(email: String, password: String): AuthResult<User> {
-        return repository.login(email, password)
+class LoginUseCase
+    @Inject
+    constructor(
+        private val repository: AuthRepository,
+    ) {
+        suspend operator fun invoke(
+            email: String,
+            password: String,
+        ): AuthResult<User> = repository.login(email, password)
     }
-}

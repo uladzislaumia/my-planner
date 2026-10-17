@@ -7,32 +7,20 @@ import java.util.Date
 
 class AppConverters {
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
-    }
+    fun fromTimestamp(value: Long?): Date? = value?.let { Date(it) }
 
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
-    }
+    fun dateToTimestamp(date: Date?): Long? = date?.time
 
     @TypeConverter
-    fun fromPriority(priority: Priority): String {
-        return priority.name
-    }
+    fun fromPriority(priority: Priority): String = priority.name
 
     @TypeConverter
-    fun toPriority(value: String): Priority {
-        return Priority.valueOf(value)
-    }
+    fun toPriority(value: String): Priority = Priority.valueOf(value)
 
     @TypeConverter
-    fun fromSyncState(syncState: SyncState): String {
-        return syncState.name
-    }
+    fun fromSyncState(syncState: SyncState): String = syncState.name
 
     @TypeConverter
-    fun toSyncState(value: String): SyncState {
-        return SyncState.valueOf(value)
-    }
+    fun toSyncState(value: String): SyncState = SyncState.valueOf(value)
 }

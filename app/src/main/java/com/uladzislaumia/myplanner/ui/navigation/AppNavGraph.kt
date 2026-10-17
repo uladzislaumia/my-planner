@@ -20,7 +20,7 @@ fun AppNavGraph(
     currentUser: User?,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val startDestination: Route = if (currentUser != null) Route.Home else Route.Login
 
@@ -39,14 +39,14 @@ fun AppNavGraph(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable<Route.Login> {
             LoginScreen(
                 viewModel = authViewModel,
                 onNavigateToSignUp = {
                     navController.navigate(Route.SignUp)
-                }
+                },
             )
         }
         composable<Route.SignUp> {
@@ -54,7 +54,7 @@ fun AppNavGraph(
                 viewModel = authViewModel,
                 onNavigateToLogin = {
                     navController.popBackStack()
-                }
+                },
             )
         }
         composable<Route.Home> {
@@ -62,7 +62,7 @@ fun AppNavGraph(
                 mainViewModel = mainViewModel,
                 onLogout = {
                     authViewModel.logout()
-                }
+                },
             )
         }
     }

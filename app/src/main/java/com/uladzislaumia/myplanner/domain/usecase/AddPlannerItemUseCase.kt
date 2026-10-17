@@ -4,10 +4,12 @@ import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.repository.PlannerRepository
 import javax.inject.Inject
 
-class AddPlannerItemUseCase @Inject constructor(
-    private val plannerRepository: PlannerRepository,
-) {
-    suspend operator fun invoke(item: PlannerItem) {
-        plannerRepository.addItem(item)
+class AddPlannerItemUseCase
+    @Inject
+    constructor(
+        private val plannerRepository: PlannerRepository,
+    ) {
+        suspend operator fun invoke(item: PlannerItem) {
+            plannerRepository.addItem(item)
+        }
     }
-}

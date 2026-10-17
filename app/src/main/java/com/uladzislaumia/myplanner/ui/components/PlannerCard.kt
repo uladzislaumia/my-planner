@@ -18,12 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
-import androidx.compose.ui.res.stringResource
-import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.ui.text.displayName
 
 @Composable
@@ -31,31 +31,33 @@ fun PlannerCard(
     data: PlannerItem,
     onClick: () -> Unit = {},
 ) {
-    val priorityColor = when (data.priority) {
-        Priority.HIGH -> Color.Red
-        Priority.MEDIUM -> Color.Yellow
-        Priority.LOW -> Color.Green
-    }
+    val priorityColor =
+        when (data.priority) {
+            Priority.HIGH -> Color.Red
+            Priority.MEDIUM -> Color.Yellow
+            Priority.LOW -> Color.Green
+        }
     val category = Category.findById(data.categoryId)
 
     ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     modifier = Modifier.size(12.dp),
                     shape = CircleShape,
-                    color = priorityColor
+                    color = priorityColor,
                 ) {}
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = data.title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
 
@@ -63,12 +65,12 @@ fun PlannerCard(
                 Spacer(modifier = Modifier.height(6.dp))
                 Surface(
                     shape = MaterialTheme.shapes.extraSmall,
-                    color = MaterialTheme.colorScheme.surfaceVariant
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                 ) {
                     Text(
                         text = "${category.icon} ${category.displayName()}",
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     )
                 }
             }
@@ -77,13 +79,13 @@ fun PlannerCard(
             Text(
                 text = data.description,
                 style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2
+                maxLines = 2,
             )
             if (data.isCompleted) {
                 Text(
                     text = stringResource(R.string.tasks_card_completed),
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
+                    color = Color.Gray,
                 )
             }
         }

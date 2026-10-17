@@ -8,7 +8,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class GetCurrentUserUseCaseTest {
-
     private val authRepository: AuthRepository = mockk()
     private val getCurrentUserUseCase = GetCurrentUserUseCase(authRepository)
 

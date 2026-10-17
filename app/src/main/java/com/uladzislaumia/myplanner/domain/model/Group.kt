@@ -4,5 +4,5 @@ data class Group(
     val id: String,
     val title: String,
     val members: List<User>,
-    val inviteCode: String
+    val inviteCode: String,
 )

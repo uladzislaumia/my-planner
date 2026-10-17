@@ -20,15 +20,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.ui.components.CategoryDropdown
 import com.uladzislaumia.myplanner.ui.components.DateTimePickerField
-import java.util.Date
-import androidx.compose.ui.res.stringResource
-import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.ui.text.label
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,10 +57,11 @@ fun AddTaskBottomSheet(
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 32.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 32.dp),
         ) {
             Text(
                 text = stringResource(R.string.tasks_add_title),

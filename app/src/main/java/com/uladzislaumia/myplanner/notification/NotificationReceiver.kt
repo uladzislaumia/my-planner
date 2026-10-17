@@ -14,35 +14,42 @@ import com.uladzislaumia.myplanner.R
 import timber.log.Timber
 
 class NotificationReceiver : BroadcastReceiver() {
-
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         val taskId = intent.getStringExtra(EXTRA_TASK_ID) ?: return
-        val taskTitle = intent.getStringExtra(EXTRA_TASK_TITLE) ?: context.getString(R.string.notifications_default_task)
+        val taskTitle =
+            intent.getStringExtra(EXTRA_TASK_TITLE) ?: context.getString(R.string.notifications_default_task)
         val taskDescription = intent.getStringExtra(EXTRA_TASK_DESCRIPTION) ?: ""
 
         Timber.d("NotificationReceiver onReceive for taskId: $taskId, title: $taskTitle")
 
-        val mainIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            taskId.hashCode(),
-            mainIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
+        val mainIntent =
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        val pendingIntent =
+            PendingIntent.getActivity(
+                context,
+                taskId.hashCode(),
+                mainIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
 
-        val notification = NotificationCompat.Builder(context, MyPlannerApplication.NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setColor(ContextCompat.getColor(context, R.color.notification_accent))
-            .setContentTitle(context.getString(R.string.notifications_reminder_title, taskTitle))
-            .setContentText(taskDescription)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setCategory(NotificationCompat.CATEGORY_REMINDER)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-            .build()
+        val notification =
+            NotificationCompat
+                .Builder(context, MyPlannerApplication.NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
+                .setContentTitle(context.getString(R.string.notifications_reminder_title, taskTitle))
+                .setContentText(taskDescription)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build()
 
         val notificationManager = context.getSystemService<NotificationManager>()
         notificationManager?.notify(taskId.hashCode(), notification)

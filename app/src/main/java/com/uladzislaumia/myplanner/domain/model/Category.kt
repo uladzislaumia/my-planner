@@ -17,20 +17,19 @@ data class Category(
         val HEALTH = Category("health", "Health & Self-Care", "🩺", "#009688")
         val FINANCE = Category("finance", "Finance & Bills", "💳", "#FF5722")
 
-        val DEFAULT_CATEGORIES = listOf(
-            GROCERIES,
-            TRAVEL,
-            HOME,
-            SPORTS,
-            ENTERTAINMENT,
-            SHOPPING,
-            WORK,
-            HEALTH,
-            FINANCE,
-        )
+        val DEFAULT_CATEGORIES =
+            listOf(
+                GROCERIES,
+                TRAVEL,
+                HOME,
+                SPORTS,
+                ENTERTAINMENT,
+                SHOPPING,
+                WORK,
+                HEALTH,
+                FINANCE,
+            )
 
-        fun findById(id: String?): Category? {
-            return DEFAULT_CATEGORIES.find { it.id == id }
-        }
+        fun findById(id: String?): Category? = DEFAULT_CATEGORIES.find { it.id == id }
     }
 }

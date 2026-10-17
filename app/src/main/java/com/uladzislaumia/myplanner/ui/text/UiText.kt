@@ -9,12 +9,18 @@ import androidx.compose.ui.res.stringResource
  * either a localized string resource or a ready-made message, such as one returned by a server.
  */
 sealed interface UiText {
-    data class Resource(@StringRes val id: Int) : UiText
-    data class Raw(val value: String) : UiText
+    data class Resource(
+        @StringRes val id: Int,
+    ) : UiText
+
+    data class Raw(
+        val value: String,
+    ) : UiText
 }
 
 @Composable
-fun UiText.asString(): String = when (this) {
-    is UiText.Resource -> stringResource(id)
-    is UiText.Raw -> value
-}
+fun UiText.asString(): String =
+    when (this) {
+        is UiText.Resource -> stringResource(id)
+        is UiText.Raw -> value
+    }

@@ -14,9 +14,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.uladzislaumia.myplanner.domain.model.Category
 import androidx.compose.ui.res.stringResource
 import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.ui.text.displayName
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,15 +36,17 @@ fun CategoryDropdown(
         modifier = modifier.fillMaxWidth(),
     ) {
         OutlinedTextField(
-            value = selectedCategory?.let { "${it.icon} ${it.displayName()}" } ?: stringResource(R.string.categories_none),
+            value =
+                selectedCategory?.let { "${it.icon} ${it.displayName()}" } ?: stringResource(R.string.categories_none),
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(R.string.categories_field)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-            modifier = Modifier
-                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                    .fillMaxWidth(),
         )
 
         ExposedDropdownMenu(

@@ -15,22 +15,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(authRepositoryImpl: FirebaseAuthRepositoryImpl): AuthRepository
 
     @Binds
     @Singleton
-    abstract fun bindAuthRepository(
-        authRepositoryImpl: FirebaseAuthRepositoryImpl,
-    ): AuthRepository
+    abstract fun bindPlannerRepository(plannerRepositoryImpl: OfflineFirstPlannerRepositoryImpl): PlannerRepository
 
     @Binds
     @Singleton
-    abstract fun bindPlannerRepository(
-        plannerRepositoryImpl: OfflineFirstPlannerRepositoryImpl,
-    ): PlannerRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindCategoryRepository(
-        categoryRepositoryImpl: CategoryRepositoryImpl,
-    ): CategoryRepository
+    abstract fun bindCategoryRepository(categoryRepositoryImpl: CategoryRepositoryImpl): CategoryRepository
 }

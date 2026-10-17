@@ -11,5 +11,5 @@ data class PlannerItem(
     val assigneeId: String?,
     val dueDate: Date?,
     val isCompleted: Boolean = false,
-    val priority: Priority = Priority.MEDIUM
+    val priority: Priority = Priority.MEDIUM,
 )

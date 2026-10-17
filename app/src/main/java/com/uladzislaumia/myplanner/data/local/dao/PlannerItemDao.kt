@@ -30,7 +30,10 @@ interface PlannerItemDao {
     suspend fun getItemCount(): Int
 
     @Query("UPDATE planner_items SET syncState = 'PENDING_DELETE', localUpdatedAt = :localUpdatedAt WHERE id = :id")
-    suspend fun markDeleted(id: String, localUpdatedAt: Long)
+    suspend fun markDeleted(
+        id: String,
+        localUpdatedAt: Long,
+    )
 
     @Query("SELECT * FROM planner_items WHERE syncState != 'SYNCED'")
     suspend fun getPendingSyncItems(): List<PlannerItemEntity>
@@ -40,12 +43,18 @@ interface PlannerItemDao {
 
     // Only marks as synced if the item wasn't modified again while it was being uploaded
     @Query("UPDATE planner_items SET syncState = 'SYNCED' WHERE id = :id AND localUpdatedAt = :localUpdatedAt")
-    suspend fun markSynced(id: String, localUpdatedAt: Long)
+    suspend fun markSynced(
+        id: String,
+        localUpdatedAt: Long,
+    )
 
     @Query(
         "DELETE FROM planner_items WHERE id = :id AND syncState = 'PENDING_DELETE' AND localUpdatedAt = :localUpdatedAt",
     )
-    suspend fun deleteSyncedTombstone(id: String, localUpdatedAt: Long)
+    suspend fun deleteSyncedTombstone(
+        id: String,
+        localUpdatedAt: Long,
+    )
 
     /** Applies cloud data without overwriting local changes that haven't been uploaded yet. */
     @Transaction

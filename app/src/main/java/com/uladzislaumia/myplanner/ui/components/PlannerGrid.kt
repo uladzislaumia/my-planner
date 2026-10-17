@@ -26,12 +26,12 @@ fun PlannerGrid(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(items) { item ->
             PlannerCard(
                 data = item,
-                onClick = { onItemClick(item) }
+                onClick = { onItemClick(item) },
             )
         }
     }
@@ -42,18 +42,19 @@ fun PlannerGrid(
 fun PlannerGridPreview() {
     MyPlannerTheme {
         val demoCount = 4
-        val demoItems = List(demoCount) { i ->
-            PlannerItem(
-                id = i.toString(),
-                title = "Item $i",
-                description = "Description $i",
-                categoryId = Category.GROCERIES.id,
-                groupId = null,
-                assigneeId = null,
-                dueDate = null,
-                priority = Priority.MEDIUM
-            )
-        }
+        val demoItems =
+            List(demoCount) { i ->
+                PlannerItem(
+                    id = i.toString(),
+                    title = "Item $i",
+                    description = "Description $i",
+                    categoryId = Category.GROCERIES.id,
+                    groupId = null,
+                    assigneeId = null,
+                    dueDate = null,
+                    priority = Priority.MEDIUM,
+                )
+            }
         PlannerGrid(items = demoItems)
     }
 }

@@ -49,6 +49,10 @@ android {
     }
 }
 
+ktlint {
+    version.set(libs.versions.ktlintEngine.get())
+}
+
 tasks.withType<Detekt>().configureEach {
     jvmTarget = "17"
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))

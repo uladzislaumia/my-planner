@@ -2,6 +2,7 @@ package com.uladzislaumia.myplanner.ui.viewmodel
 
 import app.cash.turbine.test
 import com.uladzislaumia.myplanner.MainDispatcherRule
+import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.AuthResult
 import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.domain.usecase.GetCurrentUserUseCase
@@ -9,6 +10,7 @@ import com.uladzislaumia.myplanner.domain.usecase.LoginUseCase
 import com.uladzislaumia.myplanner.domain.usecase.LogoutUseCase
 import com.uladzislaumia.myplanner.domain.usecase.ObserveAuthStateUseCase
 import com.uladzislaumia.myplanner.domain.usecase.SignUpUseCase
+import com.uladzislaumia.myplanner.ui.text.UiText
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -20,11 +22,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.uladzislaumia.myplanner.R
-import com.uladzislaumia.myplanner.ui.text.UiText
 
 class AuthViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -34,12 +33,13 @@ class AuthViewModelTest {
     private val getCurrentUserUseCase: GetCurrentUserUseCase = mockk()
     private val observeAuthStateUseCase: ObserveAuthStateUseCase = mockk()
 
-    private val testUser = User(
-        id = "user-1",
-        name = "John",
-        email = "john@example.com",
-        avatarUrl = null,
-    )
+    private val testUser =
+        User(
+            id = "user-1",
+            name = "John",
+            email = "john@example.com",
+            avatarUrl = null,
+        )
 
     @Before
     fun setup() {
@@ -47,130 +47,139 @@ class AuthViewModelTest {
         every { observeAuthStateUseCase() } returns flowOf(testUser)
     }
 
-    private fun createViewModel() = AuthViewModel(
-        loginUseCase = loginUseCase,
-        signUpUseCase = signUpUseCase,
-        logoutUseCase = logoutUseCase,
-        getCurrentUserUseCase = getCurrentUserUseCase,
-        observeAuthStateUseCase = observeAuthStateUseCase,
-    )
+    private fun createViewModel() =
+        AuthViewModel(
+            loginUseCase = loginUseCase,
+            signUpUseCase = signUpUseCase,
+            logoutUseCase = logoutUseCase,
+            getCurrentUserUseCase = getCurrentUserUseCase,
+            observeAuthStateUseCase = observeAuthStateUseCase,
+        )
 
     @Test
-    fun `initial uiState is Idle`() = runTest {
-        val viewModel = createViewModel()
+    fun `initial uiState is Idle`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Idle, but was $state", state is AuthUiState.Idle)
-        }
-    }
-
-    @Test
-    fun `login with empty fields sets Error state`() = runTest {
-        val viewModel = createViewModel()
-
-        viewModel.login("", "password123")
-
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
-            if (state is AuthUiState.Error) {
-                assertEquals(UiText.Resource(R.string.auth_error_empty_credentials), state.message)
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Idle, but was $state", state is AuthUiState.Idle)
             }
         }
-        coVerify(exactly = 0) { loginUseCase(any(), any()) }
-    }
 
     @Test
-    fun `login success emits Success state with user`() = runTest {
-        coEvery { loginUseCase("john@example.com", "password123") } returns AuthResult.Success(testUser)
-        val viewModel = createViewModel()
+    fun `login with empty fields sets Error state`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.login("john@example.com", "password123")
+            viewModel.login("", "password123")
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Success, but was $state", state is AuthUiState.Success)
-            if (state is AuthUiState.Success) {
-                assertEquals(testUser, state.user)
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
+                if (state is AuthUiState.Error) {
+                    assertEquals(UiText.Resource(R.string.auth_error_empty_credentials), state.message)
+                }
+            }
+            coVerify(exactly = 0) { loginUseCase(any(), any()) }
+        }
+
+    @Test
+    fun `login success emits Success state with user`() =
+        runTest {
+            coEvery { loginUseCase("john@example.com", "password123") } returns AuthResult.Success(testUser)
+            val viewModel = createViewModel()
+
+            viewModel.login("john@example.com", "password123")
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Success, but was $state", state is AuthUiState.Success)
+                if (state is AuthUiState.Success) {
+                    assertEquals(testUser, state.user)
+                }
             }
         }
-    }
 
     @Test
-    fun `login failure emits Error state`() = runTest {
-        val exception = Exception("Invalid credentials")
-        coEvery { loginUseCase("john@example.com", "wrong") } returns AuthResult.Error(exception)
-        val viewModel = createViewModel()
+    fun `login failure emits Error state`() =
+        runTest {
+            val exception = Exception("Invalid credentials")
+            coEvery { loginUseCase("john@example.com", "wrong") } returns AuthResult.Error(exception)
+            val viewModel = createViewModel()
 
-        viewModel.login("john@example.com", "wrong")
+            viewModel.login("john@example.com", "wrong")
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
-            if (state is AuthUiState.Error) {
-                assertEquals(UiText.Raw("Invalid credentials"), state.message)
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
+                if (state is AuthUiState.Error) {
+                    assertEquals(UiText.Raw("Invalid credentials"), state.message)
+                }
             }
         }
-    }
 
     @Test
-    fun `signUp with blank fields sets Error state`() = runTest {
-        val viewModel = createViewModel()
+    fun `signUp with blank fields sets Error state`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.signUp("", "john@example.com", "password123")
+            viewModel.signUp("", "john@example.com", "password123")
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
-            if (state is AuthUiState.Error) {
-                assertEquals(UiText.Resource(R.string.auth_error_fields_required), state.message)
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
+                if (state is AuthUiState.Error) {
+                    assertEquals(UiText.Resource(R.string.auth_error_fields_required), state.message)
+                }
+            }
+            coVerify(exactly = 0) { signUpUseCase(any(), any(), any()) }
+        }
+
+    @Test
+    fun `signUp success emits Success state with user`() =
+        runTest {
+            coEvery { signUpUseCase("John", "john@example.com", "password123") } returns AuthResult.Success(testUser)
+            val viewModel = createViewModel()
+
+            viewModel.signUp("John", "john@example.com", "password123")
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Success, but was $state", state is AuthUiState.Success)
+                if (state is AuthUiState.Success) {
+                    assertEquals(testUser, state.user)
+                }
             }
         }
-        coVerify(exactly = 0) { signUpUseCase(any(), any(), any()) }
-    }
 
     @Test
-    fun `signUp success emits Success state with user`() = runTest {
-        coEvery { signUpUseCase("John", "john@example.com", "password123") } returns AuthResult.Success(testUser)
-        val viewModel = createViewModel()
+    fun `logout invokes logoutUseCase and resets uiState to Idle`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.signUp("John", "john@example.com", "password123")
+            viewModel.logout()
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Success, but was $state", state is AuthUiState.Success)
-            if (state is AuthUiState.Success) {
-                assertEquals(testUser, state.user)
+            coVerify { logoutUseCase() }
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Idle, but was $state", state is AuthUiState.Idle)
             }
         }
-    }
 
     @Test
-    fun `logout invokes logoutUseCase and resets uiState to Idle`() = runTest {
-        val viewModel = createViewModel()
+    fun `clearError resets Error state to Idle`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.logout()
+            viewModel.login("", "") // Triggers Error
+            viewModel.clearError()
 
-        coVerify { logoutUseCase() }
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Idle, but was $state", state is AuthUiState.Idle)
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected AuthUiState.Idle, but was $state", state is AuthUiState.Idle)
+            }
         }
-    }
-
-    @Test
-    fun `clearError resets Error state to Idle`() = runTest {
-        val viewModel = createViewModel()
-
-        viewModel.login("", "") // Triggers Error
-        viewModel.clearError()
-
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected AuthUiState.Idle, but was $state", state is AuthUiState.Idle)
-        }
-    }
 
     @Test
     fun `currentUser returns user from getCurrentUserUseCase`() {
@@ -180,13 +189,14 @@ class AuthViewModelTest {
     }
 
     @Test
-    fun `authState observes user state from observeAuthStateUseCase`() = runTest {
-        val viewModel = createViewModel()
+    fun `authState observes user state from observeAuthStateUseCase`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.authState.test {
-            val user = awaitItem()
-            assertEquals(testUser, user)
-            awaitComplete()
+            viewModel.authState.test {
+                val user = awaitItem()
+                assertEquals(testUser, user)
+                awaitComplete()
+            }
         }
-    }
 }

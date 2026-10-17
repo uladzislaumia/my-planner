@@ -25,14 +25,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.uladzislaumia.myplanner.R
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import androidx.compose.ui.res.stringResource
-import com.uladzislaumia.myplanner.R
-import java.text.DateFormat
 
 private const val DEFAULT_HOUR = 9
 
@@ -49,17 +49,18 @@ fun DateTimePickerField(
     val dateFormat = remember { DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
 
-    val calendar = remember(selectedDateTime) {
-        Calendar.getInstance().apply {
-            if (selectedDateTime != null) {
-                time = selectedDateTime
-            } else {
-                set(Calendar.HOUR_OF_DAY, DEFAULT_HOUR)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
+    val calendar =
+        remember(selectedDateTime) {
+            Calendar.getInstance().apply {
+                if (selectedDateTime != null) {
+                    time = selectedDateTime
+                } else {
+                    set(Calendar.HOUR_OF_DAY, DEFAULT_HOUR)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
             }
         }
-    }
 
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -95,9 +96,10 @@ fun DateTimePickerField(
     }
 
     if (showDatePicker) {
-        val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = calendar.timeInMillis,
-        )
+        val datePickerState =
+            rememberDatePickerState(
+                initialSelectedDateMillis = calendar.timeInMillis,
+            )
 
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
@@ -107,17 +109,18 @@ fun DateTimePickerField(
                         val selectedMillis = datePickerState.selectedDateMillis
                         if (selectedMillis != null) {
                             val pickedCal = Calendar.getInstance().apply { timeInMillis = selectedMillis }
-                            val newCal = Calendar.getInstance().apply {
-                                if (selectedDateTime != null) time = selectedDateTime
-                                set(Calendar.YEAR, pickedCal.get(Calendar.YEAR))
-                                set(Calendar.MONTH, pickedCal.get(Calendar.MONTH))
-                                set(Calendar.DAY_OF_MONTH, pickedCal.get(Calendar.DAY_OF_MONTH))
-                                if (selectedDateTime == null) {
-                                    set(Calendar.HOUR_OF_DAY, DEFAULT_HOUR)
-                                    set(Calendar.MINUTE, 0)
-                                    set(Calendar.SECOND, 0)
+                            val newCal =
+                                Calendar.getInstance().apply {
+                                    if (selectedDateTime != null) time = selectedDateTime
+                                    set(Calendar.YEAR, pickedCal.get(Calendar.YEAR))
+                                    set(Calendar.MONTH, pickedCal.get(Calendar.MONTH))
+                                    set(Calendar.DAY_OF_MONTH, pickedCal.get(Calendar.DAY_OF_MONTH))
+                                    if (selectedDateTime == null) {
+                                        set(Calendar.HOUR_OF_DAY, DEFAULT_HOUR)
+                                        set(Calendar.MINUTE, 0)
+                                        set(Calendar.SECOND, 0)
+                                    }
                                 }
-                            }
                             onDateTimeSelected(newCal.time)
                         }
                         showDatePicker = false
@@ -137,25 +140,27 @@ fun DateTimePickerField(
     }
 
     if (showTimePicker) {
-        val timePickerState = rememberTimePickerState(
-            initialHour = calendar.get(Calendar.HOUR_OF_DAY),
-            initialMinute = calendar.get(Calendar.MINUTE),
-            is24Hour = true,
-        )
+        val timePickerState =
+            rememberTimePickerState(
+                initialHour = calendar.get(Calendar.HOUR_OF_DAY),
+                initialMinute = calendar.get(Calendar.MINUTE),
+                is24Hour = true,
+            )
 
         AlertDialog(
             onDismissRequest = { showTimePicker = false },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val newCal = Calendar.getInstance().apply {
-                            if (selectedDateTime != null) {
-                                time = selectedDateTime
+                        val newCal =
+                            Calendar.getInstance().apply {
+                                if (selectedDateTime != null) {
+                                    time = selectedDateTime
+                                }
+                                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                                set(Calendar.MINUTE, timePickerState.minute)
+                                set(Calendar.SECOND, 0)
                             }
-                            set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                            set(Calendar.MINUTE, timePickerState.minute)
-                            set(Calendar.SECOND, 0)
-                        }
                         onDateTimeSelected(newCal.time)
                         showTimePicker = false
                     },

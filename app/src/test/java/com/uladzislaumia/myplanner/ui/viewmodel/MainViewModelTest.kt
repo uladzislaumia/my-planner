@@ -24,7 +24,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class MainViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -35,29 +34,31 @@ class MainViewModelTest {
     private val getCategoriesUseCase: GetCategoriesUseCase = mockk()
     private val addCategoryUseCase: AddCategoryUseCase = mockk(relaxed = true)
 
-    private val testItem1 = PlannerItem(
-        id = "1",
-        title = "Task 1",
-        description = "Desc 1",
-        categoryId = "groceries",
-        groupId = null,
-        assigneeId = null,
-        dueDate = null,
-        priority = Priority.HIGH,
-        isCompleted = false,
-    )
+    private val testItem1 =
+        PlannerItem(
+            id = "1",
+            title = "Task 1",
+            description = "Desc 1",
+            categoryId = "groceries",
+            groupId = null,
+            assigneeId = null,
+            dueDate = null,
+            priority = Priority.HIGH,
+            isCompleted = false,
+        )
 
-    private val testItem2 = PlannerItem(
-        id = "2",
-        title = "Task 2",
-        description = "Desc 2",
-        categoryId = "work",
-        groupId = null,
-        assigneeId = null,
-        dueDate = null,
-        priority = Priority.LOW,
-        isCompleted = false,
-    )
+    private val testItem2 =
+        PlannerItem(
+            id = "2",
+            title = "Task 2",
+            description = "Desc 2",
+            categoryId = "work",
+            groupId = null,
+            assigneeId = null,
+            dueDate = null,
+            priority = Priority.LOW,
+            isCompleted = false,
+        )
 
     @Before
     fun setup() {
@@ -65,118 +66,130 @@ class MainViewModelTest {
         coEvery { getCategoriesUseCase() } returns flowOf(Category.DEFAULT_CATEGORIES)
     }
 
-    private fun createViewModel() = MainViewModel(
-        getPlannerItemsUseCase = getPlannerItemsUseCase,
-        addPlannerItemUseCase = addPlannerItemUseCase,
-        updatePlannerItemUseCase = updatePlannerItemUseCase,
-        deletePlannerItemUseCase = deletePlannerItemUseCase,
-        getCategoriesUseCase = getCategoriesUseCase,
-        addCategoryUseCase = addCategoryUseCase,
-    )
+    private fun createViewModel() =
+        MainViewModel(
+            getPlannerItemsUseCase = getPlannerItemsUseCase,
+            addPlannerItemUseCase = addPlannerItemUseCase,
+            updatePlannerItemUseCase = updatePlannerItemUseCase,
+            deletePlannerItemUseCase = deletePlannerItemUseCase,
+            getCategoriesUseCase = getCategoriesUseCase,
+            addCategoryUseCase = addCategoryUseCase,
+        )
 
     @Test
-    fun `categories emits list of categories from getCategoriesUseCase`() = runTest {
-        val viewModel = createViewModel()
+    fun `categories emits list of categories from getCategoriesUseCase`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.categories.test {
-            val categoryList = awaitItem()
-            assertEquals(Category.DEFAULT_CATEGORIES, categoryList)
-        }
-    }
-
-    @Test
-    fun `uiState emits Success with all items initially`() = runTest {
-        val viewModel = createViewModel()
-
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
-            if (state is MainUiState.Success) {
-                assertEquals(listOf(testItem1, testItem2), state.items)
+            viewModel.categories.test {
+                val categoryList = awaitItem()
+                assertEquals(Category.DEFAULT_CATEGORIES, categoryList)
             }
         }
-    }
 
     @Test
-    fun `selectCategory filters items by categoryId`() = runTest {
-        val viewModel = createViewModel()
+    fun `uiState emits Success with all items initially`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.selectCategory("groceries")
-
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
-            if (state is MainUiState.Success) {
-                assertEquals(listOf(testItem1), state.items)
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
+                if (state is MainUiState.Success) {
+                    assertEquals(listOf(testItem1, testItem2), state.items)
+                }
             }
         }
-    }
 
     @Test
-    fun `uiState emits Error when getPlannerItemsUseCase throws exception`() = runTest {
-        coEvery { getPlannerItemsUseCase() } returns flow { throw IllegalStateException("Database Connection Failed") }
-        val viewModel = createViewModel()
+    fun `selectCategory filters items by categoryId`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue("Expected MainUiState.Error, but was $state", state is MainUiState.Error)
-            if (state is MainUiState.Error) {
-                assertEquals("Database Connection Failed", state.message)
+            viewModel.selectCategory("groceries")
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
+                if (state is MainUiState.Success) {
+                    assertEquals(listOf(testItem1), state.items)
+                }
             }
         }
-    }
 
     @Test
-    fun `addCategory invokes addCategoryUseCase when name is valid`() = runTest {
-        val viewModel = createViewModel()
+    fun `uiState emits Error when getPlannerItemsUseCase throws exception`() =
+        runTest {
+            coEvery { getPlannerItemsUseCase() } returns
+                flow { throw IllegalStateException("Database Connection Failed") }
+            val viewModel = createViewModel()
 
-        viewModel.addCategory("Shopping", "🛍️", "#3F51B5")
-
-        coVerify { addCategoryUseCase(any()) }
-    }
-
-    @Test
-    fun `addCategory does not invoke addCategoryUseCase when name is blank`() = runTest {
-        val viewModel = createViewModel()
-
-        viewModel.addCategory("   ", "🛍️", "#3F51B5")
-
-        coVerify(exactly = 0) { addCategoryUseCase(any()) }
-    }
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected MainUiState.Error, but was $state", state is MainUiState.Error)
+                if (state is MainUiState.Error) {
+                    assertEquals("Database Connection Failed", state.message)
+                }
+            }
+        }
 
     @Test
-    fun `addItem invokes addPlannerItemUseCase when title is valid`() = runTest {
-        val viewModel = createViewModel()
+    fun `addCategory invokes addCategoryUseCase when name is valid`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.addItem("New Task", "New Desc", Priority.MEDIUM, "groceries")
+            viewModel.addCategory("Shopping", "🛍️", "#3F51B5")
 
-        coVerify { addPlannerItemUseCase(any()) }
-    }
-
-    @Test
-    fun `addItem does not invoke addPlannerItemUseCase when title is blank`() = runTest {
-        val viewModel = createViewModel()
-
-        viewModel.addItem("  ", "New Desc", Priority.MEDIUM, "groceries")
-
-        coVerify(exactly = 0) { addPlannerItemUseCase(any()) }
-    }
+            coVerify { addCategoryUseCase(any()) }
+        }
 
     @Test
-    fun `updateItem invokes updatePlannerItemUseCase`() = runTest {
-        val viewModel = createViewModel()
+    fun `addCategory does not invoke addCategoryUseCase when name is blank`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.updateItem(testItem1)
+            viewModel.addCategory("   ", "🛍️", "#3F51B5")
 
-        coVerify { updatePlannerItemUseCase(testItem1) }
-    }
+            coVerify(exactly = 0) { addCategoryUseCase(any()) }
+        }
 
     @Test
-    fun `deleteItem invokes deletePlannerItemUseCase`() = runTest {
-        val viewModel = createViewModel()
+    fun `addItem invokes addPlannerItemUseCase when title is valid`() =
+        runTest {
+            val viewModel = createViewModel()
 
-        viewModel.deleteItem("1")
+            viewModel.addItem("New Task", "New Desc", Priority.MEDIUM, "groceries")
 
-        coVerify { deletePlannerItemUseCase("1") }
-    }
+            coVerify { addPlannerItemUseCase(any()) }
+        }
+
+    @Test
+    fun `addItem does not invoke addPlannerItemUseCase when title is blank`() =
+        runTest {
+            val viewModel = createViewModel()
+
+            viewModel.addItem("  ", "New Desc", Priority.MEDIUM, "groceries")
+
+            coVerify(exactly = 0) { addPlannerItemUseCase(any()) }
+        }
+
+    @Test
+    fun `updateItem invokes updatePlannerItemUseCase`() =
+        runTest {
+            val viewModel = createViewModel()
+
+            viewModel.updateItem(testItem1)
+
+            coVerify { updatePlannerItemUseCase(testItem1) }
+        }
+
+    @Test
+    fun `deleteItem invokes deletePlannerItemUseCase`() =
+        runTest {
+            val viewModel = createViewModel()
+
+            viewModel.deleteItem("1")
+
+            coVerify { deletePlannerItemUseCase("1") }
+        }
 }

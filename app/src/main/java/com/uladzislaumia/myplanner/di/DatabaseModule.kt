@@ -14,20 +14,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.getDatabase(context)
-    }
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): AppDatabase = AppDatabase.getDatabase(context)
 
     @Provides
-    fun providePlannerItemDao(database: AppDatabase): PlannerItemDao {
-        return database.plannerItemDao()
-    }
+    fun providePlannerItemDao(database: AppDatabase): PlannerItemDao = database.plannerItemDao()
 
     @Provides
-    fun provideCategoryDao(database: AppDatabase): CategoryDao {
-        return database.categoryDao()
-    }
+    fun provideCategoryDao(database: AppDatabase): CategoryDao = database.categoryDao()
 }

@@ -7,14 +7,14 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class LogoutUseCaseTest {
-
     private val authRepository: AuthRepository = mockk(relaxed = true)
     private val logoutUseCase = LogoutUseCase(authRepository)
 
     @Test
-    fun `invoke calls logout on repository`() = runTest {
-        logoutUseCase()
+    fun `invoke calls logout on repository`() =
+        runTest {
+            logoutUseCase()
 
-        coVerify { authRepository.logout() }
-    }
+            coVerify { authRepository.logout() }
+        }
 }
