@@ -35,6 +35,8 @@ import com.uladzislaumia.myplanner.ui.sheets.AddTaskBottomSheet
 import com.uladzislaumia.myplanner.ui.sheets.EditTaskBottomSheet
 import com.uladzislaumia.myplanner.ui.viewmodel.MainUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,17 +57,17 @@ fun HomeScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("My Planner") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     TextButton(onClick = onLogout) {
-                        Text("Logout", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(R.string.home_logout), color = MaterialTheme.colorScheme.error)
                     }
                 },
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddSheet = true }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
+                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.home_add_task))
             }
         },
     ) { innerPadding ->
@@ -100,7 +102,7 @@ fun HomeScreen(
                     }
                     is MainUiState.Error -> {
                         Text(
-                            text = "Error: ${state.message}",
+                            text = stringResource(R.string.home_error_with_message, state.message),
                             color = MaterialTheme.colorScheme.error,
                             modifier = Modifier.align(Alignment.Center),
                         )

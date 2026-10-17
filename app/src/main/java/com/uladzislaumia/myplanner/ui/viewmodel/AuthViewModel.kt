@@ -1,5 +1,6 @@
 package com.uladzislaumia.myplanner.ui.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uladzislaumia.myplanner.domain.model.AuthResult
@@ -12,12 +13,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.UiText
 
 sealed class AuthUiState {
     object Idle : AuthUiState()
     object Loading : AuthUiState()
     data class Success(val user: User) : AuthUiState()
-    data class Error(val message: String) : AuthUiState()
+    data class Error(val message: UiText) : AuthUiState()
 }
 
 @HiltViewModel
@@ -40,7 +43,7 @@ class AuthViewModel @Inject constructor(
     fun login(email: String, password: String) {
         Timber.d("Login attempt for email: $email")
         if (email.isBlank() || password.isBlank()) {
-            _uiState.value = AuthUiState.Error("Email and password cannot be empty")
+            _uiState.value = AuthUiState.Error(UiText.Resource(R.string.auth_error_empty_credentials))
             return
         }
 
@@ -53,7 +56,7 @@ class AuthViewModel @Inject constructor(
                 }
                 is AuthResult.Error -> {
                     Timber.e(result.exception, "Login failed")
-                    _uiState.value = AuthUiState.Error(result.exception.localizedMessage ?: "Login failed")
+                    _uiState.value = AuthUiState.Error(result.exception.serverMessageOr(R.string.auth_error_login_failed))
                 }
             }
         }
@@ -62,7 +65,7 @@ class AuthViewModel @Inject constructor(
     fun signUp(name: String, email: String, password: String) {
         Timber.d("SignUp attempt for email: $email")
         if (name.isBlank() || email.isBlank() || password.isBlank()) {
-            _uiState.value = AuthUiState.Error("All fields are required")
+            _uiState.value = AuthUiState.Error(UiText.Resource(R.string.auth_error_fields_required))
             return
         }
 
@@ -75,7 +78,7 @@ class AuthViewModel @Inject constructor(
                 }
                 is AuthResult.Error -> {
                     Timber.e(result.exception, "SignUp failed")
-                    _uiState.value = AuthUiState.Error(result.exception.localizedMessage ?: "Registration failed")
+                    _uiState.value = AuthUiState.Error(result.exception.serverMessageOr(R.string.auth_error_signup_failed))
                 }
             }
         }
@@ -95,3 +98,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 }
+
+/** Prefer the message from the auth provider; fall back to a localized generic one. */
+private fun Throwable.serverMessageOr(@StringRes fallback: Int): UiText =
+    localizedMessage?.let { UiText.Raw(it) } ?: UiText.Resource(fallback)

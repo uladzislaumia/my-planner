@@ -9,6 +9,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.ui.viewmodel.AuthUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.AuthViewModel
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.asString
 
 @Composable
 fun LoginScreen(
@@ -41,7 +44,7 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Welcome Back",
+                    text = stringResource(R.string.auth_login_title),
                     style = MaterialTheme.typography.headlineMedium
                 )
 
@@ -51,7 +54,7 @@ fun LoginScreen(
                         email = it
                         viewModel.clearError()
                     },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.auth_email)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -62,7 +65,7 @@ fun LoginScreen(
                         password = it
                         viewModel.clearError()
                     },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(R.string.auth_password)) },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true
@@ -71,7 +74,7 @@ fun LoginScreen(
                 when (val state = uiState) {
                     is AuthUiState.Error -> {
                         Text(
-                            text = state.message,
+                            text = state.message.asString(),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.fillMaxWidth()
@@ -87,12 +90,12 @@ fun LoginScreen(
                         onClick = { viewModel.login(email, password) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Login")
+                        Text(stringResource(R.string.auth_login_button))
                     }
                 }
 
                 TextButton(onClick = onNavigateToSignUp) {
-                    Text("Don't have an account? Sign Up")
+                    Text(stringResource(R.string.auth_login_to_signup))
                 }
             }
         }

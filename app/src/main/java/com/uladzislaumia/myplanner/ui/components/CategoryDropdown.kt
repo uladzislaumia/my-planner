@@ -15,6 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.uladzislaumia.myplanner.domain.model.Category
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.displayName
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,10 +36,10 @@ fun CategoryDropdown(
         modifier = modifier.fillMaxWidth(),
     ) {
         OutlinedTextField(
-            value = selectedCategory?.let { "${it.icon} ${it.name}" } ?: "No Category",
+            value = selectedCategory?.let { "${it.icon} ${it.displayName()}" } ?: stringResource(R.string.categories_none),
             onValueChange = {},
             readOnly = true,
-            label = { Text("Category") },
+            label = { Text(stringResource(R.string.categories_field)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
             modifier = Modifier
@@ -49,7 +52,7 @@ fun CategoryDropdown(
             onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text("None") },
+                text = { Text(stringResource(R.string.categories_none_option)) },
                 onClick = {
                     onCategorySelected(null)
                     expanded = false
@@ -57,7 +60,7 @@ fun CategoryDropdown(
             )
             categories.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text("${category.icon} ${category.name}") },
+                    text = { Text("${category.icon} ${category.displayName()}") },
                     onClick = {
                         onCategorySelected(category.id)
                         expanded = false

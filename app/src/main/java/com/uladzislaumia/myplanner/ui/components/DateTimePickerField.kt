@@ -30,6 +30,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
+import java.text.DateFormat
 
 private const val DEFAULT_HOUR = 9
 
@@ -43,7 +46,7 @@ fun DateTimePickerField(
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
-    val dateFormat = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()) }
+    val dateFormat = remember { DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()) }
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
 
     val calendar = remember(selectedDateTime) {
@@ -65,7 +68,7 @@ fun DateTimePickerField(
     ) {
         if (selectedDateTime == null) {
             OutlinedButton(onClick = { showDatePicker = true }) {
-                Text("📅 Select Date")
+                Text(stringResource(R.string.tasks_select_date))
             }
         } else {
             AssistChip(
@@ -78,7 +81,7 @@ fun DateTimePickerField(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Clear,
-                            contentDescription = "Clear Date",
+                            contentDescription = stringResource(R.string.tasks_clear_date),
                         )
                     }
                 },
@@ -120,12 +123,12 @@ fun DateTimePickerField(
                         showDatePicker = false
                     },
                 ) {
-                    Text("OK")
+                    Text(stringResource(R.string.common_ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.common_cancel))
                 }
             },
         ) {
@@ -157,12 +160,12 @@ fun DateTimePickerField(
                         showTimePicker = false
                     },
                 ) {
-                    Text("OK")
+                    Text(stringResource(R.string.common_ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showTimePicker = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.common_cancel))
                 }
             },
             text = {

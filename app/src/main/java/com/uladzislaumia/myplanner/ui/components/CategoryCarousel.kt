@@ -30,6 +30,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.displayName
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,12 +82,12 @@ fun CategoryCarousel(
                     Text("✨", style = MaterialTheme.typography.titleMedium)
                     Column {
                         Text(
-                            text = "All Tasks",
+                            text = stringResource(R.string.categories_all_tasks),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "${allItems.size} tasks",
+                            text = pluralStringResource(R.plurals.categories_tasks_count, allItems.size, allItems.size),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -137,14 +141,14 @@ fun CategoryCarousel(
                     Text(category.icon, style = MaterialTheme.typography.titleMedium)
                     Column {
                         Text(
-                            text = category.name,
+                            text = category.displayName(),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = "$categoryTaskCount tasks",
+                            text = pluralStringResource(R.plurals.categories_tasks_count, categoryTaskCount, categoryTaskCount),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -174,12 +178,12 @@ fun CategoryCarousel(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add Category",
+                        contentDescription = stringResource(R.string.categories_add),
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Add Category",
+                        text = stringResource(R.string.categories_add),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary

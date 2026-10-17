@@ -30,6 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
 
 private val PRESET_EMOJIS = listOf(
     "🛒", "✈️", "🏠", "🏋️‍♂️", "🎬", "🛍️", "💼", "🩺", "💳",
@@ -60,7 +62,7 @@ fun CreateCategoryDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
         modifier = Modifier.padding(24.dp),
-        title = { Text("Create New Category") },
+        title = { Text(stringResource(R.string.categories_create_title)) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -69,12 +71,12 @@ fun CreateCategoryDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Category Name") },
+                    label = { Text(stringResource(R.string.categories_create_name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                Text("Icon:", style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.categories_create_icon), style = MaterialTheme.typography.labelMedium)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
@@ -88,7 +90,7 @@ fun CreateCategoryDialog(
                     }
                 }
 
-                Text("Color:", style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.categories_create_color), style = MaterialTheme.typography.labelMedium)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxWidth()
@@ -128,12 +130,12 @@ fun CreateCategoryDialog(
                 },
                 enabled = name.isNotBlank()
             ) {
-                Text("Create")
+                Text(stringResource(R.string.common_create))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.common_cancel))
             }
         }
     )

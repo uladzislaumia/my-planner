@@ -36,6 +36,7 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 *   **Offline-First Cloud Sync:** Room is the single source of truth; changes are pushed to Firestore in the background by **WorkManager** — batched writes, network constraints, retries with backoff. Works offline, survives app restarts, and tracks deletions with tombstones so nothing comes back.
 *   **Accounts:** Email & password sign-up and login with Firebase Auth; each user's data is stored in their own Firestore collection.
 *   **Demo Data:** New accounts start with 5 sample tasks.
+*   **Localization:** English, Spanish and Russian, with per-app language selection on Android 13+.
 *   **Polished App Icon:** Adaptive launcher icon with a monochrome layer for Android 13+ themed icons and a dedicated status bar notification icon.
 *   **Stability & Insights:** Firebase Crashlytics & Analytics with a custom Timber `CrashlyticsTree`, Google Play Services availability check.
 *   **Tested:** Unit tests for use cases and ViewModels (MockK, Turbine, coroutines-test).
@@ -94,13 +95,15 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **GraphQL Integration** (Apollo Client).
 - [ ] **Messaging** (Push via FCM).
 - [ ] **Reopen Completed Tasks** (One-tap "Do it again" for tasks you finished before, e.g. "Clean the coffee machine" or "Pay for a subscription": reopen on demand, optionally set a new deadline and reminder, keep the last completion date).
+- [ ] **Localized Auth Errors** (Map Firebase Auth exceptions — network, weak password, email in use, invalid credentials — to own localized strings instead of showing the raw English `localizedMessage`; use one message for wrong password / unknown user to avoid account enumeration).
+- [ ] **Custom Category Chip on Task Cards** (Fix: `PlannerCard` resolves categories via `Category.findById`, which only knows built-in ones, so tasks with a custom category show no chip; look them up in the categories list from `MainViewModel` instead).
 - [ ] **Optimistic UI for Task Edits** (Fix stale data when reopening the edit sheet right after closing it: overlay recent edits in `MainViewModel` until Room emits them, open the sheet by task id).
 - [ ] **Real-time Cloud Sync** (Replace one-shot Firestore `get()` with `addSnapshotListener` wrapped in `callbackFlow`: live updates from other devices, remote deletions via `DocumentChange.REMOVED`, fewer billed reads).
 - [ ] **Secure Logout Data Wipe** (Cancel pending sync work, clear Room tables and cancel scheduled reminders on logout to prevent data leaking between accounts).
 - [ ] **Reminder Restoration** (Reschedule AlarmManager reminders from Room after device reboot, app update and exact alarm permission change via `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED` receiver).
-- [ ] **Localization** (Move hardcoded UI strings into `strings.xml` with `stringResource()`, plurals for task counts, translations, per-app language picker via `localeConfig`).
 - [ ] **Compose UI Testing** (UI tests for screens and bottom sheets).
 - [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config).
+- [ ] **License** (Choose an open-source license, e.g. MIT, add a `LICENSE` file and a license badge).
 - [ ] **Multimodularity** (Refactoring into `:core` and `:feature` modules).
 
 ## ⚙️ Development Requirements

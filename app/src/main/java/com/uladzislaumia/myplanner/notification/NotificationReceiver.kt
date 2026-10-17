@@ -17,7 +17,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val taskId = intent.getStringExtra(EXTRA_TASK_ID) ?: return
-        val taskTitle = intent.getStringExtra(EXTRA_TASK_TITLE) ?: "Task Reminder"
+        val taskTitle = intent.getStringExtra(EXTRA_TASK_TITLE) ?: context.getString(R.string.notifications_default_task)
         val taskDescription = intent.getStringExtra(EXTRA_TASK_DESCRIPTION) ?: ""
 
         Timber.d("NotificationReceiver onReceive for taskId: $taskId, title: $taskTitle")
@@ -35,7 +35,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, MyPlannerApplication.NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.notification_accent))
-            .setContentTitle("⏰ Reminder: $taskTitle")
+            .setContentTitle(context.getString(R.string.notifications_reminder_title, taskTitle))
             .setContentText(taskDescription)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)

@@ -1,0 +1,79 @@
+<resources>
+    <!-- Common actions -->
+    <string name="common_ok">ОК</string>
+    <string name="common_cancel">Отмена</string>
+    <string name="common_create">Создать</string>
+
+    <!-- Auth -->
+    <string name="auth_login_title">С возвращением</string>
+    <string name="auth_signup_title">Создать аккаунт</string>
+    <string name="auth_email">Электронная почта</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_full_name">Имя и фамилия</string>
+    <string name="auth_login_button">Войти</string>
+    <string name="auth_signup_button">Зарегистрироваться</string>
+    <string name="auth_login_to_signup">Нет аккаунта? Зарегистрироваться</string>
+    <string name="auth_signup_to_login">Уже есть аккаунт? Войти</string>
+    <string name="auth_error_empty_credentials">Введите электронную почту и пароль</string>
+    <string name="auth_error_fields_required">Заполните все поля</string>
+    <string name="auth_error_login_failed">Не удалось войти</string>
+    <string name="auth_error_signup_failed">Не удалось зарегистрироваться</string>
+
+    <!-- Home -->
+    <string name="home_logout">Выйти</string>
+    <string name="home_add_task">Добавить задачу</string>
+    <string name="home_error_with_message">Ошибка: %1$s</string>
+
+    <!-- Categories -->
+    <string name="categories_all_tasks">Все задачи</string>
+    <string name="categories_add">Добавить категорию</string>
+    <string name="categories_field">Категория</string>
+    <string name="categories_none">Без категории</string>
+    <string name="categories_none_option">Нет</string>
+    <plurals name="categories_tasks_count">
+        <item quantity="one">%d задача</item>
+        <item quantity="few">%d задачи</item>
+        <item quantity="many">%d задач</item>
+        <item quantity="other">%d задачи</item>
+    </plurals>
+    <string name="categories_default_groceries">Продукты</string>
+    <string name="categories_default_travel">Путешествия</string>
+    <string name="categories_default_home">Дом и быт</string>
+    <string name="categories_default_sports">Спорт и фитнес</string>
+    <string name="categories_default_entertainment">Развлечения</string>
+    <string name="categories_default_shopping">Покупки</string>
+    <string name="categories_default_work">Работа и учёба</string>
+    <string name="categories_default_health">Здоровье и забота о себе</string>
+    <string name="categories_default_finance">Финансы и счета</string>
+
+    <!-- Create category dialog -->
+    <string name="categories_create_title">Новая категория</string>
+    <string name="categories_create_name">Название категории</string>
+    <string name="categories_create_icon">Значок:</string>
+    <string name="categories_create_color">Цвет:</string>
+
+    <!-- Task sheets -->
+    <string name="tasks_add_title">Новая задача 📝</string>
+    <string name="tasks_edit_title">Редактировать задачу ✏️</string>
+    <string name="tasks_field_title">Название задачи</string>
+    <string name="tasks_field_description">Описание</string>
+    <string name="tasks_label_priority">Приоритет:</string>
+    <string name="tasks_label_deadline">Срок и напоминание:</string>
+    <string name="tasks_label_status">Статус:</string>
+    <string name="tasks_priority_low">Низкий</string>
+    <string name="tasks_priority_medium">Средний</string>
+    <string name="tasks_priority_high">Высокий</string>
+    <string name="tasks_status_active">⏳ Активна</string>
+    <string name="tasks_status_completed">✅ Выполнена</string>
+    <string name="tasks_card_completed">Выполнено</string>
+    <string name="tasks_create_button">Создать задачу</string>
+    <string name="tasks_delete_button">Удалить задачу</string>
+    <string name="tasks_select_date">📅 Выбрать дату</string>
+    <string name="tasks_clear_date">Очистить дату</string>
+
+    <!-- Notifications -->
+    <string name="notifications_channel_name">Напоминания о задачах</string>
+    <string name="notifications_channel_description">Уведомления о приближающихся сроках задач</string>
+    <string name="notifications_reminder_title">⏰ Напоминание: %1$s</string>
+    <string name="notifications_default_task">Напоминание о задаче</string>
+</resources>

@@ -43,6 +43,10 @@ android {
         compose = true
         buildConfig = true
     }
+    androidResources {
+        // Lists supported languages for the per-app language setting (Android 13+)
+        generateLocaleConfig = true
+    }
 }
 
 tasks.withType<Detekt>().configureEach {

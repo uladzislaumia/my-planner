@@ -20,6 +20,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.UiText
 
 class AuthViewModelTest {
 
@@ -73,7 +75,7 @@ class AuthViewModelTest {
             val state = awaitItem()
             assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
             if (state is AuthUiState.Error) {
-                assertEquals("Email and password cannot be empty", state.message)
+                assertEquals(UiText.Resource(R.string.auth_error_empty_credentials), state.message)
             }
         }
         coVerify(exactly = 0) { loginUseCase(any(), any()) }
@@ -107,7 +109,7 @@ class AuthViewModelTest {
             val state = awaitItem()
             assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
             if (state is AuthUiState.Error) {
-                assertEquals("Invalid credentials", state.message)
+                assertEquals(UiText.Raw("Invalid credentials"), state.message)
             }
         }
     }
@@ -122,7 +124,7 @@ class AuthViewModelTest {
             val state = awaitItem()
             assertTrue("Expected AuthUiState.Error, but was $state", state is AuthUiState.Error)
             if (state is AuthUiState.Error) {
-                assertEquals("All fields are required", state.message)
+                assertEquals(UiText.Resource(R.string.auth_error_fields_required), state.message)
             }
         }
         coVerify(exactly = 0) { signUpUseCase(any(), any(), any()) }

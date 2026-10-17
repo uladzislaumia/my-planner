@@ -9,6 +9,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.ui.viewmodel.AuthUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.AuthViewModel
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.asString
 
 @Composable
 fun SignUpScreen(
@@ -42,7 +45,7 @@ fun SignUpScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Create Account",
+                    text = stringResource(R.string.auth_signup_title),
                     style = MaterialTheme.typography.headlineMedium
                 )
 
@@ -52,7 +55,7 @@ fun SignUpScreen(
                         name = it
                         viewModel.clearError()
                     },
-                    label = { Text("Full Name") },
+                    label = { Text(stringResource(R.string.auth_full_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -63,7 +66,7 @@ fun SignUpScreen(
                         email = it
                         viewModel.clearError()
                     },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.auth_email)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -74,7 +77,7 @@ fun SignUpScreen(
                         password = it
                         viewModel.clearError()
                     },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(R.string.auth_password)) },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true
@@ -83,7 +86,7 @@ fun SignUpScreen(
                 when (val state = uiState) {
                     is AuthUiState.Error -> {
                         Text(
-                            text = state.message,
+                            text = state.message.asString(),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.fillMaxWidth()
@@ -99,12 +102,12 @@ fun SignUpScreen(
                         onClick = { viewModel.signUp(name, email, password) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Sign Up")
+                        Text(stringResource(R.string.auth_signup_button))
                     }
                 }
 
                 TextButton(onClick = onNavigateToLogin) {
-                    Text("Already have an account? Login")
+                    Text(stringResource(R.string.auth_signup_to_login))
                 }
             }
         }

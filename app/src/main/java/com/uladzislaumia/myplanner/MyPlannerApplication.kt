@@ -36,8 +36,8 @@ class MyPlannerApplication : Application(), Configuration.Provider {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Task Reminders"
-            val descriptionText = "Notifications for upcoming task deadlines"
+            val name = getString(R.string.notifications_channel_name)
+            val descriptionText = getString(R.string.notifications_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
                 description = descriptionText

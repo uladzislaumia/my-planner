@@ -1,0 +1,78 @@
+<resources>
+    <!-- Common actions -->
+    <string name="common_ok">Aceptar</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_create">Crear</string>
+
+    <!-- Auth -->
+    <string name="auth_login_title">Bienvenido de nuevo</string>
+    <string name="auth_signup_title">Crear cuenta</string>
+    <string name="auth_email">Correo electrónico</string>
+    <string name="auth_password">Contraseña</string>
+    <string name="auth_full_name">Nombre completo</string>
+    <string name="auth_login_button">Iniciar sesión</string>
+    <string name="auth_signup_button">Registrarse</string>
+    <string name="auth_login_to_signup">¿No tienes cuenta? Regístrate</string>
+    <string name="auth_signup_to_login">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="auth_error_empty_credentials">Introduce tu correo y contraseña</string>
+    <string name="auth_error_fields_required">Completa todos los campos</string>
+    <string name="auth_error_login_failed">No se pudo iniciar sesión</string>
+    <string name="auth_error_signup_failed">No se pudo completar el registro</string>
+
+    <!-- Home -->
+    <string name="home_logout">Cerrar sesión</string>
+    <string name="home_add_task">Añadir tarea</string>
+    <string name="home_error_with_message">Error: %1$s</string>
+
+    <!-- Categories -->
+    <string name="categories_all_tasks">Todas las tareas</string>
+    <string name="categories_add">Añadir categoría</string>
+    <string name="categories_field">Categoría</string>
+    <string name="categories_none">Sin categoría</string>
+    <string name="categories_none_option">Ninguna</string>
+    <plurals name="categories_tasks_count">
+        <item quantity="one">%d tarea</item>
+        <item quantity="many">%d tareas</item>
+        <item quantity="other">%d tareas</item>
+    </plurals>
+    <string name="categories_default_groceries">Compras del súper</string>
+    <string name="categories_default_travel">Viajes</string>
+    <string name="categories_default_home">Casa y tareas del hogar</string>
+    <string name="categories_default_sports">Deporte y fitness</string>
+    <string name="categories_default_entertainment">Ocio</string>
+    <string name="categories_default_shopping">Compras</string>
+    <string name="categories_default_work">Trabajo y estudios</string>
+    <string name="categories_default_health">Salud y autocuidado</string>
+    <string name="categories_default_finance">Finanzas y facturas</string>
+
+    <!-- Create category dialog -->
+    <string name="categories_create_title">Nueva categoría</string>
+    <string name="categories_create_name">Nombre de la categoría</string>
+    <string name="categories_create_icon">Icono:</string>
+    <string name="categories_create_color">Color:</string>
+
+    <!-- Task sheets -->
+    <string name="tasks_add_title">Nueva tarea 📝</string>
+    <string name="tasks_edit_title">Editar tarea ✏️</string>
+    <string name="tasks_field_title">Título de la tarea</string>
+    <string name="tasks_field_description">Descripción</string>
+    <string name="tasks_label_priority">Prioridad:</string>
+    <string name="tasks_label_deadline">Fecha límite y recordatorio:</string>
+    <string name="tasks_label_status">Estado:</string>
+    <string name="tasks_priority_low">Baja</string>
+    <string name="tasks_priority_medium">Media</string>
+    <string name="tasks_priority_high">Alta</string>
+    <string name="tasks_status_active">⏳ Activa</string>
+    <string name="tasks_status_completed">✅ Completada</string>
+    <string name="tasks_card_completed">Completada</string>
+    <string name="tasks_create_button">Crear tarea</string>
+    <string name="tasks_delete_button">Eliminar tarea</string>
+    <string name="tasks_select_date">📅 Elegir fecha</string>
+    <string name="tasks_clear_date">Borrar fecha</string>
+
+    <!-- Notifications -->
+    <string name="notifications_channel_name">Recordatorios de tareas</string>
+    <string name="notifications_channel_description">Avisos sobre las fechas límite de tus tareas</string>
+    <string name="notifications_reminder_title">⏰ Recordatorio: %1$s</string>
+    <string name="notifications_default_task">Recordatorio de tarea</string>
+</resources>

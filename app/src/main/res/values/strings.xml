@@ -1,3 +1,79 @@
 <resources>
-    <string name="app_name">My Planner</string>
+    <string name="app_name" translatable="false">My Planner</string>
+
+    <!-- Common actions -->
+    <string name="common_ok">OK</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_create">Create</string>
+
+    <!-- Auth -->
+    <string name="auth_login_title">Welcome Back</string>
+    <string name="auth_signup_title">Create Account</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_full_name">Full Name</string>
+    <string name="auth_login_button">Login</string>
+    <string name="auth_signup_button">Sign Up</string>
+    <string name="auth_login_to_signup">Don\'t have an account? Sign Up</string>
+    <string name="auth_signup_to_login">Already have an account? Login</string>
+    <string name="auth_error_empty_credentials">Email and password cannot be empty</string>
+    <string name="auth_error_fields_required">All fields are required</string>
+    <string name="auth_error_login_failed">Login failed</string>
+    <string name="auth_error_signup_failed">Registration failed</string>
+
+    <!-- Home -->
+    <string name="home_logout">Logout</string>
+    <string name="home_add_task">Add Task</string>
+    <string name="home_error_with_message">Error: %1$s</string>
+
+    <!-- Categories -->
+    <string name="categories_all_tasks">All Tasks</string>
+    <string name="categories_add">Add Category</string>
+    <string name="categories_field">Category</string>
+    <string name="categories_none">No Category</string>
+    <string name="categories_none_option">None</string>
+    <plurals name="categories_tasks_count">
+        <item quantity="one">%d task</item>
+        <item quantity="other">%d tasks</item>
+    </plurals>
+    <string name="categories_default_groceries">Groceries</string>
+    <string name="categories_default_travel">Travel &amp; Trips</string>
+    <string name="categories_default_home">Home &amp; Chores</string>
+    <string name="categories_default_sports">Sports &amp; Fitness</string>
+    <string name="categories_default_entertainment">Entertainment</string>
+    <string name="categories_default_shopping">Shopping</string>
+    <string name="categories_default_work">Work &amp; Study</string>
+    <string name="categories_default_health">Health &amp; Self-Care</string>
+    <string name="categories_default_finance">Finance &amp; Bills</string>
+
+    <!-- Create category dialog -->
+    <string name="categories_create_title">Create New Category</string>
+    <string name="categories_create_name">Category Name</string>
+    <string name="categories_create_icon">Icon:</string>
+    <string name="categories_create_color">Color:</string>
+
+    <!-- Task sheets -->
+    <string name="tasks_add_title">New Task 📝</string>
+    <string name="tasks_edit_title">Edit Task ✏️</string>
+    <string name="tasks_field_title">Task Title</string>
+    <string name="tasks_field_description">Description</string>
+    <string name="tasks_label_priority">Priority:</string>
+    <string name="tasks_label_deadline">Deadline &amp; Reminder:</string>
+    <string name="tasks_label_status">Status:</string>
+    <string name="tasks_priority_low">Low</string>
+    <string name="tasks_priority_medium">Medium</string>
+    <string name="tasks_priority_high">High</string>
+    <string name="tasks_status_active">⏳ Active</string>
+    <string name="tasks_status_completed">✅ Completed</string>
+    <string name="tasks_card_completed">Completed</string>
+    <string name="tasks_create_button">Create Task</string>
+    <string name="tasks_delete_button">Delete Task</string>
+    <string name="tasks_select_date">📅 Select Date</string>
+    <string name="tasks_clear_date">Clear Date</string>
+
+    <!-- Notifications -->
+    <string name="notifications_channel_name">Task Reminders</string>
+    <string name="notifications_channel_description">Notifications for upcoming task deadlines</string>
+    <string name="notifications_reminder_title">⏰ Reminder: %1$s</string>
+    <string name="notifications_default_task">Task Reminder</string>
 </resources>

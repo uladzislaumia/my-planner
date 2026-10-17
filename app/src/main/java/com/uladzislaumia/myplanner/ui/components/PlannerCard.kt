@@ -22,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.displayName
 
 @Composable
 fun PlannerCard(
@@ -63,7 +66,7 @@ fun PlannerCard(
                     color = MaterialTheme.colorScheme.surfaceVariant
                 ) {
                     Text(
-                        text = "${category.icon} ${category.name}",
+                        text = "${category.icon} ${category.displayName()}",
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
@@ -78,7 +81,7 @@ fun PlannerCard(
             )
             if (data.isCompleted) {
                 Text(
-                    text = "Completed",
+                    text = stringResource(R.string.tasks_card_completed),
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray
                 )

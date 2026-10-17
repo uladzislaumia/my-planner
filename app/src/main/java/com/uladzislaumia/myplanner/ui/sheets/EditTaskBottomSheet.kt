@@ -44,6 +44,9 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
+import androidx.compose.ui.res.stringResource
+import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.text.label
 
 private val AUTOSAVE_DEBOUNCE = 300.milliseconds
 
@@ -112,14 +115,14 @@ fun EditTaskBottomSheet(
                 .padding(bottom = 32.dp),
         ) {
             Text(
-                text = "Edit Task ✏️",
+                text = stringResource(R.string.tasks_edit_title),
                 style = MaterialTheme.typography.titleLarge,
             )
 
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Task Title") },
+                label = { Text(stringResource(R.string.tasks_field_title)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -127,12 +130,12 @@ fun EditTaskBottomSheet(
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Description") },
+                label = { Text(stringResource(R.string.tasks_field_description)) },
                 maxLines = 3,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Text("Priority:", style = MaterialTheme.typography.labelMedium)
+            Text(stringResource(R.string.tasks_label_priority), style = MaterialTheme.typography.labelMedium)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -141,7 +144,7 @@ fun EditTaskBottomSheet(
                     FilterChip(
                         selected = selectedPriority == priority,
                         onClick = { selectedPriority = priority },
-                        label = { Text(priority.name) },
+                        label = { Text(priority.label()) },
                     )
                 }
             }
@@ -154,7 +157,7 @@ fun EditTaskBottomSheet(
                 categories = categories,
             )
 
-            Text("Deadline & Reminder:", style = MaterialTheme.typography.labelMedium)
+            Text(stringResource(R.string.tasks_label_deadline), style = MaterialTheme.typography.labelMedium)
             DateTimePickerField(
                 selectedDateTime = selectedDueDate,
                 onDateTimeSelected = {
@@ -162,7 +165,7 @@ fun EditTaskBottomSheet(
                 },
             )
 
-            Text("Status:", style = MaterialTheme.typography.labelMedium)
+            Text(stringResource(R.string.tasks_label_status), style = MaterialTheme.typography.labelMedium)
             SingleChoiceSegmentedButtonRow(
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -171,14 +174,14 @@ fun EditTaskBottomSheet(
                     onClick = { isCompleted = false },
                     shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
                 ) {
-                    Text("⏳ Active")
+                    Text(stringResource(R.string.tasks_status_active))
                 }
                 SegmentedButton(
                     selected = isCompleted,
                     onClick = { isCompleted = true },
                     shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
                 ) {
-                    Text("✅ Completed")
+                    Text(stringResource(R.string.tasks_status_completed))
                 }
             }
 
@@ -196,11 +199,11 @@ fun EditTaskBottomSheet(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Task",
+                        contentDescription = stringResource(R.string.tasks_delete_button),
                         modifier = Modifier.size(18.dp),
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Delete Task")
+                    Text(stringResource(R.string.tasks_delete_button))
                 }
             }
         }
