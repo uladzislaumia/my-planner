@@ -1,0 +1,31 @@
+name: Set up build environment
+description: Installs JDK and Gradle and restores app/google-services.json from a secret
+
+inputs:
+  google-services-json:
+    description: Base64-encoded app/google-services.json (pass secrets.GOOGLE_SERVICES_JSON)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # Gradle daemon requires Java 25 (gradle/gradle-daemon-jvm.properties)
+    - name: Set up JDK 25
+      uses: actions/setup-java@v6
+      with:
+        distribution: temurin
+        java-version: 25
+
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v6
+
+    - name: Create google-services.json
+      shell: bash
+      env:
+        GOOGLE_SERVICES_JSON: ${{ inputs.google-services-json }}
+      run: |
+        if [ -z "$GOOGLE_SERVICES_JSON" ]; then
+          echo "::error::Repository secret GOOGLE_SERVICES_JSON is not set (base64 of app/google-services.json)"
+          exit 1
+        fi
+        echo "$GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json

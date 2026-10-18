@@ -8,6 +8,7 @@
 
 <!--suppress HtmlDeprecatedAttribute -->
 <p align="center">
+  <a href="https://github.com/uladzislaumia/my-planner/actions/workflows/ci.yml"><img src="https://github.com/uladzislaumia/my-planner/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Kotlin-2.4.20-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin 2.4.20">
   <img src="https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose, Material 3">
   <img src="https://img.shields.io/badge/minSdk-24-3DDC84?logo=android&logoColor=white" alt="minSdk 24">
@@ -66,8 +67,8 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 *   **Networking:** GraphQL via Apollo Kotlin **[TBD]**
 *   **Asynchrony:** Kotlin Coroutines & Flow
 *   **Build System:** Gradle Kotlin DSL + Version Catalog (`libs.versions.toml`)
-*   **Quality Assurance:** KtLint (style formatting) & Detekt (static analysis)
-*   **CI/CD:** GitHub Actions **[TBD]**
+*   **Quality Assurance:** KtLint (style formatting) & Detekt (static analysis), enforced in CI
+*   **CI/CD:** GitHub Actions (ktlint, detekt, Android Lint, unit tests, debug APK)
 
 ## 🏗 Architecture
 
@@ -91,7 +92,6 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **All Categories Search & BottomSheet** ("View All" sheet with instant search).
 - [ ] **Advanced Emoji & Color Picker** (Android Emoji Picker API & Interactive HSV Color Wheel).
 - [ ] **Firebase Remote Config** (Dynamic feature flags & configuration).
-- [ ] **CI/CD Pipeline** (GitHub Actions for build & lint).
 - [ ] **GraphQL Integration** (Apollo Client).
 - [ ] **Messaging** (Push via FCM).
 - [ ] **Reopen Completed Tasks** (One-tap "Do it again" for tasks you finished before, e.g. "Clean the coffee machine" or "Pay for a subscription": reopen on demand, optionally set a new deadline and reminder, keep the last completion date).

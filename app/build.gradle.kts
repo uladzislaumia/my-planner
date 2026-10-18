@@ -55,6 +55,9 @@ ktlint {
 detekt {
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
+    // Known issues to fix later (see "Specific Exception Handling" in the README roadmap);
+    // detekt ignores them but still fails on any new ones
+    baseline = file("$rootDir/config/detekt/baseline.xml")
 }
 
 dependencies {
