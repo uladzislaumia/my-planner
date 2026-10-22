@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hand-drawn stack of three blocks (green, sand, apricot) with wobbly outlines -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/sketch_green"
+        android:pathData="M3.6,15.6 C8.8,15.3 15.4,15.7 20.4,15.4 C20.5,17 20.4,18.8 20.6,20.4 C15.2,20.7 8.6,20.3 3.5,20.6 C3.6,19 3.4,17.2 3.6,15.6 Z"
+        android:strokeWidth="1.4"
+        android:strokeColor="@color/sketch_outline"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@color/sketch_sand"
+        android:pathData="M5.2,10.6 C10,10.4 15.3,10.8 19.6,10.5 C19.7,12.2 19.6,13.8 19.8,15.4 C15,15.7 9.8,15.4 5,15.6 C5.1,13.9 5,12.3 5.2,10.6 Z"
+        android:strokeWidth="1.4"
+        android:strokeColor="@color/sketch_outline"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@color/sketch_accent"
+        android:pathData="M4.3,6.5 C8.5,5.7 12.9,5 16.9,4.4 C17.1,6 17.3,7.6 17.6,9.2 C13.4,9.7 9.2,10.3 5,10.9 C4.7,9.4 4.6,8 4.3,6.5 Z"
+        android:strokeWidth="1.4"
+        android:strokeColor="@color/sketch_outline"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M7.2,17.9 C9.1,17.8 11,18 12.9,17.8 M7.9,13 C9.6,12.9 11.3,13.1 13,12.9 M7.4,8.4 C9,8.1 10.6,7.8 12.2,7.6"
+        android:strokeWidth="1.1"
+        android:strokeColor="@color/sketch_outline"
+        android:strokeLineCap="round" />
+</vector>

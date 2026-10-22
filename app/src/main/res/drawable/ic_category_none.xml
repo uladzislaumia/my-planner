@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hand-drawn blank tag for tasks without a category -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/sketch_sand"
+        android:pathData="M5.2,5.3 C8,5.1 10.6,5.2 13.3,5.1 C13.9,5.1 14.4,5.3 14.8,5.7 L19.8,10.8 C20.5,11.5 20.5,12.5 19.8,13.2 L14.2,18.8 C13.5,19.5 12.5,19.5 11.8,18.8 L6.7,13.7 C6.3,13.3 6.1,12.8 6.1,12.2 C6,10 5.3,7.6 5.2,5.3 Z"
+        android:strokeWidth="1.4"
+        android:strokeColor="@color/sketch_outline"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@color/sketch_paper"
+        android:pathData="M8.1,8.6 a1.3,1.3 0 1,0 2.6,0 a1.3,1.3 0 1,0 -2.6,0 Z"
+        android:strokeWidth="1.1"
+        android:strokeColor="@color/sketch_outline" />
+    <path
+        android:pathData="M10.9,13.4 C11.7,12.9 12.5,13.7 13.3,13.2 C14,12.8 14.6,13.4 15.2,13"
+        android:strokeWidth="1.1"
+        android:strokeColor="@color/sketch_outline"
+        android:strokeLineCap="round" />
+</vector>

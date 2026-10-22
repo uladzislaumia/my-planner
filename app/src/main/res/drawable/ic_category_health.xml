@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hand-drawn heart with a plus -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/sketch_rose"
+        android:pathData="M12,20 C7.4,16.8 3.6,13.6 3.8,9.4 C3.9,6.6 6,4.7 8.4,4.8 C10,4.8 11.2,5.8 12,7.2 C12.8,5.8 14,4.8 15.6,4.8 C18.1,4.7 20.2,6.7 20.2,9.4 C20.3,13.6 16.6,16.8 12,20 Z"
+        android:strokeWidth="1.4"
+        android:strokeColor="@color/sketch_outline"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M12,9.6 L12,14.6 M9.5,12.1 L14.5,12.1"
+        android:strokeWidth="1.8"
+        android:strokeColor="@color/sketch_paper"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

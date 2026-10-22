@@ -8,4 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="notification_accent">#FF6750A4</color>
+
+    <!-- Hand-drawn tab icons -->
+    <color name="sketch_outline">#FF6B5136</color>
+    <color name="sketch_paper">#FFFFF7EA</color>
+    <color name="sketch_accent">#FFEE8A4E</color>
+    <color name="sketch_mark">#FFB8561F</color>
+    <color name="sketch_sand">#FFF2D49B</color>
+    <color name="sketch_green">#FF9DB56E</color>
+    <color name="sketch_sky">#FF9CC3CF</color>
+    <color name="sketch_rose">#FFE58C7A</color>
+    <color name="sketch_leather">#FFC98E5E</color>
 </resources>

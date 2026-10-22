@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Hand-drawn tab icons -->
+    <color name="sketch_outline">#FFEFD9BC</color>
+    <color name="sketch_paper">#FF4A3A2A</color>
+    <color name="sketch_accent">#FFE07A40</color>
+    <color name="sketch_mark">#FFF2A273</color>
+    <color name="sketch_sand">#FFC9A86C</color>
+    <color name="sketch_green">#FF7E9658</color>
+    <color name="sketch_sky">#FF5E8590</color>
+    <color name="sketch_rose">#FFC46F5E</color>
+    <color name="sketch_leather">#FF9A6A44</color>
+</resources>
