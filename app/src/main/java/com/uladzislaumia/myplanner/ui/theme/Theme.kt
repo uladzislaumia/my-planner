@@ -1,64 +1,58 @@
 package com.uladzislaumia.myplanner.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-
-private val DarkColorScheme =
-    darkColorScheme(
-        primary = Purple80,
-        secondary = PurpleGrey80,
-        tertiary = Pink80,
-    )
-
-private val LightColorScheme =
-    lightColorScheme(
-        primary = Purple40,
-        secondary = PurpleGrey40,
-        tertiary = Pink40,
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-     */
-    )
+import androidx.compose.ui.res.colorResource
+import com.uladzislaumia.myplanner.R
 
 @Composable
-fun MyPlannerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit,
-) {
-    val colorScheme =
-        when {
-            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                val context = LocalContext.current
-                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            }
-
-            darkTheme -> {
-                DarkColorScheme
-            }
-
-            else -> {
-                LightColorScheme
-            }
-        }
-
+fun MyPlannerTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = warmColorScheme(),
         typography = Typography,
         content = content,
+    )
+}
+
+/**
+ * Color scheme from color resources: values-night holds the dark variants, so it follows the system theme.
+ * Dynamic (wallpaper) colors aren't used, they would clash with the app's warm palette.
+ */
+@Composable
+private fun warmColorScheme(): ColorScheme {
+    // Roles without a resource (error, inverse, scrim) keep the Material baseline of the current theme
+    val baseline = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    val primary = colorResource(R.color.md_primary)
+    return baseline.copy(
+        primary = primary,
+        onPrimary = colorResource(R.color.md_on_primary),
+        primaryContainer = colorResource(R.color.md_primary_container),
+        onPrimaryContainer = colorResource(R.color.md_on_primary_container),
+        secondary = colorResource(R.color.md_secondary),
+        onSecondary = colorResource(R.color.md_on_secondary),
+        secondaryContainer = colorResource(R.color.md_secondary_container),
+        onSecondaryContainer = colorResource(R.color.md_on_secondary_container),
+        tertiary = colorResource(R.color.md_tertiary),
+        onTertiary = colorResource(R.color.md_on_tertiary),
+        tertiaryContainer = colorResource(R.color.md_tertiary_container),
+        onTertiaryContainer = colorResource(R.color.md_on_tertiary_container),
+        background = colorResource(R.color.md_background),
+        onBackground = colorResource(R.color.md_on_background),
+        surface = colorResource(R.color.md_surface),
+        onSurface = colorResource(R.color.md_on_surface),
+        surfaceVariant = colorResource(R.color.md_surface_variant),
+        onSurfaceVariant = colorResource(R.color.md_on_surface_variant),
+        surfaceTint = primary,
+        outline = colorResource(R.color.md_outline),
+        outlineVariant = colorResource(R.color.md_outline_variant),
+        surfaceContainerLowest = colorResource(R.color.md_surface_container_lowest),
+        surfaceContainerLow = colorResource(R.color.md_surface_container_low),
+        surfaceContainer = colorResource(R.color.md_surface_container),
+        surfaceContainerHigh = colorResource(R.color.md_surface_container_high),
+        surfaceContainerHighest = colorResource(R.color.md_surface_container_highest),
     )
 }

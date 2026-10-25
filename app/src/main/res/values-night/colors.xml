@@ -10,4 +10,35 @@
     <color name="sketch_sky">#FF5E8590</color>
     <color name="sketch_rose">#FFC46F5E</color>
     <color name="sketch_leather">#FF9A6A44</color>
+
+    <!-- Material color scheme: warm cream (light) and cocoa (dark) -->
+    <color name="md_primary">#FFF2A273</color>
+    <color name="md_on_primary">#FF4A2108</color>
+    <color name="md_primary_container">#FF7A3A16</color>
+    <color name="md_on_primary_container">#FFFFDBC8</color>
+    <color name="md_secondary">#FFEFD9BC</color>
+    <color name="md_on_secondary">#FF3A2A1A</color>
+    <color name="md_secondary_container">#FF45362A</color>
+    <color name="md_on_secondary_container">#FFEFD9BC</color>
+    <color name="md_tertiary">#FFB9CF92</color>
+    <color name="md_on_tertiary">#FF24330E</color>
+    <color name="md_tertiary_container">#FF3B4D22</color>
+    <color name="md_on_tertiary_container">#FFD6EBB0</color>
+    <color name="md_background">#FF261C15</color>
+    <color name="md_on_background">#FFEFE0CC</color>
+    <color name="md_surface">#FF261C15</color>
+    <color name="md_on_surface">#FFEFE0CC</color>
+    <color name="md_surface_variant">#FF45362A</color>
+    <color name="md_on_surface_variant">#FFD7C2A6</color>
+    <color name="md_outline">#FF9C8670</color>
+    <color name="md_outline_variant">#FF4E3E30</color>
+    <color name="md_surface_container_lowest">#FF1E1610</color>
+    <color name="md_surface_container_low">#FF30241B</color>
+    <color name="md_surface_container">#FF33271D</color>
+    <color name="md_surface_container_high">#FF3D2F23</color>
+    <color name="md_surface_container_highest">#FF47382B</color>
+
+    <!-- Sandy hills of the screen background -->
+    <color name="hill_far">#FF3A291C</color>
+    <color name="hill_near">#FF4A3322</color>
 </resources>

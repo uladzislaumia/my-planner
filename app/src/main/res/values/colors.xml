@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="notification_accent">#FF6750A4</color>
+    <!-- Tint of the notification icon, the app's primary color -->
+    <color name="notification_accent">@color/md_primary</color>
 
     <!-- Hand-drawn tab icons -->
     <color name="sketch_outline">#FF6B5136</color>
@@ -19,4 +13,40 @@
     <color name="sketch_sky">#FF9CC3CF</color>
     <color name="sketch_rose">#FFE58C7A</color>
     <color name="sketch_leather">#FFC98E5E</color>
+
+    <!-- Material color scheme: warm cream (light) and cocoa (dark) -->
+    <color name="md_primary">#FFB8561F</color>
+    <color name="md_on_primary">#FFFFFFFF</color>
+    <color name="md_primary_container">#FFFBD9C2</color>
+    <color name="md_on_primary_container">#FF5C2A0E</color>
+    <color name="md_secondary">#FF6B5136</color>
+    <color name="md_on_secondary">#FFFFFFFF</color>
+    <color name="md_secondary_container">#FFF0DFC0</color>
+    <color name="md_on_secondary_container">#FF6B5136</color>
+    <color name="md_tertiary">#FF5E7A3A</color>
+    <color name="md_on_tertiary">#FFFFFFFF</color>
+    <color name="md_tertiary_container">#FFDCE8C4</color>
+    <color name="md_on_tertiary_container">#FF2B3A14</color>
+    <color name="md_background">#FFFDF3E4</color>
+    <color name="md_on_background">#FF3B2A1C</color>
+    <color name="md_surface">#FFFDF3E4</color>
+    <color name="md_on_surface">#FF3B2A1C</color>
+    <color name="md_surface_variant">#FFF0DFC0</color>
+    <color name="md_on_surface_variant">#FF6B5136</color>
+    <color name="md_outline">#FFA08566</color>
+    <color name="md_outline_variant">#FFE3D0B0</color>
+    <color name="md_surface_container_lowest">#FFFFFDF9</color>
+    <color name="md_surface_container_low">#FFFFFAF2</color>
+    <color name="md_surface_container">#FFFAEEDC</color>
+    <color name="md_surface_container_high">#FFF6E7D1</color>
+    <color name="md_surface_container_highest">#FFF1DFC4</color>
+
+    <!-- Sandy hills of the screen background -->
+    <color name="hill_far">#FFF8DDBF</color>
+    <color name="hill_near">#FFF4C99D</color>
+
+    <!-- Task priority dots, the same in both themes -->
+    <color name="priority_high">#FFE0603A</color>
+    <color name="priority_medium">#FFE8B04B</color>
+    <color name="priority_low">#FF9DB56E</color>
 </resources>
