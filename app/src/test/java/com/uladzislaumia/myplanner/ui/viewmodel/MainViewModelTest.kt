@@ -11,6 +11,7 @@ import com.uladzislaumia.myplanner.domain.usecase.DeletePlannerItemUseCase
 import com.uladzislaumia.myplanner.domain.usecase.GetCategoriesUseCase
 import com.uladzislaumia.myplanner.domain.usecase.GetPlannerItemsUseCase
 import com.uladzislaumia.myplanner.domain.usecase.UpdatePlannerItemUseCase
+import com.uladzislaumia.myplanner.ui.util.startOfDay
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -22,6 +23,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.Calendar
+import java.util.Date
 
 class MainViewModelTest {
     @get:Rule
@@ -59,6 +62,25 @@ class MainViewModelTest {
             priority = Priority.LOW,
             isCompleted = false,
         )
+
+    private val morningItem = testItem1.copy(id = "morning", dueDate = dateAt(daysFromToday = 1, hour = 8))
+    private val eveningItem = testItem1.copy(id = "evening", dueDate = dateAt(daysFromToday = 1, hour = 20))
+    private val nextDayItem = testItem1.copy(id = "next-day", dueDate = dateAt(daysFromToday = 2, hour = 9))
+    private val undatedItem = testItem1.copy(id = "undated", dueDate = null)
+    private val yesterdayItem = testItem1.copy(id = "yesterday", dueDate = dateAt(daysFromToday = -1, hour = 12))
+
+    // Dates are relative to today, because the calendar hides days before today
+    private fun dateAt(
+        daysFromToday: Int,
+        hour: Int,
+    ): Date =
+        Calendar
+            .getInstance()
+            .apply {
+                time = Date().startOfDay()
+                add(Calendar.DAY_OF_MONTH, daysFromToday)
+                set(Calendar.HOUR_OF_DAY, hour)
+            }.time
 
     @Before
     fun setup() {
@@ -102,17 +124,57 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `selectCategory filters items by categoryId`() =
+    fun `calendarSections group dated items by day sorted by time and skip undated items`() =
         runTest {
+            coEvery { getPlannerItemsUseCase() } returns
+                flowOf(listOf(undatedItem, nextDayItem, eveningItem, morningItem))
             val viewModel = createViewModel()
-
-            viewModel.selectCategory("groceries")
 
             viewModel.uiState.test {
                 val state = awaitItem()
                 assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
                 if (state is MainUiState.Success) {
-                    assertEquals(listOf(testItem1), state.items)
+                    assertEquals(
+                        listOf(
+                            DaySection(dateAt(daysFromToday = 0, hour = 0), emptyList()),
+                            DaySection(dateAt(daysFromToday = 1, hour = 0), listOf(morningItem, eveningItem)),
+                            DaySection(dateAt(daysFromToday = 2, hour = 0), listOf(nextDayItem)),
+                        ),
+                        state.calendarSections,
+                    )
+                }
+            }
+        }
+
+    @Test
+    fun `calendarSections always contain today and tomorrow`() =
+        runTest {
+            coEvery { getPlannerItemsUseCase() } returns flowOf(listOf(undatedItem))
+            val viewModel = createViewModel()
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
+                if (state is MainUiState.Success) {
+                    assertEquals(
+                        listOf(0, 1).map { DaySection(dateAt(daysFromToday = it, hour = 0), emptyList()) },
+                        state.calendarSections,
+                    )
+                }
+            }
+        }
+
+    @Test
+    fun `calendarSections hide past days`() =
+        runTest {
+            coEvery { getPlannerItemsUseCase() } returns flowOf(listOf(yesterdayItem, morningItem))
+            val viewModel = createViewModel()
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
+                if (state is MainUiState.Success) {
+                    assertEquals(listOf(morningItem), state.calendarSections.flatMap { it.items })
                 }
             }
         }

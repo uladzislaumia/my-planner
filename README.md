@@ -32,7 +32,11 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 ## ✨ Features
 
 *   **Task Management:** Create, edit and delete tasks with priority, category, status and deadline. Editing happens in a bottom sheet with **debounced autosave** — no Save button, unchanged drafts are never written.
-*   **Categories:** Category carousel with per-category task counts and filtering, plus custom categories with your own emoji and color.
+*   **Calendar Tab:** Upcoming tasks grouped by day under sticky headers (Today, Tomorrow, then each day with tasks), sorted by time. Today and Tomorrow are always shown, past days and tasks without a deadline are left out.
+*   **Categories Tab:** A grid of category tiles with task counts — All Tasks, every category and No Category. Tapping a tile opens a separate screen with that category's tasks, where a new task gets the category preselected.
+*   **Custom Categories:** Add your own categories with an emoji and a color.
+*   **Task Cards:** Priority dot, deadline chip (time, or date and time outside the calendar, in the device's 12/24-hour format) and category chip; completed tasks are faded and struck through.
+*   **Warm Design:** Cream and cocoa color scheme for light and dark themes, a background with sandy hills, and hand-drawn icons for the bottom tabs and built-in categories. All colors live in color resources with night variants; wallpaper-based dynamic color is intentionally off.
 *   **Deadline Reminders:** Material 3 date & time picker and scheduled local notifications via `AlarmManager` (exact alarms when allowed, graceful fallback otherwise).
 *   **Offline-First Cloud Sync:** Room is the single source of truth; changes are pushed to Firestore in the background by **WorkManager** — batched writes, network constraints, retries with backoff. Works offline, survives app restarts, and tracks deletions with tombstones so nothing comes back.
 *   **Accounts:** Email & password sign-up and login with Firebase Auth; each user's data is stored in their own Firestore collection.
@@ -79,9 +83,13 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 
 ## 📸 Screenshots
 
-| Login Screen | Registration Screen | Planner Grid |
+| Login Screen | Registration Screen |
+|:---:|:---:|
+| <img src="/docs/screenshots/login_screen.png" alt="Login Screen" width="250"> | <img src="/docs/screenshots/signup_screen.png" alt="Registration Screen" width="250"> |
+
+| Calendar Tab | Categories Tab | Category Screen |
 |:---:|:---:|:---:|
-| <img src="/docs/screenshots/login_screen.png" alt="Login Screen" width="250"> | <img src="/docs/screenshots/signup_screen.png" alt="Registration Screen" width="250"> | <img src="/docs/screenshots/home_screen.png" alt="Planner Grid" width="250"> |
+| <img src="/docs/screenshots/calendar_tab.png" alt="Calendar Tab" width="250"> | <img src="/docs/screenshots/categories_tab.png" alt="Categories Tab" width="250"> | <img src="/docs/screenshots/category_screen.png" alt="Category Screen" width="250"> |
 
 | Add Task Sheet | Edit Task Sheet (Autosave) |
 |:---:|:---:|

@@ -112,7 +112,7 @@ private val DEMO_ITEMS =
     listOf(
         PlannerItem(
             id = "",
-            title = "Buy ingredients for dinner 🛒",
+            title = "Buy ingredients for dinner",
             description = "Get fresh vegetables, pasta, and spices for tonight's meal.",
             categoryId = Category.GROCERIES.id,
             groupId = null,
@@ -123,7 +123,7 @@ private val DEMO_ITEMS =
         ),
         PlannerItem(
             id = "",
-            title = "Book tickets and hotel for vacation ✈️",
+            title = "Book tickets and hotel for vacation",
             description = "Reserve flight tickets and hotel accommodation for the upcoming trip.",
             categoryId = Category.TRAVEL.id,
             groupId = null,
@@ -134,7 +134,7 @@ private val DEMO_ITEMS =
         ),
         PlannerItem(
             id = "",
-            title = "Go to the cinema this weekend 🎬",
+            title = "Go to the cinema this weekend",
             description = "Watch the new movie premiere with friends on Saturday night.",
             categoryId = Category.ENTERTAINMENT.id,
             groupId = null,
@@ -145,7 +145,7 @@ private val DEMO_ITEMS =
         ),
         PlannerItem(
             id = "",
-            title = "Do a morning yoga session 🏋️‍♂️",
+            title = "Do a morning yoga session",
             description = "Complete a 30-minute stretching and yoga workout.",
             categoryId = Category.SPORTS.id,
             groupId = null,
@@ -156,7 +156,7 @@ private val DEMO_ITEMS =
         ),
         PlannerItem(
             id = "",
-            title = "Visit the doctor for a check-up 🩺",
+            title = "Visit the doctor for a check-up",
             description = "Schedule and attend annual medical health check-up.",
             categoryId = Category.HEALTH.id,
             groupId = null,
