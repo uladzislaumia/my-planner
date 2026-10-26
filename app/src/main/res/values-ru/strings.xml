@@ -23,6 +23,13 @@
     <string name="home_logout">Выйти</string>
     <string name="home_add_task">Добавить задачу</string>
     <string name="home_error_with_message">Ошибка: %1$s</string>
+    <string name="home_tab_calendar">Календарь</string>
+    <string name="home_tab_categories">Категории</string>
+    <string name="common_back">Назад</string>
+    <string name="calendar_yesterday">Вчера</string>
+    <string name="calendar_today">Сегодня</string>
+    <string name="calendar_tomorrow">Завтра</string>
+    <string name="calendar_no_tasks">Задач нет</string>
 
     <!-- Categories -->
     <string name="categories_all_tasks">Все задачи</string>

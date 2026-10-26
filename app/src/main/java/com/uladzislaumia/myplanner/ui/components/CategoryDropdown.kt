@@ -36,11 +36,11 @@ fun CategoryDropdown(
         modifier = modifier.fillMaxWidth(),
     ) {
         OutlinedTextField(
-            value =
-                selectedCategory?.let { "${it.icon} ${it.displayName()}" } ?: stringResource(R.string.categories_none),
+            value = selectedCategory?.displayName() ?: stringResource(R.string.categories_none),
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(R.string.categories_field)) },
+            leadingIcon = selectedCategory?.let { category -> { CategoryIcon(category) } },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
             modifier =
@@ -62,7 +62,8 @@ fun CategoryDropdown(
             )
             categories.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text("${category.icon} ${category.displayName()}") },
+                    text = { Text(category.displayName()) },
+                    leadingIcon = { CategoryIcon(category) },
                     onClick = {
                         onCategorySelected(category.id)
                         expanded = false

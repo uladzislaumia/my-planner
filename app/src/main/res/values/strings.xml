@@ -25,6 +25,13 @@
     <string name="home_logout">Logout</string>
     <string name="home_add_task">Add Task</string>
     <string name="home_error_with_message">Error: %1$s</string>
+    <string name="home_tab_calendar">Calendar</string>
+    <string name="home_tab_categories">Categories</string>
+    <string name="common_back">Back</string>
+    <string name="calendar_yesterday">Yesterday</string>
+    <string name="calendar_today">Today</string>
+    <string name="calendar_tomorrow">Tomorrow</string>
+    <string name="calendar_no_tasks">No tasks</string>
 
     <!-- Categories -->
     <string name="categories_all_tasks">All Tasks</string>

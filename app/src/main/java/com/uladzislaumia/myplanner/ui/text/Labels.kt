@@ -5,6 +5,7 @@ import androidx.compose.ui.res.stringResource
 import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.Priority
+import com.uladzislaumia.myplanner.ui.viewmodel.CategoryFilter
 
 @Composable
 fun Priority.label(): String =
@@ -34,3 +35,12 @@ fun Category.displayName(): String {
         }
     return resId?.let { stringResource(it) } ?: name
 }
+
+/** Title of a category tile and of the category screen. */
+@Composable
+fun CategoryFilter.title(categories: List<Category>): String =
+    when (this) {
+        CategoryFilter.All -> stringResource(R.string.categories_all_tasks)
+        CategoryFilter.Uncategorized -> stringResource(R.string.categories_none)
+        is CategoryFilter.Of -> categories.find { it.id == categoryId }?.displayName() ?: categoryId
+    }

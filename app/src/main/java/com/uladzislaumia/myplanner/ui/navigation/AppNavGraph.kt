@@ -7,7 +7,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.uladzislaumia.myplanner.domain.model.User
+import com.uladzislaumia.myplanner.ui.screens.CategoryTasksScreen
 import com.uladzislaumia.myplanner.ui.screens.HomeScreen
 import com.uladzislaumia.myplanner.ui.screens.LoginScreen
 import com.uladzislaumia.myplanner.ui.screens.SignUpScreen
@@ -63,6 +65,16 @@ fun AppNavGraph(
                 onLogout = {
                     authViewModel.logout()
                 },
+                onCategoryClick = { filter ->
+                    navController.navigate(Route.CategoryTasks.of(filter))
+                },
+            )
+        }
+        composable<Route.CategoryTasks> { backStackEntry ->
+            CategoryTasksScreen(
+                filter = backStackEntry.toRoute<Route.CategoryTasks>().filter,
+                mainViewModel = mainViewModel,
+                onBack = { navController.popBackStack() },
             )
         }
     }

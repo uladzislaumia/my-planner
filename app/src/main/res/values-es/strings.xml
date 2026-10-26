@@ -23,6 +23,13 @@
     <string name="home_logout">Cerrar sesión</string>
     <string name="home_add_task">Añadir tarea</string>
     <string name="home_error_with_message">Error: %1$s</string>
+    <string name="home_tab_calendar">Calendario</string>
+    <string name="home_tab_categories">Categorías</string>
+    <string name="common_back">Atrás</string>
+    <string name="calendar_yesterday">Ayer</string>
+    <string name="calendar_today">Hoy</string>
+    <string name="calendar_tomorrow">Mañana</string>
+    <string name="calendar_no_tasks">No hay tareas</string>
 
     <!-- Categories -->
     <string name="categories_all_tasks">Todas las tareas</string>
