@@ -14,10 +14,11 @@ import com.uladzislaumia.myplanner.domain.usecase.UpdatePlannerItemUseCase
 import com.uladzislaumia.myplanner.ui.util.plusDays
 import com.uladzislaumia.myplanner.ui.util.startOfDay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -58,19 +59,32 @@ class MainViewModel
             getCategoriesUseCase()
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+        /** Selected day at midnight, today by default; a day is always selected. */
+        val selectedDate = MutableStateFlow(Date().startOfDay())
+
         val uiState: StateFlow<MainUiState> =
-            getPlannerItemsUseCase()
-                .map { items ->
-                    MainUiState.Success(items, calendarSections(items)) as MainUiState
-                }.catch { e ->
-                    emit(MainUiState.Error(e.message ?: "Unknown Error"))
-                }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState.Loading)
+            combine(
+                getPlannerItemsUseCase(),
+                selectedDate,
+            ) { items, date ->
+                MainUiState.Success(items, calendarSections(items, date)) as MainUiState
+            }.catch { e ->
+                emit(MainUiState.Error(e.message ?: "Unknown Error"))
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState.Loading)
+
+        fun selectDate(date: Date) {
+            selectedDate.value = date.startOfDay()
+        }
 
         /**
          * Tasks with a deadline grouped by day, from today on, days in order; tasks without a deadline are left out.
-         * Today and tomorrow are always there, with an empty section when they have no tasks.
+         * A past day shows up only while it's selected. Today, tomorrow and the selected day are always there,
+         * with an empty section when they have no tasks, so the list can scroll to them.
          */
-        private fun calendarSections(items: List<PlannerItem>): List<DaySection> {
+        private fun calendarSections(
+            items: List<PlannerItem>,
+            selectedDate: Date,
+        ): List<DaySection> {
             val today = Date().startOfDay()
             val sections =
                 items
@@ -78,9 +92,9 @@ class MainViewModel
                     .sortedBy { (dueDate, _) -> dueDate }
                     .groupBy({ (dueDate, _) -> dueDate.startOfDay() }, { (_, item) -> item })
                     .map { (day, dayItems) -> DaySection(day, dayItems) }
-                    .filter { it.date >= today }
+                    .filter { it.date >= today || it.date == selectedDate }
             val missingDays =
-                listOf(today, today.plusDays(1))
+                setOf(today, today.plusDays(1), selectedDate)
                     .filter { day -> sections.none { it.date == day } }
                     .map { day -> DaySection(day, emptyList()) }
             return (sections + missingDays).sortedBy { it.date }

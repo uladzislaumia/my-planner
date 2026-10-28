@@ -23,3 +23,15 @@ fun Date.plusDays(days: Int): Date =
             time = this@plusDays
             add(Calendar.DAY_OF_MONTH, days)
         }.time
+
+/** First day of this date's week at midnight, by the locale's first day of the week (Sunday or Monday). */
+fun Date.startOfWeek(): Date =
+    Calendar
+        .getInstance()
+        .apply {
+            time = this@startOfWeek.startOfDay()
+            val offset = (get(Calendar.DAY_OF_WEEK) - firstDayOfWeek + DAYS_IN_WEEK) % DAYS_IN_WEEK
+            add(Calendar.DAY_OF_MONTH, -offset)
+        }.time
+
+private const val DAYS_IN_WEEK = 7

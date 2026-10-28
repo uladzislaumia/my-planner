@@ -37,14 +37,28 @@ import java.util.Calendar
 import java.util.Date
 import android.text.format.DateFormat as AndroidDateFormat
 
-/** Tasks grouped by day under sticky day headers; an empty section shows a "no tasks" row. */
+/**
+ * Tasks grouped by day under sticky day headers.
+ * Selecting a day scrolls to its section; an empty section shows a "no tasks" row.
+ */
 @Composable
 fun PlannerList(
     sections: List<DaySection>,
+    selectedDate: Date,
     modifier: Modifier = Modifier,
     onItemClick: (PlannerItem) -> Unit = {},
 ) {
+    val listState = rememberLazyListState()
+    val currentSections by rememberUpdatedState(sections)
+
+    LaunchedEffect(selectedDate) {
+        // The section of a just selected empty day arrives with the next UI state, so wait for it
+        val index = snapshotFlow { headerIndex(currentSections, selectedDate) }.first { it >= 0 }
+        listState.animateScrollToItem(index)
+    }
+
     LazyColumn(
+        state = listState,
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -75,12 +89,26 @@ fun PlannerList(
     }
 }
 
+/** Index of the [date] header among the list items, or -1 if there is no such section yet. */
+private fun headerIndex(
+    sections: List<DaySection>,
+    date: Date,
+): Int {
+    var index = 0
+    sections.forEach { section ->
+        if (section.date == date) return index
+        index += 1 + maxOf(section.items.size, 1)
+    }
+    return -1
+}
+
 @Composable
 private fun DayHeader(date: Date) {
     val locale = LocalConfiguration.current.locales[0]
     val today = remember { Date().startOfDay() }
     val relativeDay =
         when (date) {
+            today.plusDays(-1) -> stringResource(R.string.calendar_yesterday)
             today -> stringResource(R.string.calendar_today)
             today.plusDays(1) -> stringResource(R.string.calendar_tomorrow)
             else -> null
@@ -142,6 +170,7 @@ fun PlannerListPreview() {
                     DaySection(today, demoItems),
                     DaySection(today.plusDays(2), emptyList()),
                 ),
+            selectedDate = today,
         )
     }
 }

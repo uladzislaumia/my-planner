@@ -133,6 +133,8 @@ fun CategoryTasksScreen(
                             items(items, key = { it.id }) { item ->
                                 PlannerCard(
                                     data = item,
+                                    // The title already names the category, the chip only matters for All tasks
+                                    showCategory = filter !is CategoryFilter.Of,
                                     onClick = { selectedItemForEdit = item },
                                 )
                             }

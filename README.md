@@ -32,7 +32,7 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 ## ✨ Features
 
 *   **Task Management:** Create, edit and delete tasks with priority, category, status and deadline. Editing happens in a bottom sheet with **debounced autosave** — no Save button, unchanged drafts are never written.
-*   **Calendar Tab:** Upcoming tasks grouped by day under sticky headers (Today, Tomorrow, then each day with tasks), sorted by time. Today and Tomorrow are always shown, past days and tasks without a deadline are left out.
+*   **Calendar Tab:** A week strip that swipes between weeks, with a button back to today, above the upcoming tasks grouped by day under sticky headers (Today, Tomorrow, then each day with tasks), sorted by time. Tapping a day scrolls the list to it, showing "No tasks" for a free day. Today and Tomorrow are always shown; past days appear only while selected, and tasks without a deadline are left out.
 *   **Categories Tab:** A grid of category tiles with task counts — All Tasks, every category and No Category. Tapping a tile opens a separate screen with that category's tasks, where a new task gets the category preselected.
 *   **Custom Categories:** Add your own categories with an emoji and a color.
 *   **Task Cards:** Priority dot, deadline chip (time, or date and time outside the calendar, in the device's 12/24-hour format) and category chip; completed tasks are faded and struck through.
@@ -110,6 +110,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **Real-time Cloud Sync** (Replace one-shot Firestore `get()` with `addSnapshotListener` wrapped in `callbackFlow`: live updates from other devices, remote deletions via `DocumentChange.REMOVED`, fewer billed reads).
 - [ ] **Secure Logout Data Wipe** (Cancel pending sync work, clear Room tables and cancel scheduled reminders on logout to prevent data leaking between accounts).
 - [ ] **Reminder Restoration** (Reschedule AlarmManager reminders from Room after device reboot, app update and exact alarm permission change via `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED` receiver).
+- [ ] **Local Date & Time Deadlines** (Replace the `Date` deadline with `dueDate: LocalDate?`, optional `dueTime: LocalTime?` and optional IANA `timeZoneId`: personal tasks float with the device time zone instead of moving to another day after travel, tasks without a time stop showing a fake 09:00, group tasks can be pinned to a zone and shown in each member's local time. Needs core library desugaring for `java.time` on minSdk 24, a Room migration and a new Firestore format; keep `Date` for technical timestamps. Do before groups and recurring tasks).
 - [ ] **Compose UI Testing** (UI tests for screens and bottom sheets).
 - [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config).
 - [ ] **License** (Choose an open-source license, e.g. MIT, add a `LICENSE` file and a license badge).

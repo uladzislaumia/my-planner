@@ -124,6 +124,13 @@ class MainViewModelTest {
         }
 
     @Test
+    fun `selectedDate is today by default`() {
+        val viewModel = createViewModel()
+
+        assertEquals(Date().startOfDay(), viewModel.selectedDate.value)
+    }
+
+    @Test
     fun `calendarSections group dated items by day sorted by time and skip undated items`() =
         runTest {
             coEvery { getPlannerItemsUseCase() } returns
@@ -165,16 +172,65 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `calendarSections hide past days`() =
+    fun `selectDate adds an empty section for a day without items`() =
+        runTest {
+            coEvery { getPlannerItemsUseCase() } returns flowOf(listOf(morningItem))
+            val viewModel = createViewModel()
+
+            viewModel.selectDate(dateAt(daysFromToday = 3, hour = 15))
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
+                if (state is MainUiState.Success) {
+                    assertEquals(
+                        listOf(0, 1, 3).map { dateAt(daysFromToday = it, hour = 0) },
+                        state.calendarSections.map { it.date },
+                    )
+                    assertEquals(emptyList<PlannerItem>(), state.calendarSections.last().items)
+                }
+            }
+        }
+
+    @Test
+    fun `selectDate on a day with items doesn't add a section`() =
+        runTest {
+            coEvery { getPlannerItemsUseCase() } returns flowOf(listOf(nextDayItem, morningItem))
+            val viewModel = createViewModel()
+
+            viewModel.selectDate(dateAt(daysFromToday = 2, hour = 15))
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
+                if (state is MainUiState.Success) {
+                    assertEquals(
+                        listOf(0, 1, 2).map { dateAt(daysFromToday = it, hour = 0) },
+                        state.calendarSections.map { it.date },
+                    )
+                }
+            }
+        }
+
+    @Test
+    fun `calendarSections hide past days unless the past day is selected`() =
         runTest {
             coEvery { getPlannerItemsUseCase() } returns flowOf(listOf(yesterdayItem, morningItem))
             val viewModel = createViewModel()
+            viewModel.selectDate(dateAt(daysFromToday = 1, hour = 15))
 
             viewModel.uiState.test {
                 val state = awaitItem()
                 assertTrue("Expected MainUiState.Success, but was $state", state is MainUiState.Success)
                 if (state is MainUiState.Success) {
                     assertEquals(listOf(morningItem), state.calendarSections.flatMap { it.items })
+                }
+
+                viewModel.selectDate(dateAt(daysFromToday = -1, hour = 15))
+                val pastState = awaitItem()
+                assertTrue("Expected MainUiState.Success, but was $pastState", pastState is MainUiState.Success)
+                if (pastState is MainUiState.Success) {
+                    assertEquals(listOf(yesterdayItem, morningItem), pastState.calendarSections.flatMap { it.items })
                 }
             }
         }

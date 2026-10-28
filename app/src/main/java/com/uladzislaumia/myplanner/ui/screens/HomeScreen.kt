@@ -50,6 +50,7 @@ import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.ui.components.CategoryGrid
 import com.uladzislaumia.myplanner.ui.components.PlannerList
+import com.uladzislaumia.myplanner.ui.components.WeekStrip
 import com.uladzislaumia.myplanner.ui.components.warmBackground
 import com.uladzislaumia.myplanner.ui.dialogs.CreateCategoryDialog
 import com.uladzislaumia.myplanner.ui.sheets.AddTaskBottomSheet
@@ -68,6 +69,7 @@ fun HomeScreen(
 ) {
     val uiState by mainViewModel.uiState.collectAsState()
     val categories by mainViewModel.categories.collectAsState()
+    val selectedDate by mainViewModel.selectedDate.collectAsState()
 
     var showAddSheet by remember { mutableStateOf(false) }
     var showCreateCategoryDialog by remember { mutableStateOf(false) }
@@ -115,6 +117,15 @@ fun HomeScreen(
                     .padding(innerPadding)
                     .fillMaxSize(),
         ) {
+            if (selectedTab == HomeTab.CALENDAR) {
+                // Week calendar strip, a day is always selected
+                WeekStrip(
+                    selectedDate = selectedDate,
+                    onDateClick = mainViewModel::selectDate,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 when (val state = uiState) {
                     is MainUiState.Loading -> {
@@ -126,6 +137,7 @@ fun HomeScreen(
                             HomeTab.CALENDAR -> {
                                 PlannerList(
                                     sections = state.calendarSections,
+                                    selectedDate = selectedDate,
                                     onItemClick = { selectedItemForEdit = it },
                                 )
                             }

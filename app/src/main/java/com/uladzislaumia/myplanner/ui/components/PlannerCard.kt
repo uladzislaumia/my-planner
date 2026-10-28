@@ -43,13 +43,15 @@ import android.text.format.DateFormat as AndroidDateFormat
 
 /**
  * Task card in the warm style. The deadline is shown as a time chip; [showDate] adds the date to it,
- * for lists that don't already group tasks by day.
+ * for lists that don't already group tasks by day. [showCategory] hides the category chip on screens
+ * that already show the category, like the screen of one category.
  */
 @Composable
 fun PlannerCard(
     data: PlannerItem,
     modifier: Modifier = Modifier,
     showDate: Boolean = true,
+    showCategory: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -61,7 +63,7 @@ fun PlannerCard(
                 Priority.LOW -> R.color.priority_low
             },
         )
-    val category = Category.findById(data.categoryId)
+    val category = if (showCategory) Category.findById(data.categoryId) else null
     val contentAlpha = if (data.isCompleted) COMPLETED_ALPHA else 1f
 
     Surface(
