@@ -28,13 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.R
+import com.uladzislaumia.myplanner.ui.util.DEFAULT_DEADLINE_HOUR
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-
-private const val DEFAULT_HOUR = 9
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -55,7 +54,7 @@ fun DateTimePickerField(
                 if (selectedDateTime != null) {
                     time = selectedDateTime
                 } else {
-                    set(Calendar.HOUR_OF_DAY, DEFAULT_HOUR)
+                    set(Calendar.HOUR_OF_DAY, DEFAULT_DEADLINE_HOUR)
                     set(Calendar.MINUTE, 0)
                     set(Calendar.SECOND, 0)
                 }
@@ -116,7 +115,7 @@ fun DateTimePickerField(
                                     set(Calendar.MONTH, pickedCal.get(Calendar.MONTH))
                                     set(Calendar.DAY_OF_MONTH, pickedCal.get(Calendar.DAY_OF_MONTH))
                                     if (selectedDateTime == null) {
-                                        set(Calendar.HOUR_OF_DAY, DEFAULT_HOUR)
+                                        set(Calendar.HOUR_OF_DAY, DEFAULT_DEADLINE_HOUR)
                                         set(Calendar.MINUTE, 0)
                                         set(Calendar.SECOND, 0)
                                     }

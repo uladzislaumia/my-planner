@@ -36,6 +36,7 @@ fun AddTaskBottomSheet(
     onDismiss: () -> Unit,
     categories: List<Category> = Category.DEFAULT_CATEGORIES,
     initialCategoryId: String? = null,
+    initialDueDate: Date? = null,
     onConfirm: (
         title: String,
         description: String,
@@ -50,7 +51,7 @@ fun AddTaskBottomSheet(
     var description by remember { mutableStateOf("") }
     var selectedPriority by remember { mutableStateOf(Priority.MEDIUM) }
     var selectedCategoryId by remember { mutableStateOf(initialCategoryId) }
-    var selectedDueDate by remember { mutableStateOf<Date?>(null) }
+    var selectedDueDate by remember { mutableStateOf(initialDueDate) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,

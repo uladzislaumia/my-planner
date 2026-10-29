@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -128,6 +129,33 @@ class MainViewModelTest {
         val viewModel = createViewModel()
 
         assertEquals(Date().startOfDay(), viewModel.selectedDate.value)
+    }
+
+    @Test
+    fun `newTaskDueDate is 9 am of a selected future day`() {
+        val viewModel = createViewModel()
+        viewModel.selectDate(dateAt(daysFromToday = 2, hour = 15))
+
+        assertEquals(dateAt(daysFromToday = 2, hour = 9), viewModel.newTaskDueDate())
+    }
+
+    @Test
+    fun `newTaskDueDate is the next whole hour today`() {
+        val viewModel = createViewModel()
+        val halfPastTwo = Date(dateAt(daysFromToday = 0, hour = 14).time + HALF_HOUR_MILLIS)
+
+        assertEquals(dateAt(daysFromToday = 0, hour = 15), viewModel.newTaskDueDate(now = halfPastTwo))
+    }
+
+    @Test
+    fun `newTaskDueDate is null late in the evening and for a past day`() {
+        val viewModel = createViewModel()
+        val halfPastEleven = Date(dateAt(daysFromToday = 0, hour = 23).time + HALF_HOUR_MILLIS)
+
+        assertNull(viewModel.newTaskDueDate(now = halfPastEleven))
+
+        viewModel.selectDate(dateAt(daysFromToday = -1, hour = 15))
+        assertNull(viewModel.newTaskDueDate())
     }
 
     @Test
@@ -311,3 +339,5 @@ class MainViewModelTest {
             coVerify { deletePlannerItemUseCase("1") }
         }
 }
+
+private const val HALF_HOUR_MILLIS = 30 * 60 * 1000L

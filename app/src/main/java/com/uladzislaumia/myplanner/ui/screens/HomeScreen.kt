@@ -20,12 +20,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -110,24 +110,20 @@ fun HomeScreen(
                 },
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showAddSheet = true },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.home_add_task))
-            }
-        },
         bottomBar = {
             NavigationBar {
-                HomeTab.entries.forEach { tab ->
-                    HomeTabItem(
-                        tab = tab,
-                        selected = selectedTab == tab,
-                        onClick = { selectedTab = tab },
-                    )
-                }
+                HomeTabItem(
+                    tab = HomeTab.CALENDAR,
+                    selected = selectedTab == HomeTab.CALENDAR,
+                    onClick = { selectedTab = HomeTab.CALENDAR },
+                )
+                // The main action sits between the tabs: under the thumb and never over the content
+                AddTaskButton(onClick = { showAddSheet = true })
+                HomeTabItem(
+                    tab = HomeTab.CATEGORIES,
+                    selected = selectedTab == HomeTab.CATEGORIES,
+                    onClick = { selectedTab = HomeTab.CATEGORIES },
+                )
             }
         },
     ) { innerPadding ->
@@ -185,9 +181,13 @@ fun HomeScreen(
         }
 
         if (showAddSheet) {
+            // On the calendar a new task lands on the selected day; the categories tab has no day to offer
+            val initialDueDate =
+                remember { if (selectedTab == HomeTab.CALENDAR) mainViewModel.newTaskDueDate() else null }
             AddTaskBottomSheet(
                 onDismiss = { showAddSheet = false },
                 categories = categories,
+                initialDueDate = initialDueDate,
                 onConfirm = { title, description, priority, categoryId, dueDate ->
                     mainViewModel.addItem(title, description, priority, categoryId, dueDate)
                     showAddSheet = false
@@ -299,6 +299,30 @@ private fun greeting(user: User?): String {
             else -> R.string.home_greeting_evening
         }
     return stringResource(greetingRes, firstName)
+}
+
+@Composable
+private fun RowScope.AddTaskButton(onClick: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.weight(1f),
+    ) {
+        Surface(
+            onClick = onClick,
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.size(56.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.home_add_task),
+                    modifier = Modifier.size(28.dp),
+                )
+            }
+        }
+    }
 }
 
 private enum class HomeTab(

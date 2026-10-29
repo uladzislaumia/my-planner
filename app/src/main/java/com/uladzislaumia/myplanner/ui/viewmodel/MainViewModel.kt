@@ -11,6 +11,9 @@ import com.uladzislaumia.myplanner.domain.usecase.DeletePlannerItemUseCase
 import com.uladzislaumia.myplanner.domain.usecase.GetCategoriesUseCase
 import com.uladzislaumia.myplanner.domain.usecase.GetPlannerItemsUseCase
 import com.uladzislaumia.myplanner.domain.usecase.UpdatePlannerItemUseCase
+import com.uladzislaumia.myplanner.ui.util.DEFAULT_DEADLINE_HOUR
+import com.uladzislaumia.myplanner.ui.util.atHour
+import com.uladzislaumia.myplanner.ui.util.nextWholeHour
 import com.uladzislaumia.myplanner.ui.util.plusDays
 import com.uladzislaumia.myplanner.ui.util.startOfDay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -74,6 +77,20 @@ class MainViewModel
 
         fun selectDate(date: Date) {
             selectedDate.value = date.startOfDay()
+        }
+
+        /**
+         * Deadline for a task added from the calendar, on the selected day: 09:00 for a future day,
+         * the next whole hour for today, none for a past day or late in the evening when today has no hour left.
+         */
+        fun newTaskDueDate(now: Date = Date()): Date? {
+            val day = selectedDate.value
+            val today = now.startOfDay()
+            return when {
+                day > today -> day.atHour(DEFAULT_DEADLINE_HOUR)
+                day == today -> now.nextWholeHour().takeIf { it.startOfDay() == today }
+                else -> null
+            }
         }
 
         /**

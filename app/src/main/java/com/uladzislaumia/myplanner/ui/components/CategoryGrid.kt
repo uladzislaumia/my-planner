@@ -57,8 +57,7 @@ fun CategoryGrid(
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        // Bottom padding keeps the last row clear of the floating action button
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 88.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier.fillMaxSize(),
