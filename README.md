@@ -91,9 +91,9 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 |:---:|:---:|:---:|
 | <img src="/docs/screenshots/calendar_tab.png" alt="Calendar Tab" width="250"> | <img src="/docs/screenshots/categories_tab.png" alt="Categories Tab" width="250"> | <img src="/docs/screenshots/category_screen.png" alt="Category Screen" width="250"> |
 
-| Add Task Sheet | Edit Task Sheet (Autosave) |
-|:---:|:---:|
-| <img src="/docs/screenshots/add_task_sheet.png" alt="Add Task Sheet" width="250"> | <img src="/docs/screenshots/edit_task_sheet.png" alt="Edit Task Sheet" width="250"> |
+| Add Task Sheet | Edit Task Sheet (Autosave) | Account Sheet |
+|:---:|:---:|:---:|
+| <img src="/docs/screenshots/add_task_sheet.png" alt="Add Task Sheet" width="250"> | <img src="/docs/screenshots/edit_task_sheet.png" alt="Edit Task Sheet" width="250"> | <img src="/docs/screenshots/account_sheet.png" alt="Account Sheet" width="250"> |
 
 ## 🚀 Roadmap
 
@@ -106,6 +106,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **Specific Exception Handling** (Replace generic `catch (e: Exception)` in repositories, `SyncWorker`, `NotificationScheduler` and `PlannerRemoteDataSource` with specific Firebase / Firestore / network exceptions, rethrow `CancellationException`; fixes detekt `TooGenericExceptionCaught`).
 - [ ] **Localized Auth Errors** (Map Firebase Auth exceptions — network, weak password, email in use, invalid credentials — to own localized strings instead of showing the raw English `localizedMessage`; use one message for wrong password / unknown user to avoid account enumeration).
 - [ ] **Custom Category Chip on Task Cards** (Fix: `PlannerCard` resolves categories via `Category.findById`, which only knows built-in ones, so tasks with a custom category show no chip; look them up in the categories list from `MainViewModel` instead).
+- [ ] **Date Picker Time Zone Shift** (Fix: Material `DatePicker` keeps a day as midnight UTC, but `DateTimePickerField` reads and writes those millis with a local `Calendar`. West of Greenwich a picked day is saved one day earlier (31 Oct becomes 30 Oct in New York), and from about UTC+9 the picker opens on the previous day and moves the deadline back on OK. Convert at the boundary: local day → midnight UTC for `initialSelectedDateMillis`, read `selectedDateMillis` with a UTC `Calendar`; cover with unit tests that switch the default time zone. Becomes a one-liner with `LocalDate` after Local Date & Time Deadlines).
 - [ ] **Optimistic UI for Task Edits** (Fix stale data when reopening the edit sheet right after closing it: overlay recent edits in `MainViewModel` until Room emits them, open the sheet by task id).
 - [ ] **Real-time Cloud Sync** (Replace one-shot Firestore `get()` with `addSnapshotListener` wrapped in `callbackFlow`: live updates from other devices, remote deletions via `DocumentChange.REMOVED`, fewer billed reads).
 - [ ] **Secure Logout Data Wipe** (Cancel pending sync work, clear Room tables and cancel scheduled reminders on logout to prevent data leaking between accounts).
