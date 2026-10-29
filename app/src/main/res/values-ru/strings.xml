@@ -20,7 +20,9 @@
     <string name="auth_error_signup_failed">Не удалось зарегистрироваться</string>
 
     <!-- Home -->
-    <string name="home_logout">Выйти</string>
+    <string name="home_greeting_morning">Доброе утро, %1$s</string>
+    <string name="home_greeting_afternoon">Добрый день, %1$s</string>
+    <string name="home_greeting_evening">Добрый вечер, %1$s</string>
     <string name="home_add_task">Добавить задачу</string>
     <string name="home_error_with_message">Ошибка: %1$s</string>
     <string name="home_tab_calendar">Календарь</string>
@@ -30,6 +32,12 @@
     <string name="calendar_today">Сегодня</string>
     <string name="calendar_tomorrow">Завтра</string>
     <string name="calendar_no_tasks">Задач нет</string>
+
+    <!-- Account -->
+    <string name="account_title">Аккаунт</string>
+    <string name="account_logout">Выйти</string>
+    <string name="account_logout_confirm_title">Выйти из аккаунта?</string>
+    <string name="account_logout_confirm_text">Чтобы снова увидеть свои задачи, нужно будет войти в аккаунт.</string>
 
     <!-- Categories -->
     <string name="categories_all_tasks">Все задачи</string>

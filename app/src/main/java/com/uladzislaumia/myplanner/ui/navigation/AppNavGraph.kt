@@ -62,6 +62,7 @@ fun AppNavGraph(
         composable<Route.Home> {
             HomeScreen(
                 mainViewModel = mainViewModel,
+                user = currentUser,
                 onLogout = {
                     authViewModel.logout()
                 },

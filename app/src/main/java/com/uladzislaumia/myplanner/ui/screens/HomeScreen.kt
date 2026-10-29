@@ -22,11 +22,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -45,24 +45,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.PlannerItem
+import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.ui.components.CategoryGrid
 import com.uladzislaumia.myplanner.ui.components.PlannerList
+import com.uladzislaumia.myplanner.ui.components.UserAvatar
 import com.uladzislaumia.myplanner.ui.components.WeekStrip
 import com.uladzislaumia.myplanner.ui.components.warmBackground
 import com.uladzislaumia.myplanner.ui.dialogs.CreateCategoryDialog
+import com.uladzislaumia.myplanner.ui.sheets.AccountBottomSheet
 import com.uladzislaumia.myplanner.ui.sheets.AddTaskBottomSheet
 import com.uladzislaumia.myplanner.ui.sheets.EditTaskBottomSheet
+import com.uladzislaumia.myplanner.ui.text.firstName
 import com.uladzislaumia.myplanner.ui.viewmodel.CategoryFilter
 import com.uladzislaumia.myplanner.ui.viewmodel.MainUiState
 import com.uladzislaumia.myplanner.ui.viewmodel.MainViewModel
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     mainViewModel: MainViewModel,
+    user: User?,
     onLogout: () -> Unit,
     onCategoryClick: (CategoryFilter) -> Unit,
     modifier: Modifier = Modifier,
@@ -72,6 +79,7 @@ fun HomeScreen(
     val selectedDate by mainViewModel.selectedDate.collectAsState()
 
     var showAddSheet by remember { mutableStateOf(false) }
+    var showAccountSheet by remember { mutableStateOf(false) }
     var showCreateCategoryDialog by remember { mutableStateOf(false) }
     var selectedItemForEdit by remember { mutableStateOf<PlannerItem?>(null) }
     var selectedTab by rememberSaveable { mutableStateOf(HomeTab.CALENDAR) }
@@ -81,11 +89,23 @@ fun HomeScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
+                title = {
+                    Text(
+                        text =
+                            when (selectedTab) {
+                                HomeTab.CALENDAR -> greeting(user)
+                                HomeTab.CATEGORIES -> stringResource(R.string.home_tab_categories)
+                            },
+                        fontWeight = FontWeight.Bold,
+                        // A long name is cut at the end, the greeting itself stays whole
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 actions = {
-                    TextButton(onClick = onLogout) {
-                        Text(stringResource(R.string.home_logout), color = MaterialTheme.colorScheme.error)
+                    IconButton(onClick = { showAccountSheet = true }) {
+                        UserAvatar(user = user, contentDescription = stringResource(R.string.account_title))
                     }
                 },
             )
@@ -175,6 +195,17 @@ fun HomeScreen(
             )
         }
 
+        if (showAccountSheet) {
+            AccountBottomSheet(
+                user = user,
+                onDismiss = { showAccountSheet = false },
+                onLogout = {
+                    showAccountSheet = false
+                    onLogout()
+                },
+            )
+        }
+
         if (showCreateCategoryDialog) {
             CreateCategoryDialog(
                 onDismiss = { showCreateCategoryDialog = false },
@@ -255,6 +286,21 @@ private fun RowScope.HomeTabItem(
     }
 }
 
+/** "Good morning, Anna" by the time of day, with only the first name to keep it short. */
+@Composable
+private fun greeting(user: User?): String {
+    val hour = remember { Calendar.getInstance().get(Calendar.HOUR_OF_DAY) }
+    val firstName = user?.firstName.orEmpty()
+    if (firstName.isEmpty()) return stringResource(R.string.app_name)
+    val greetingRes =
+        when (hour) {
+            in MORNING_START_HOUR until AFTERNOON_START_HOUR -> R.string.home_greeting_morning
+            in AFTERNOON_START_HOUR until EVENING_START_HOUR -> R.string.home_greeting_afternoon
+            else -> R.string.home_greeting_evening
+        }
+    return stringResource(greetingRes, firstName)
+}
+
 private enum class HomeTab(
     @param:StringRes val labelRes: Int,
     @param:DrawableRes val iconRes: Int,
@@ -264,3 +310,6 @@ private enum class HomeTab(
 }
 
 private const val UNSELECTED_TAB_ALPHA = 0.55f
+private const val MORNING_START_HOUR = 5
+private const val AFTERNOON_START_HOUR = 12
+private const val EVENING_START_HOUR = 18

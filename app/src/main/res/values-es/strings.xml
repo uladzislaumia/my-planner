@@ -20,7 +20,9 @@
     <string name="auth_error_signup_failed">No se pudo completar el registro</string>
 
     <!-- Home -->
-    <string name="home_logout">Cerrar sesión</string>
+    <string name="home_greeting_morning">Buenos días, %1$s</string>
+    <string name="home_greeting_afternoon">Buenas tardes, %1$s</string>
+    <string name="home_greeting_evening">Buenas noches, %1$s</string>
     <string name="home_add_task">Añadir tarea</string>
     <string name="home_error_with_message">Error: %1$s</string>
     <string name="home_tab_calendar">Calendario</string>
@@ -30,6 +32,12 @@
     <string name="calendar_today">Hoy</string>
     <string name="calendar_tomorrow">Mañana</string>
     <string name="calendar_no_tasks">No hay tareas</string>
+
+    <!-- Account -->
+    <string name="account_title">Cuenta</string>
+    <string name="account_logout">Cerrar sesión</string>
+    <string name="account_logout_confirm_title">¿Cerrar sesión?</string>
+    <string name="account_logout_confirm_text">Tendrás que iniciar sesión de nuevo para ver tus tareas.</string>
 
     <!-- Categories -->
     <string name="categories_all_tasks">Todas las tareas</string>

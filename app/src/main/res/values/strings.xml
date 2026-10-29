@@ -22,7 +22,9 @@
     <string name="auth_error_signup_failed">Registration failed</string>
 
     <!-- Home -->
-    <string name="home_logout">Logout</string>
+    <string name="home_greeting_morning">Good morning, %1$s</string>
+    <string name="home_greeting_afternoon">Good afternoon, %1$s</string>
+    <string name="home_greeting_evening">Good evening, %1$s</string>
     <string name="home_add_task">Add Task</string>
     <string name="home_error_with_message">Error: %1$s</string>
     <string name="home_tab_calendar">Calendar</string>
@@ -32,6 +34,12 @@
     <string name="calendar_today">Today</string>
     <string name="calendar_tomorrow">Tomorrow</string>
     <string name="calendar_no_tasks">No tasks</string>
+
+    <!-- Account -->
+    <string name="account_title">Account</string>
+    <string name="account_logout">Log out</string>
+    <string name="account_logout_confirm_title">Log out?</string>
+    <string name="account_logout_confirm_text">You will need to sign in again to see your tasks.</string>
 
     <!-- Categories -->
     <string name="categories_all_tasks">All Tasks</string>

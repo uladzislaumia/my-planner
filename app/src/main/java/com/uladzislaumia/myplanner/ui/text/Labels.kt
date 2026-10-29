@@ -5,7 +5,9 @@ import androidx.compose.ui.res.stringResource
 import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.model.Priority
+import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.ui.viewmodel.CategoryFilter
+import java.util.Locale
 
 @Composable
 fun Priority.label(): String =
@@ -44,3 +46,14 @@ fun CategoryFilter.title(categories: List<Category>): String =
         CategoryFilter.Uncategorized -> stringResource(R.string.categories_none)
         is CategoryFilter.Of -> categories.find { it.id == categoryId }?.displayName() ?: categoryId
     }
+
+/** Avatar letter: the first letter or digit of the name, or of the email when the name has none. */
+fun User.initial(locale: Locale): String =
+    (name.firstOrNull { it.isLetterOrDigit() } ?: email.firstOrNull { it.isLetterOrDigit() })
+        ?.toString()
+        ?.uppercase(locale)
+        .orEmpty()
+
+/** First word of the name, to address the user briefly: "Anna" for "Anna Smith". */
+val User.firstName: String
+    get() = name.trim().substringBefore(' ')
