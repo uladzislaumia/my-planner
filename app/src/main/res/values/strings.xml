@@ -68,23 +68,25 @@
     <string name="categories_create_color">Color:</string>
 
     <!-- Task sheets -->
-    <string name="tasks_add_title">New Task 📝</string>
-    <string name="tasks_edit_title">Edit Task ✏️</string>
-    <string name="tasks_field_title">Task Title</string>
+    <string name="tasks_add_title">New Task</string>
+    <string name="tasks_field_title">Title</string>
+    <string name="tasks_error_title_empty">Add a title to save changes</string>
     <string name="tasks_field_description">Description</string>
-    <string name="tasks_label_priority">Priority:</string>
-    <string name="tasks_label_deadline">Deadline &amp; Reminder:</string>
-    <string name="tasks_label_status">Status:</string>
+    <string name="tasks_label_priority">Priority</string>
     <string name="tasks_priority_low">Low</string>
     <string name="tasks_priority_medium">Medium</string>
     <string name="tasks_priority_high">High</string>
-    <string name="tasks_status_active">⏳ Active</string>
-    <string name="tasks_status_completed">✅ Completed</string>
+    <string name="tasks_mark_completed">Mark as done</string>
+    <string name="tasks_mark_active">Mark as not done</string>
     <string name="tasks_card_completed">Completed</string>
-    <string name="tasks_create_button">Create Task</string>
+    <string name="tasks_create_button">Create</string>
     <string name="tasks_delete_button">Delete Task</string>
-    <string name="tasks_select_date">📅 Select Date</string>
     <string name="tasks_clear_date">Clear Date</string>
+    <string name="tasks_field_date">Date</string>
+    <string name="tasks_field_time">Time</string>
+    <string name="tasks_delete_confirm_title">Delete task?</string>
+    <string name="tasks_delete_confirm_text">The task and its reminder will be deleted for good.</string>
+    <string name="tasks_delete_confirm">Delete</string>
 
     <!-- Notifications -->
     <string name="notifications_channel_name">Task Reminders</string>

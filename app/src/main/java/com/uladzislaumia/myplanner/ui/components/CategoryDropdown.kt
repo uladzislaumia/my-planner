@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.ui.text.displayName
+import com.uladzislaumia.myplanner.ui.viewmodel.CategoryFilter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +41,14 @@ fun CategoryDropdown(
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(R.string.categories_field)) },
-            leadingIcon = selectedCategory?.let { category -> { CategoryIcon(category) } },
+            // "No Category" gets its own icon too, so the text doesn't shift when a category is picked
+            leadingIcon = {
+                if (selectedCategory != null) {
+                    CategoryIcon(selectedCategory)
+                } else {
+                    CategoryIcon(CategoryFilter.Uncategorized, categories)
+                }
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
             modifier =
@@ -55,6 +63,7 @@ fun CategoryDropdown(
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.categories_none_option)) },
+                leadingIcon = { CategoryIcon(CategoryFilter.Uncategorized, categories) },
                 onClick = {
                     onCategorySelected(null)
                     expanded = false

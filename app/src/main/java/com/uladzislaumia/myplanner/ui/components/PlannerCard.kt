@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,8 +24,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -55,14 +54,6 @@ fun PlannerCard(
     onClick: () -> Unit = {},
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val priorityColor =
-        colorResource(
-            when (data.priority) {
-                Priority.HIGH -> R.color.priority_high
-                Priority.MEDIUM -> R.color.priority_medium
-                Priority.LOW -> R.color.priority_low
-            },
-        )
     val category = if (showCategory) Category.findById(data.categoryId) else null
     val contentAlpha = if (data.isCompleted) COMPLETED_ALPHA else 1f
 
@@ -77,11 +68,7 @@ fun PlannerCard(
             modifier = Modifier.padding(16.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    modifier = Modifier.size(10.dp),
-                    shape = CircleShape,
-                    color = priorityColor.copy(alpha = contentAlpha),
-                ) {}
+                PriorityDot(priority = data.priority, alpha = contentAlpha)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = data.title,
@@ -100,7 +87,18 @@ fun PlannerCard(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     if (dueDate != null) {
-                        CardChip(text = "⏰ ${formatDeadline(dueDate, showDate)}", contentAlpha = contentAlpha)
+                        CardChip(
+                            text = formatDeadline(dueDate, showDate),
+                            contentAlpha = contentAlpha,
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_sketch_bell),
+                                    contentDescription = null,
+                                    tint = colorScheme.onSecondaryContainer.copy(alpha = contentAlpha),
+                                    modifier = Modifier.size(14.dp),
+                                )
+                            },
+                        )
                     }
                     if (category != null) {
                         CardChip(
@@ -126,12 +124,7 @@ fun PlannerCard(
             }
             if (data.isCompleted) {
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = "✓ " + stringResource(R.string.tasks_card_completed),
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colorResource(R.color.priority_low),
-                )
+                CompletedLabel()
             }
         }
     }

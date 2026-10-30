@@ -67,23 +67,25 @@
     <string name="categories_create_color">Color:</string>
 
     <!-- Task sheets -->
-    <string name="tasks_add_title">Nueva tarea 📝</string>
-    <string name="tasks_edit_title">Editar tarea ✏️</string>
-    <string name="tasks_field_title">Título de la tarea</string>
+    <string name="tasks_add_title">Nueva tarea</string>
+    <string name="tasks_field_title">Título</string>
+    <string name="tasks_error_title_empty">Añade un título para guardar los cambios</string>
     <string name="tasks_field_description">Descripción</string>
-    <string name="tasks_label_priority">Prioridad:</string>
-    <string name="tasks_label_deadline">Fecha límite y recordatorio:</string>
-    <string name="tasks_label_status">Estado:</string>
+    <string name="tasks_label_priority">Prioridad</string>
     <string name="tasks_priority_low">Baja</string>
     <string name="tasks_priority_medium">Media</string>
     <string name="tasks_priority_high">Alta</string>
-    <string name="tasks_status_active">⏳ Activa</string>
-    <string name="tasks_status_completed">✅ Completada</string>
+    <string name="tasks_mark_completed">Marcar como hecha</string>
+    <string name="tasks_mark_active">Marcar como pendiente</string>
     <string name="tasks_card_completed">Completada</string>
-    <string name="tasks_create_button">Crear tarea</string>
+    <string name="tasks_create_button">Crear</string>
     <string name="tasks_delete_button">Eliminar tarea</string>
-    <string name="tasks_select_date">📅 Elegir fecha</string>
     <string name="tasks_clear_date">Borrar fecha</string>
+    <string name="tasks_field_date">Fecha</string>
+    <string name="tasks_field_time">Hora</string>
+    <string name="tasks_delete_confirm_title">¿Eliminar la tarea?</string>
+    <string name="tasks_delete_confirm_text">La tarea y su recordatorio se eliminarán definitivamente.</string>
+    <string name="tasks_delete_confirm">Eliminar</string>
 
     <!-- Notifications -->
     <string name="notifications_channel_name">Recordatorios de tareas</string>

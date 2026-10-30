@@ -68,23 +68,25 @@
     <string name="categories_create_color">Цвет:</string>
 
     <!-- Task sheets -->
-    <string name="tasks_add_title">Новая задача 📝</string>
-    <string name="tasks_edit_title">Редактировать задачу ✏️</string>
-    <string name="tasks_field_title">Название задачи</string>
+    <string name="tasks_add_title">Новая задача</string>
+    <string name="tasks_field_title">Название</string>
+    <string name="tasks_error_title_empty">Добавьте название, чтобы сохранить изменения</string>
     <string name="tasks_field_description">Описание</string>
-    <string name="tasks_label_priority">Приоритет:</string>
-    <string name="tasks_label_deadline">Срок и напоминание:</string>
-    <string name="tasks_label_status">Статус:</string>
+    <string name="tasks_label_priority">Приоритет</string>
     <string name="tasks_priority_low">Низкий</string>
     <string name="tasks_priority_medium">Средний</string>
     <string name="tasks_priority_high">Высокий</string>
-    <string name="tasks_status_active">⏳ Активна</string>
-    <string name="tasks_status_completed">✅ Выполнена</string>
+    <string name="tasks_mark_completed">Отметить выполненной</string>
+    <string name="tasks_mark_active">Вернуть в работу</string>
     <string name="tasks_card_completed">Выполнено</string>
-    <string name="tasks_create_button">Создать задачу</string>
+    <string name="tasks_create_button">Создать</string>
     <string name="tasks_delete_button">Удалить задачу</string>
-    <string name="tasks_select_date">📅 Выбрать дату</string>
     <string name="tasks_clear_date">Очистить дату</string>
+    <string name="tasks_field_date">Дата</string>
+    <string name="tasks_field_time">Время</string>
+    <string name="tasks_delete_confirm_title">Удалить задачу?</string>
+    <string name="tasks_delete_confirm_text">Задача и её напоминание будут удалены безвозвратно.</string>
+    <string name="tasks_delete_confirm">Удалить</string>
 
     <!-- Notifications -->
     <string name="notifications_channel_name">Напоминания о задачах</string>

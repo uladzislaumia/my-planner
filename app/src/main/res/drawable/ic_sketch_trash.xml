@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hand-drawn trash can in a single color: strokes only, so it can be tinted, e.g. with the error color -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M4.2,6.6 C9.4,6.3 14.6,6.5 19.8,6.4"
+        android:strokeWidth="1.6"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M9.4,6.4 C9.3,5.3 9.6,4.4 10.5,4.3 C11.5,4.2 12.6,4.3 13.6,4.3 C14.5,4.4 14.7,5.3 14.6,6.4"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M5.9,6.8 C6.3,10.9 6.5,15.2 7,19.1 C7.1,19.9 7.6,20.4 8.4,20.4 C10.8,20.6 13.3,20.4 15.7,20.5 C16.5,20.5 17,20 17.1,19.2 C17.4,15.1 17.8,10.9 18.1,6.8"
+        android:strokeWidth="1.6"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M10,10 C10.1,12.4 10.2,14.8 10.3,17.1 M14,10 C13.9,12.4 13.8,14.8 13.7,17.1"
+        android:strokeWidth="1.4"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round" />
+</vector>

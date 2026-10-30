@@ -102,6 +102,7 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **Firebase Remote Config** (Dynamic feature flags & configuration).
 - [ ] **GraphQL Integration** (Apollo Client).
 - [ ] **Messaging** (Push via FCM).
+- [ ] **Complete Tasks from the List** (A round checkbox on each task card to mark it done or undone in one tap, without opening the edit sheet, with a short animation and an Undo snackbar; replaces the priority dot or sits next to it).
 - [ ] **Reopen Completed Tasks** (One-tap "Do it again" for tasks you finished before, e.g. "Clean the coffee machine" or "Pay for a subscription": reopen on demand, optionally set a new deadline and reminder, keep the last completion date).
 - [ ] **Specific Exception Handling** (Replace generic `catch (e: Exception)` in repositories, `SyncWorker`, `NotificationScheduler` and `PlannerRemoteDataSource` with specific Firebase / Firestore / network exceptions, rethrow `CancellationException`; fixes detekt `TooGenericExceptionCaught`).
 - [ ] **Localized Auth Errors** (Map Firebase Auth exceptions — network, weak password, email in use, invalid credentials — to own localized strings instead of showing the raw English `localizedMessage`; use one message for wrong password / unknown user to avoid account enumeration).
