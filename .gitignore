@@ -17,3 +17,7 @@
 .cxx
 local.properties
 google-services.json
+# Signing keys and service accounts
+*.jks
+*.keystore
+*service-account*.json

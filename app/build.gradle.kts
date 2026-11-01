@@ -1,3 +1,4 @@
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,6 +7,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.appdistribution)
     alias(libs.plugins.hilt)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
@@ -21,16 +23,35 @@ android {
         applicationId = "com.uladzislaumia.myplanner"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
+        // CI passes its run number, so every distributed build is a newer version
+        versionCode = providers.environmentVariable("VERSION_CODE").orNull?.toInt() ?: 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        // The key comes from the environment (see .github/workflows/distribute.yml)
+        providers.environmentVariable("RELEASE_STORE_FILE").orNull?.let { releaseStoreFile ->
+            create("release") {
+                storeFile = file(releaseStoreFile)
+                storePassword = providers.environmentVariable("RELEASE_STORE_PASSWORD").get()
+                keyAlias = providers.environmentVariable("RELEASE_KEY_ALIAS").get()
+                keyPassword = providers.environmentVariable("RELEASE_KEY_PASSWORD").get()
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Falls back to the debug key, so a release build also runs locally without the real one
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             optimization {
                 enable = false
+            }
+            firebaseAppDistribution {
+                artifactType = "APK"
+                groups = "testers"
             }
         }
     }

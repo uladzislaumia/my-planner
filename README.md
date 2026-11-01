@@ -72,7 +72,7 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 *   **Asynchrony:** Kotlin Coroutines & Flow
 *   **Build System:** Gradle Kotlin DSL + Version Catalog (`libs.versions.toml`)
 *   **Quality Assurance:** KtLint (style formatting) & Detekt (static analysis), enforced in CI
-*   **CI/CD:** GitHub Actions (ktlint, detekt, Android Lint, unit tests, debug APK)
+*   **CI/CD:** GitHub Actions (ktlint, detekt, Android Lint, unit tests, debug APK), Firebase App Distribution for test builds
 
 ## 🏗 Architecture
 
@@ -114,6 +114,8 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **Reminder Restoration** (Reschedule AlarmManager reminders from Room after device reboot, app update and exact alarm permission change via `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED` receiver).
 - [ ] **Local Date & Time Deadlines** (Replace the `Date` deadline with `dueDate: LocalDate?`, optional `dueTime: LocalTime?` and optional IANA `timeZoneId`: personal tasks float with the device time zone instead of moving to another day after travel, tasks without a time stop showing a fake 09:00, group tasks can be pinned to a zone and shown in each member's local time. Needs core library desugaring for `java.time` on minSdk 24, a Room migration and a new Firestore format; keep `Date` for technical timestamps. Do before groups and recurring tasks).
 - [ ] **Bottom Bar on Category Screen** (Keep the bottom bar with the centered "+" on the category screen too, with the Categories tab highlighted, instead of a separate FAB: the add button stays in one place and the other tab is one tap away. Move the bottom bar from `HomeScreen` to a shared `Scaffold` above the `NavHost`, shown by the current route, and lift the tab state and the add sheet there; "+" preselects the open category).
+- [ ] **Firebase Emulator Suite** (Run Firestore and Auth locally for debug builds and tests via `useEmulator`, with `10.0.2.2` as the host on the Android emulator: experiments, screenshots and demo data stop touching the real database, and tests start from clean data).
+- [ ] **Dev & Prod Environments** (Before the first real users, split into separate Firebase projects such as `my-planner-dev` and `my-planner-prod`: `dev` and `prod` product flavors with `applicationIdSuffix = ".dev"` and a `google-services.json` in each flavor's source set; keep Firestore rules and indexes in the repository and deploy them to both projects, add per-environment CI secrets, and distribute test builds from the dev project).
 - [ ] **Compose UI Testing** (UI tests for screens and bottom sheets).
 - [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config).
 - [ ] **License** (Choose an open-source license, e.g. MIT, add a `LICENSE` file and a license badge).

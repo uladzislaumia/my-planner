@@ -1,0 +1,68 @@
+name: Distribute
+
+# Started by hand from the Actions tab, so testers get an email only when a build is worth trying
+on:
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: What's new in this build (the last commit title by default)
+        required: false
+        type: string
+      groups:
+        description: Firebase App Distribution tester groups, comma-separated
+        required: true
+        default: testers
+        type: string
+
+# Two distributions at once would race for the "latest" build testers see
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  distribute:
+    name: Build and upload release APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up build environment
+        uses: ./.github/actions/setup
+        with:
+          google-services-json: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Unit tests
+        run: ./gradlew :app:testDebugUnitTest
+
+      - name: Restore signing key and Firebase credentials
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$RELEASE_KEYSTORE_BASE64" ] || [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::Repository secrets RELEASE_KEYSTORE_BASE64 and FIREBASE_SERVICE_ACCOUNT must be set"
+            exit 1
+          fi
+          echo "$RELEASE_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
+
+      - name: Build and upload
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          RELEASE_STORE_FILE: ${{ runner.temp }}/release.jks
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
+          # Through the environment, so the text can't run as a shell command
+          RELEASE_NOTES: ${{ inputs.release_notes }}
+          GROUPS: ${{ inputs.groups }}
+        run: |
+          ./gradlew :app:assembleRelease :app:appDistributionUploadRelease \
+            --releaseNotes="${RELEASE_NOTES:-$(git log -1 --pretty=%s)}" \
+            --groups="$GROUPS"
