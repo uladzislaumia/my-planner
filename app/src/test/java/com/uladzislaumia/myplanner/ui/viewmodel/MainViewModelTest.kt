@@ -100,6 +100,18 @@ class MainViewModelTest {
         )
 
     @Test
+    fun `categories stay empty instead of crashing when getCategoriesUseCase fails`() =
+        runTest {
+            coEvery { getCategoriesUseCase() } returns flow { throw IllegalStateException("Database failed") }
+            val viewModel = createViewModel()
+
+            viewModel.categories.test {
+                assertEquals(emptyList<Category>(), awaitItem())
+                expectNoEvents()
+            }
+        }
+
+    @Test
     fun `categories emits list of categories from getCategoriesUseCase`() =
         runTest {
             val viewModel = createViewModel()

@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,7 +48,11 @@ class AuthViewModel
         private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
         val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
-        val authState = observeAuthStateUseCase()
+        // On failure the current user stays as is: emitting null here would look like a sign out
+        val authState =
+            observeAuthStateUseCase().catch { e ->
+                Timber.e(e, "Auth state updates failed")
+            }
 
         val currentUser: User?
             get() = getCurrentUserUseCase()

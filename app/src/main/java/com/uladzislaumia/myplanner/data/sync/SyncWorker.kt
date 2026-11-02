@@ -24,6 +24,7 @@ class SyncWorker
         private val plannerSyncDao: PlannerSyncDao,
         private val remoteDataSource: PlannerRemoteDataSource,
     ) : CoroutineWorker(context, params) {
+        // Whatever went wrong, pending changes must stay queued for a retry
         override suspend fun doWork(): Result {
             // Captured once: the whole run writes to this user's collection only
             val uid =

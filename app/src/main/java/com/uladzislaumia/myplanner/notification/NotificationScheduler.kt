@@ -67,7 +67,8 @@ class NotificationScheduler
                     reminderTime,
                     pendingIntent,
                 )
-            } catch (e: Exception) {
+            } catch (e: IllegalStateException) {
+                // AlarmManager's limit of concurrent alarms per app is reached
                 Timber.e(e, "Failed to schedule alarm for taskId: ${item.id}")
             }
         }

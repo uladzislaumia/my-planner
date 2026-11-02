@@ -8,6 +8,7 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.uladzislaumia.myplanner.domain.model.AuthResult
 import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -31,40 +32,19 @@ class FirebaseAuthRepositoryImpl
             )
         }
 
-        override fun getCurrentUser(): User? =
-            try {
-                mapFirebaseUser(firebaseAuth.currentUser)
-            } catch (e: Exception) {
-                Timber.e(e, "Error accessing getCurrentUser from FirebaseAuth")
-                null
-            }
+        override fun getCurrentUser(): User? = mapFirebaseUser(firebaseAuth.currentUser)
 
         override fun observeAuthState(): Flow<User?> =
             callbackFlow {
                 val listener =
                     FirebaseAuth.AuthStateListener { auth ->
-                        try {
-                            trySend(mapFirebaseUser(auth.currentUser))
-                        } catch (e: Exception) {
-                            Timber.e(e, "Error handling AuthStateListener change")
-                            trySend(null)
-                        }
+                        trySend(mapFirebaseUser(auth.currentUser))
                     }
-                try {
-                    firebaseAuth.addAuthStateListener(listener)
-                } catch (e: Exception) {
-                    Timber.e(e, "Error adding AuthStateListener to FirebaseAuth")
-                    trySend(null)
-                }
-                awaitClose {
-                    try {
-                        firebaseAuth.removeAuthStateListener(listener)
-                    } catch (e: Exception) {
-                        Timber.e(e, "Error removing AuthStateListener from FirebaseAuth")
-                    }
-                }
+                firebaseAuth.addAuthStateListener(listener)
+                awaitClose { firebaseAuth.removeAuthStateListener(listener) }
             }
 
+        // Any sign in failure is reported to the user instead of crashing the app
         override suspend fun login(
             email: String,
             password: String,
@@ -81,11 +61,14 @@ class FirebaseAuthRepositoryImpl
                 } else {
                     AuthResult.Error(Exception("Firebase user is null"))
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Error signing in with email and password")
                 AuthResult.Error(e)
             }
 
+        // Any sign up failure is reported to the user instead of crashing the app
         override suspend fun signUp(
             name: String,
             email: String,
@@ -115,18 +98,16 @@ class FirebaseAuthRepositoryImpl
                 } else {
                     AuthResult.Error(Exception("Firebase user is null"))
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Error creating user with email and password")
                 AuthResult.Error(e)
             }
 
         override suspend fun logout() {
-            try {
-                firebaseAnalytics.logEvent("logout", null)
-                firebaseAnalytics.setUserId(null)
-                firebaseAuth.signOut()
-            } catch (e: Exception) {
-                Timber.e(e, "Error signing out from FirebaseAuth")
-            }
+            firebaseAnalytics.logEvent("logout", null)
+            firebaseAnalytics.setUserId(null)
+            firebaseAuth.signOut()
         }
     }

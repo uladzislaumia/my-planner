@@ -6,6 +6,7 @@ import com.uladzislaumia.myplanner.data.local.entity.CategoryEntity
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
 import com.uladzislaumia.myplanner.domain.repository.CategoryRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -39,6 +40,7 @@ class CategoryRepositoryImpl
                     syncCategoriesFromCloud()
                 }
 
+        // Local data stays usable, so a sync failure of any kind must not take down the app
         private suspend fun syncCategoriesFromCloud() =
             withContext(Dispatchers.IO) {
                 val collection = categoriesCollection ?: return@withContext
@@ -46,18 +48,14 @@ class CategoryRepositoryImpl
                 try {
                     val snapshot = collection.get().await()
                     val remoteCategories =
-                        snapshot.documents.mapNotNull { doc ->
-                            try {
-                                CategoryEntity(
-                                    id = doc.id,
-                                    name = doc.getString("name") ?: "",
-                                    icon = doc.getString("icon") ?: "📂",
-                                    colorHex = doc.getString("colorHex") ?: "#4CAF50",
-                                )
-                            } catch (e: Exception) {
-                                Timber.e(e, "Error parsing firestore category document: ${doc.id}")
-                                null
-                            }
+                        snapshot.documents.map { doc ->
+                            // get() with a safe cast: getString() throws on a field of another type
+                            CategoryEntity(
+                                id = doc.id,
+                                name = doc.get("name") as? String ?: "",
+                                icon = doc.get("icon") as? String ?: "📂",
+                                colorHex = doc.get("colorHex") as? String ?: "#4CAF50",
+                            )
                         }
 
                     val localCount = categoryDao.getCategoryCount()
@@ -68,6 +66,8 @@ class CategoryRepositoryImpl
                         remoteCategories.forEach { categoryDao.insertCategory(it) }
                         Timber.d("Synced ${remoteCategories.size} categories from cloud")
                     }
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to sync categories from cloud")
                     if (categoryDao.getCategoryCount() == 0) {
@@ -80,6 +80,7 @@ class CategoryRepositoryImpl
             Category.DEFAULT_CATEGORIES.forEach { addCategory(it) }
         }
 
+        // The category is already saved locally, so a cloud failure of any kind must not take down the app
         override suspend fun addCategory(category: Category): Unit =
             withContext(Dispatchers.IO) {
                 // 1. Save to Local immediately (Instant UI feedback)
@@ -98,6 +99,8 @@ class CategoryRepositoryImpl
                             ),
                         )?.await()
                     Timber.d("Successfully synced category ${category.id} to cloud")
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to sync category ${category.id} to cloud")
                 }

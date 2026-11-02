@@ -146,7 +146,7 @@ fun CreateCategoryDialog(
                         val color =
                             try {
                                 Color(android.graphics.Color.parseColor(colorHex))
-                            } catch (_: Exception) {
+                            } catch (_: IllegalArgumentException) {
                                 Color.Gray
                             }
                         val isSelected = selectedColorHex == colorHex

@@ -76,8 +76,8 @@ ktlint {
 detekt {
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
-    // Known issues to fix later (see "Specific Exception Handling" in the README roadmap);
-    // detekt ignores them but still fails on any new ones
+    // Deliberate catch-alls at sign in and sync boundaries, which rethrow cancellation;
+    // detekt ignores them but still fails on any new ones in other classes
     baseline = file("$rootDir/config/detekt/baseline.xml")
 }
 

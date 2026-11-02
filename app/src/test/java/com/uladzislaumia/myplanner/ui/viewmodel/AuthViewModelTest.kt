@@ -15,6 +15,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -55,6 +56,17 @@ class AuthViewModelTest {
             getCurrentUserUseCase = getCurrentUserUseCase,
             observeAuthStateUseCase = observeAuthStateUseCase,
         )
+
+    @Test
+    fun `authState completes without emitting a sign out when observing fails`() =
+        runTest {
+            every { observeAuthStateUseCase() } returns flow { throw IllegalStateException("Listener failed") }
+            val viewModel = createViewModel()
+
+            viewModel.authState.test {
+                awaitComplete()
+            }
+        }
 
     @Test
     fun `initial uiState is Idle`() =

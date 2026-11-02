@@ -11,6 +11,7 @@ import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.domain.repository.PlannerRepository
 import com.uladzislaumia.myplanner.notification.NotificationScheduler
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -42,6 +43,7 @@ class OfflineFirstPlannerRepositoryImpl
                     syncFromCloud()
                 }
 
+        // Local data stays usable, so a sync failure of any kind must not take down the app
         private suspend fun syncFromCloud() =
             withContext(Dispatchers.IO) {
                 val uid = remoteDataSource.currentUserId ?: return@withContext
@@ -58,6 +60,8 @@ class OfflineFirstPlannerRepositoryImpl
                         applied.forEach { notificationScheduler.scheduleTaskReminder(it.toDomain()) }
                         Timber.d("Synced ${applied.size} items from cloud")
                     }
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to sync from cloud")
                     if (plannerItemDao.getItemCount() == 0) {

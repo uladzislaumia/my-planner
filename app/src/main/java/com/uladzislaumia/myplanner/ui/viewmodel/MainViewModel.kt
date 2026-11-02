@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
@@ -60,6 +61,7 @@ class MainViewModel
     ) : ViewModel() {
         val categories: StateFlow<List<Category>> =
             getCategoriesUseCase()
+                .catch { e -> Timber.e(e, "Categories updates failed") }
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
         /** Selected day at midnight, today by default; a day is always selected. */

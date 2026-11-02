@@ -1,5 +1,6 @@
 package com.uladzislaumia.myplanner.data.remote
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uladzislaumia.myplanner.data.local.entity.PlannerItemEntity
 import com.uladzislaumia.myplanner.data.local.entity.SyncState
@@ -30,19 +31,20 @@ class PlannerRemoteDataSource
         suspend fun fetchItems(uid: String): List<PlannerItemEntity> {
             val snapshot = itemsCollection(uid).get().await()
             return snapshot.documents.mapNotNull { doc ->
+                // get() with a safe cast: the typed getters throw on a field of another type
                 try {
                     PlannerItemEntity(
                         id = doc.id,
-                        title = doc.getString("title") ?: "",
-                        description = doc.getString("description") ?: "",
-                        categoryId = doc.getString("categoryId"),
-                        groupId = doc.getString("groupId"),
-                        assigneeId = doc.getString("assigneeId"),
-                        dueDate = doc.getDate("dueDate"),
-                        isCompleted = doc.getBoolean("isCompleted") ?: false,
-                        priority = Priority.valueOf(doc.getString("priority") ?: "MEDIUM"),
+                        title = doc.get("title") as? String ?: "",
+                        description = doc.get("description") as? String ?: "",
+                        categoryId = doc.get("categoryId") as? String,
+                        groupId = doc.get("groupId") as? String,
+                        assigneeId = doc.get("assigneeId") as? String,
+                        dueDate = (doc.get("dueDate") as? Timestamp)?.toDate(),
+                        isCompleted = doc.get("isCompleted") as? Boolean ?: false,
+                        priority = Priority.valueOf(doc.get("priority") as? String ?: "MEDIUM"),
                     )
-                } catch (e: Exception) {
+                } catch (e: IllegalArgumentException) {
                     Timber.e(e, "Error parsing firestore document: ${doc.id}")
                     null
                 }
