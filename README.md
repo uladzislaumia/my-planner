@@ -72,7 +72,7 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 *   **Asynchrony:** Kotlin Coroutines & Flow
 *   **Build System:** Gradle Kotlin DSL + Version Catalog (`libs.versions.toml`)
 *   **Quality Assurance:** KtLint (style formatting) & Detekt (static analysis), enforced in CI
-*   **CI/CD:** GitHub Actions (ktlint, detekt, Android Lint, unit tests, debug APK), Firebase App Distribution for test builds
+*   **CI/CD:** GitHub Actions (ktlint, detekt, Android Lint, unit tests, debug APK), Firebase App Distribution for test builds, Dependabot for weekly dependency updates
 
 ## 🏗 Architecture
 
@@ -116,6 +116,12 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **Firebase Emulator Suite** (Run Firestore and Auth locally for debug builds and tests via `useEmulator`, with `10.0.2.2` as the host on the Android emulator: experiments, screenshots and demo data stop touching the real database, and tests start from clean data).
 - [ ] **Dev & Prod Environments** (Before the first real users, split into separate Firebase projects such as `my-planner-dev` and `my-planner-prod`: `dev` and `prod` product flavors with `applicationIdSuffix = ".dev"` and a `google-services.json` in each flavor's source set; keep Firestore rules and indexes in the repository and deploy them to both projects, add per-environment CI secrets, and distribute test builds from the dev project).
 - [ ] **Compose UI Testing** (UI tests for screens and bottom sheets).
+- [ ] **Gradle Dependency Graph Submission** (GitHub can't read Gradle dependencies on its own, so the dependency graph stays empty and Dependabot alerts and security updates skip libraries such as Room and Firebase; add a `dependency-submission` job to `ci.yml` with `gradle/actions/dependency-submission` that builds with the shared setup action on pushes to `main` and needs `contents: write`).
+- [ ] **Firestore Security Rules in the Repository** (Keep `firestore.rules` in git and deploy it with the Firebase CLI; make sure a user can read and write only `users/{their uid}`; cover the rules with tests on the Firestore emulator).
+- [ ] **Firebase App Check** (Play Integrity provider for release builds and the debug provider for debug builds; start in monitoring mode only: Play Integrity needs the app in Google Play Console, so enforcing it now would block App Distribution builds from Firestore and Auth; enforce after the app is set up in Play).
+- [ ] **LeakCanary** (Add `debugImplementation` of LeakCanary to catch memory leaks such as a retained `Activity` while developing).
+- [ ] **StrictMode in Debug Builds** (Enable thread and VM policies in debug builds to flag disk and network access on the main thread and leaked resources).
+- [ ] **R8 for Release Builds** (Turn on code shrinking and obfuscation, add the needed keep rules, upload the mapping file to Crashlytics for readable stack traces, and build the release APK in CI so release-only failures show up before a distribution).
 - [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config).
 - [ ] **License** (Choose an open-source license, e.g. MIT, add a `LICENSE` file and a license badge).
 - [ ] **Multimodularity** (Refactoring into `:core` and `:feature` modules).

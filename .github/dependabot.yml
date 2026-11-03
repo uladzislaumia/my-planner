@@ -1,0 +1,53 @@
+version: 2
+
+updates:
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    # Versions that only work together come in one PR, so CI checks them as a set
+    groups:
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin.*"
+          - "com.google.devtools.ksp*"
+      android-gradle-plugin:
+        patterns:
+          - "com.android.*"
+      firebase:
+        patterns:
+          - "com.google.firebase*"
+          - "com.google.gms*"
+      hilt:
+        patterns:
+          - "com.google.dagger*"
+      androidx:
+        patterns:
+          - "androidx.*"
+      kotlinx:
+        patterns:
+          - "org.jetbrains.kotlinx*"
+      testing:
+        patterns:
+          - "junit*"
+          - "io.mockk*"
+          - "app.cash.turbine*"
+      code-quality:
+        patterns:
+          - "dev.detekt*"
+          - "org.jlleitschuh.gradle.ktlint*"
+
+  - package-ecosystem: github-actions
+    # The shared setup action has its own steps to keep up to date
+    directories:
+      - /
+      - /.github/actions/setup
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      github-actions:
+        patterns:
+          - "*"
