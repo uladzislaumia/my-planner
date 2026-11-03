@@ -7,9 +7,9 @@ import androidx.work.WorkerParameters
 import com.uladzislaumia.myplanner.data.local.dao.PlannerSyncDao
 import com.uladzislaumia.myplanner.data.local.entity.SyncState
 import com.uladzislaumia.myplanner.data.remote.PlannerRemoteDataSource
+import com.uladzislaumia.myplanner.util.runCatchingCancellable
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
@@ -33,33 +33,34 @@ class SyncWorker
                     return Result.success()
                 }
 
+            return runCatchingCancellable { uploadPendingChanges(uid) }
+                .getOrElse { e ->
+                    Timber.e(e, "SyncWorker: sync failed, attempt $runAttemptCount")
+                    Result.retry()
+                }
+        }
+
+        private suspend fun uploadPendingChanges(uid: String): Result {
             val pending = plannerSyncDao.getPendingSyncItems()
             if (pending.isEmpty()) return Result.success()
 
-            return try {
-                Timber.d("SyncWorker: uploading ${pending.size} item(s)")
-                // Firestore's await() may hang while the connection is flaky; let WorkManager retry instead
-                withTimeoutOrNull(UPLOAD_TIMEOUT) {
-                    remoteDataSource.pushChanges(uid, pending)
-                } ?: run {
-                    Timber.w("SyncWorker: upload timed out, attempt $runAttemptCount")
-                    return Result.retry()
-                }
-                pending.forEach { item ->
-                    when (item.syncState) {
-                        SyncState.PENDING_DELETE -> plannerSyncDao.deleteSyncedTombstone(item.id, item.localUpdatedAt)
-                        SyncState.PENDING_UPSERT -> plannerSyncDao.markSynced(item.id, item.localUpdatedAt)
-                        SyncState.SYNCED -> Unit
-                    }
-                }
-                Timber.d("SyncWorker: sync completed")
-                Result.success()
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Timber.e(e, "SyncWorker: sync failed, attempt $runAttemptCount")
-                Result.retry()
+            Timber.d("SyncWorker: uploading ${pending.size} item(s)")
+            // Firestore's await() may hang while the connection is flaky; let WorkManager retry instead
+            withTimeoutOrNull(UPLOAD_TIMEOUT) {
+                remoteDataSource.pushChanges(uid, pending)
+            } ?: run {
+                Timber.w("SyncWorker: upload timed out, attempt $runAttemptCount")
+                return Result.retry()
             }
+            pending.forEach { item ->
+                when (item.syncState) {
+                    SyncState.PENDING_DELETE -> plannerSyncDao.deleteSyncedTombstone(item.id, item.localUpdatedAt)
+                    SyncState.PENDING_UPSERT -> plannerSyncDao.markSynced(item.id, item.localUpdatedAt)
+                    SyncState.SYNCED -> Unit
+                }
+            }
+            Timber.d("SyncWorker: sync completed")
+            return Result.success()
         }
 
         companion object {

@@ -2,9 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>TooGenericExceptionCaught:CategoryRepositoryImpl.kt:CategoryRepositoryImpl$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:FirebaseAuthRepositoryImpl.kt:FirebaseAuthRepositoryImpl$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:OfflineFirstPlannerRepositoryImpl.kt:OfflineFirstPlannerRepositoryImpl$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:SyncWorker.kt:SyncWorker$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:RunCatchingCancellable.kt:e: Exception</ID>
   </CurrentIssues>
 </SmellBaseline>

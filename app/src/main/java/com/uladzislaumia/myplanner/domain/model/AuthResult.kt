@@ -6,6 +6,6 @@ sealed class AuthResult<out T> {
     ) : AuthResult<T>()
 
     data class Error(
-        val exception: Exception,
+        val exception: Throwable,
     ) : AuthResult<Nothing>()
 }

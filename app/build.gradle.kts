@@ -76,8 +76,8 @@ ktlint {
 detekt {
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
-    // Deliberate catch-alls at sign in and sync boundaries, which rethrow cancellation;
-    // detekt ignores them but still fails on any new ones in other classes
+    // The one deliberate catch-all, in runCatchingCancellable, which rethrows cancellation;
+    // a catch-all anywhere else still fails detekt, so boundaries use that function instead
     baseline = file("$rootDir/config/detekt/baseline.xml")
 }
 

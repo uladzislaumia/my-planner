@@ -11,7 +11,7 @@ import com.uladzislaumia.myplanner.domain.model.PlannerItem
 import com.uladzislaumia.myplanner.domain.model.Priority
 import com.uladzislaumia.myplanner.domain.repository.PlannerRepository
 import com.uladzislaumia.myplanner.notification.NotificationScheduler
-import kotlinx.coroutines.CancellationException
+import com.uladzislaumia.myplanner.util.runCatchingCancellable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -48,7 +48,7 @@ class OfflineFirstPlannerRepositoryImpl
             withContext(Dispatchers.IO) {
                 val uid = remoteDataSource.currentUserId ?: return@withContext
                 Timber.d("Starting background sync from cloud")
-                try {
+                runCatchingCancellable {
                     val remoteItems = remoteDataSource.fetchItems(uid)
                     val localCount = plannerItemDao.getItemCount()
                     if (remoteItems.isEmpty() && localCount == 0) {
@@ -60,9 +60,7 @@ class OfflineFirstPlannerRepositoryImpl
                         applied.forEach { notificationScheduler.scheduleTaskReminder(it.toDomain()) }
                         Timber.d("Synced ${applied.size} items from cloud")
                     }
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
+                }.onFailure { e ->
                     Timber.e(e, "Failed to sync from cloud")
                     if (plannerItemDao.getItemCount() == 0) {
                         Timber.d("Offline or cloud error and local DB is empty. Seeding 5 demo items")

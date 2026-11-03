@@ -1,13 +1,16 @@
 package com.uladzislaumia.myplanner.ui.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.uladzislaumia.myplanner.R
 import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.ui.screens.CategoryTasksScreen
 import com.uladzislaumia.myplanner.ui.screens.HomeScreen
@@ -25,6 +28,14 @@ fun AppNavGraph(
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val startDestination: Route = if (currentUser != null) Route.Home else Route.Login
+    val context = LocalContext.current
+
+    // A Toast shows above any open bottom sheet, unlike a snackbar inside the screen
+    LaunchedEffect(mainViewModel) {
+        mainViewModel.saveErrors.collect {
+            Toast.makeText(context, R.string.tasks_save_failed, Toast.LENGTH_LONG).show()
+        }
+    }
 
     LaunchedEffect(currentUser) {
         if (currentUser == null) {

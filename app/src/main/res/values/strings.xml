@@ -71,6 +71,7 @@
     <string name="tasks_add_title">New Task</string>
     <string name="tasks_field_title">Title</string>
     <string name="tasks_error_title_empty">Add a title to save changes</string>
+    <string name="tasks_save_failed">Couldn\'t save changes</string>
     <string name="tasks_field_description">Description</string>
     <string name="tasks_label_priority">Priority</string>
     <string name="tasks_priority_low">Low</string>

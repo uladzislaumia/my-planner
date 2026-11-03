@@ -16,12 +16,16 @@ import com.uladzislaumia.myplanner.ui.util.atHour
 import com.uladzislaumia.myplanner.ui.util.nextWholeHour
 import com.uladzislaumia.myplanner.ui.util.plusDays
 import com.uladzislaumia.myplanner.ui.util.startOfDay
+import com.uladzislaumia.myplanner.util.runCatchingCancellable
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -66,6 +70,11 @@ class MainViewModel
 
         /** Selected day at midnight, today by default; a day is always selected. */
         val selectedDate = MutableStateFlow(Date().startOfDay())
+
+        private val _saveErrors = Channel<Unit>(Channel.BUFFERED)
+
+        /** Fires when a change couldn't be saved, so the UI can tell the user it was lost. */
+        val saveErrors: Flow<Unit> = _saveErrors.receiveAsFlow()
 
         val uiState: StateFlow<MainUiState> =
             combine(
@@ -125,7 +134,7 @@ class MainViewModel
             colorHex: String,
         ) {
             if (name.isBlank()) return
-            viewModelScope.launch {
+            launchSaving {
                 val category =
                     Category(
                         id = UUID.randomUUID().toString(),
@@ -145,7 +154,7 @@ class MainViewModel
             dueDate: Date? = null,
         ) {
             if (title.isBlank()) return
-            viewModelScope.launch {
+            launchSaving {
                 val newItem =
                     PlannerItem(
                         id = UUID.randomUUID().toString(),
@@ -163,14 +172,25 @@ class MainViewModel
         }
 
         fun updateItem(item: PlannerItem) {
-            viewModelScope.launch {
+            launchSaving {
                 updatePlannerItemUseCase(item)
             }
         }
 
         fun deleteItem(id: String) {
-            viewModelScope.launch {
+            launchSaving {
                 deletePlannerItemUseCase(id)
+            }
+        }
+
+        // A failed local write, e.g. on a full disk, would otherwise crash the app
+        private fun launchSaving(block: suspend () -> Unit) {
+            viewModelScope.launch {
+                runCatchingCancellable { block() }
+                    .onFailure { e ->
+                        Timber.e(e, "Failed to save changes")
+                        _saveErrors.trySend(Unit)
+                    }
             }
         }
     }

@@ -322,6 +322,18 @@ class MainViewModelTest {
         }
 
     @Test
+    fun `addItem reports a save error instead of crashing when saving fails`() =
+        runTest {
+            coEvery { addPlannerItemUseCase(any()) } throws IllegalStateException("Disk full")
+            val viewModel = createViewModel()
+
+            viewModel.saveErrors.test {
+                viewModel.addItem("New Task", "New Desc", Priority.MEDIUM)
+                awaitItem()
+            }
+        }
+
+    @Test
     fun `addItem does not invoke addPlannerItemUseCase when title is blank`() =
         runTest {
             val viewModel = createViewModel()

@@ -6,7 +6,7 @@ import com.uladzislaumia.myplanner.data.local.entity.CategoryEntity
 import com.uladzislaumia.myplanner.domain.model.Category
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
 import com.uladzislaumia.myplanner.domain.repository.CategoryRepository
-import kotlinx.coroutines.CancellationException
+import com.uladzislaumia.myplanner.util.runCatchingCancellable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -41,11 +41,11 @@ class CategoryRepositoryImpl
                 }
 
         // Local data stays usable, so a sync failure of any kind must not take down the app
-        private suspend fun syncCategoriesFromCloud() =
+        private suspend fun syncCategoriesFromCloud(): Unit =
             withContext(Dispatchers.IO) {
                 val collection = categoriesCollection ?: return@withContext
                 Timber.d("Starting background category sync from cloud for user: $userId")
-                try {
+                runCatchingCancellable {
                     val snapshot = collection.get().await()
                     val remoteCategories =
                         snapshot.documents.map { doc ->
@@ -66,9 +66,7 @@ class CategoryRepositoryImpl
                         remoteCategories.forEach { categoryDao.insertCategory(it) }
                         Timber.d("Synced ${remoteCategories.size} categories from cloud")
                     }
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
+                }.onFailure { e ->
                     Timber.e(e, "Failed to sync categories from cloud")
                     if (categoryDao.getCategoryCount() == 0) {
                         seedDefaultCategories()
@@ -88,7 +86,7 @@ class CategoryRepositoryImpl
                 categoryDao.insertCategory(entity)
 
                 // 2. Sync to Cloud
-                try {
+                runCatchingCancellable {
                     categoriesCollection
                         ?.document(category.id)
                         ?.set(
@@ -99,9 +97,7 @@ class CategoryRepositoryImpl
                             ),
                         )?.await()
                     Timber.d("Successfully synced category ${category.id} to cloud")
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
+                }.onFailure { e ->
                     Timber.e(e, "Failed to sync category ${category.id} to cloud")
                 }
             }

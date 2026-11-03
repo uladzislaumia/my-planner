@@ -8,7 +8,7 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.uladzislaumia.myplanner.domain.model.AuthResult
 import com.uladzislaumia.myplanner.domain.model.User
 import com.uladzislaumia.myplanner.domain.repository.AuthRepository
-import kotlinx.coroutines.CancellationException
+import com.uladzislaumia.myplanner.util.runCatchingCancellable
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -49,7 +49,7 @@ class FirebaseAuthRepositoryImpl
             email: String,
             password: String,
         ): AuthResult<User> =
-            try {
+            runCatchingCancellable {
                 val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
                 val user = mapFirebaseUser(result.user)
                 if (user != null) {
@@ -61,9 +61,7 @@ class FirebaseAuthRepositoryImpl
                 } else {
                     AuthResult.Error(Exception("Firebase user is null"))
                 }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
+            }.getOrElse { e ->
                 Timber.e(e, "Error signing in with email and password")
                 AuthResult.Error(e)
             }
@@ -74,7 +72,7 @@ class FirebaseAuthRepositoryImpl
             email: String,
             password: String,
         ): AuthResult<User> =
-            try {
+            runCatchingCancellable {
                 val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
                 val firebaseUser = result.user
                 if (firebaseUser != null) {
@@ -98,9 +96,7 @@ class FirebaseAuthRepositoryImpl
                 } else {
                     AuthResult.Error(Exception("Firebase user is null"))
                 }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
+            }.getOrElse { e ->
                 Timber.e(e, "Error creating user with email and password")
                 AuthResult.Error(e)
             }

@@ -70,6 +70,7 @@
     <string name="tasks_add_title">Nueva tarea</string>
     <string name="tasks_field_title">Título</string>
     <string name="tasks_error_title_empty">Añade un título para guardar los cambios</string>
+    <string name="tasks_save_failed">No se pudieron guardar los cambios</string>
     <string name="tasks_field_description">Descripción</string>
     <string name="tasks_label_priority">Prioridad</string>
     <string name="tasks_priority_low">Baja</string>

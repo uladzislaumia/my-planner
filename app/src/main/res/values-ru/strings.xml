@@ -71,6 +71,7 @@
     <string name="tasks_add_title">Новая задача</string>
     <string name="tasks_field_title">Название</string>
     <string name="tasks_error_title_empty">Добавьте название, чтобы сохранить изменения</string>
+    <string name="tasks_save_failed">Не удалось сохранить изменения</string>
     <string name="tasks_field_description">Описание</string>
     <string name="tasks_label_priority">Приоритет</string>
     <string name="tasks_priority_low">Низкий</string>
