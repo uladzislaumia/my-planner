@@ -57,6 +57,7 @@ Here are practical ways **My Planner** helps users organize their daily routine:
 *   **Background Work:** WorkManager
 *   **Notifications:** Local Scheduled Notifications (`AlarmManager` & `NotificationManager`)
 *   **Analytics & Crash Reporting:** Firebase Analytics & Firebase Crashlytics (integrated with Timber logging)
+*   **Memory Leak Detection:** LeakCanary (debug builds only)
 *   **Testing:** JUnit 4, MockK, Turbine, kotlinx-coroutines-test
 *   **UI Testing:** Compose UI Testing **[TBD]**
 *   **Security:**
@@ -119,7 +120,6 @@ The project follows **Clean Architecture** and **Single Activity** principles wi
 - [ ] **Gradle Dependency Graph Submission** (GitHub can't read Gradle dependencies on its own, so the dependency graph stays empty and Dependabot alerts and security updates skip libraries such as Room and Firebase; add a `dependency-submission` job to `ci.yml` with `gradle/actions/dependency-submission` that builds with the shared setup action on pushes to `main` and needs `contents: write`).
 - [ ] **Firestore Security Rules in the Repository** (Keep `firestore.rules` in git and deploy it with the Firebase CLI; make sure a user can read and write only `users/{their uid}`; cover the rules with tests on the Firestore emulator).
 - [ ] **Firebase App Check** (Play Integrity provider for release builds and the debug provider for debug builds; start in monitoring mode only: Play Integrity needs the app in Google Play Console, so enforcing it now would block App Distribution builds from Firestore and Auth; enforce after the app is set up in Play).
-- [ ] **LeakCanary** (Add `debugImplementation` of LeakCanary to catch memory leaks such as a retained `Activity` while developing).
 - [ ] **StrictMode in Debug Builds** (Enable thread and VM policies in debug builds to flag disk and network access on the main thread and leaked resources).
 - [ ] **R8 for Release Builds** (Turn on code shrinking and obfuscation, add the needed keep rules, upload the mapping file to Crashlytics for readable stack traces, and build the release APK in CI so release-only failures show up before a distribution).
 - [ ] **App Security Hardening** (Android Keystore, `FLAG_SECURE`, Root & Tamper Detection, Anti-fraud SDKs (SEON, Clarity), ProGuard/R8, Network Security Config).

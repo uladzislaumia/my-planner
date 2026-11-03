@@ -132,4 +132,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    // Reports memory leaks such as a retained Activity while developing; not in release builds
+    debugImplementation(libs.leakcanary.android)
 }
