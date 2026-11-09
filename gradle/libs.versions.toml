@@ -12,7 +12,7 @@ composeBom = "2026.09.00"
 hilt = "2.60.1"
 kspVersion = "2.3.12"
 room = "2.8.5"
-firebaseBom = "35.0.2"
+firebaseBom = "35.1.0"
 detekt = "2.0.0-alpha.6"
 ktlint = "14.2.0"
 # ktlint engine (rule set) used by the Gradle plugin; keep in sync with the IDE ktlint plugin
