@@ -12,7 +12,7 @@ composeBom = "2026.09.00"
 hilt = "2.60.1"
 kspVersion = "2.3.12"
 room = "2.8.5"
-firebaseBom = "35.0.2"
+firebaseBom = "35.2.0"
 detekt = "2.0.0-alpha.6"
 ktlint = "14.2.0"
 # ktlint engine (rule set) used by the Gradle plugin; keep in sync with the IDE ktlint plugin
@@ -72,7 +72,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
-google-services = { id = "com.google.gms.google-services", version = "4.5.0" }
+google-services = { id = "com.google.gms.google-services", version = "4.6.0" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.8" }
 firebase-appdistribution = { id = "com.google.firebase.appdistribution", version = "5.3.1" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
